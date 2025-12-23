@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delegate Voting - Pemilihan Ketua Umum EEPROM 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="icon" href="/public/assets/images/eeprom logo.png" type="image/png">
+
+    <style>
+        :root {
+            --primary-blue: #1A237E;
+            --secondary-blue: #3F51B5;
+            --accent-orange: #FF5722;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E8EAF6;
+            --dark-text: #212529;
+            --soft-text: #495057;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-md: rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            background-color: var(--light-gray);
+            font-family: 'Poppins', sans-serif;
+            color: var(--soft-text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .voting-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .header-minimal {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-minimal img {
+            width: 100px;
+            margin-bottom: 20px;
+        }
+
+        .header-minimal h1 {
+            color: var(--primary-blue);
+            font-weight: 800;
+            font-size: 2.2rem;
+        }
+
+        .card-custom {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+
+        .warning-box {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            color: #856404;
+        }
+
+        .candidate-card {
+            border: 3px solid var(--medium-gray);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            background: white;
+            cursor: pointer;
+        }
+
+        .candidate-card.selected {
+            border-color: var(--accent-orange);
+            background-color: #fff9f7;
+        }
+
+        .no-urut-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--accent-orange);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-weight: 800;
+            z-index: 10;
+        }
+
+        .candidate-img-wrapper { height: 300px; overflow: hidden; }
+        .candidate-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+
+        .btn-vote-main {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-weight: 700;
+            width: 100%;
+            border: none;
+        }
+
+        .footer-minimal { text-align: center; padding: 30px; opacity: 0.8; }
+    </style>
+</head>
+
+<body>
+    <div class="voting-container">
+        <div class="header-minimal">
+            <img src="/public/assets/images/eeprom logo.png" alt="EEPROM Logo">
+            <h1>Pemilihan Ketua Umum 2026</h1>
+            <p class="text-accent-orange fw-bold">Portal Voting Delegasi</p>
+        </div>
+
+        <div id="section-voting">
+            <div class="warning-box shadow-sm">
+                <h5 class="fw-bold mb-2"><i class="bi bi-exclamation-triangle-fill me-2"></i> PENTING: Anda hanya bisa memilih SATU kali!</h5>
+                <p class="mb-0 small">Pilihan tidak dapat diubah setelah Anda menekan tombol submit.</p>
+            </div>
+
+            <div class="card-custom mb-4 p-3 border-0">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <span class="badge bg-primary mb-2">Status: Delegasi</span>
+                        <h4 class="fw-bold mb-0">Selamat Datang, Ahmad Rizky</h4>
+                    </div>
+                    <div class="col-md-4 text-md-end mt-2">
+                        <div class="text-accent-orange fw-bold fs-5"><i class="bi bi-clock-history me-2"></i><span id="countdown">02:45:10</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="candidate-card" id="card-1" onclick="selectCandidate(1)">
+                        <div class="no-urut-badge">01</div>
+                        <div class="candidate-img-wrapper"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80" alt="K1"></div>
+                        <div class="p-4 text-center">
+                            <h2 class="fw-bold text-dark">Andi Pratama</h2>
+                            <div class="form-check d-inline-block mt-3">
+                                <input class="form-check-input" type="radio" name="candidateRadio" id="radio-1" value="Andi Pratama">
+                                <label class="form-check-label fw-bold text-primary" for="radio-1">Pilih Kandidat Ini</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="candidate-card" id="card-2" onclick="selectCandidate(2)">
+                        <div class="no-urut-badge">02</div>
+                        <div class="candidate-img-wrapper"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80" alt="K2"></div>
+                        <div class="p-4 text-center">
+                            <h2 class="fw-bold text-dark">Budi Cahyono</h2>
+                            <div class="form-check d-inline-block mt-3">
+                                <input class="form-check-input" type="radio" name="candidateRadio" id="radio-2" value="Budi Cahyono">
+                                <label class="form-check-label fw-bold text-primary" for="radio-2">Pilih Kandidat Ini</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5 text-center">
+                <button type="button" class="btn btn-vote-main py-3" onclick="alert('Membuka Konfirmasi...')">Submit Suara Saya <i class="bi bi-send-check-fill ms-2"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer-minimal">
+        <p>© 2025 EEPROM POLINEMA</p>
+    </footer>
+
+    <script>
+        function selectCandidate(id) {
+            document.querySelectorAll('.candidate-card').forEach(card => card.classList.remove('selected'));
+            document.querySelectorAll('input[name="candidateRadio"]').forEach(radio => radio.checked = false);
+            document.getElementById('card-' + id).classList.add('selected');
+            document.getElementById('radio-' + id).checked = true;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting - EEPROM POLINEMA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="icon" href="/img/eeprom logo.png" type="image/png">
+    
+    <style>
+        :root {
+            --primary-blue: #1A237E;
+            --secondary-blue: #3F51B5;
+            --accent-orange: #FF5722;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E8EAF6;
+            --dark-text: #212529;
+            --soft-text: #495057;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --sidebar-width: 280px;
+        }
+
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            background-color: var(--medium-gray);
+            color: var(--soft-text);
+            min-height: 100vh;
+        }
+
+        /* Layout (Matched with dashboard.html) */
+        .dashboard-wrapper { display: flex; min-height: 100vh; }
+        
+        .main-content-area {
+            flex-grow: 1;
+            padding: 30px;
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--primary-blue);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            z-index: 1030;
+            transition: transform 0.3s ease;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar-header {
+            padding: 25px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h3 {
+            color: var(--accent-orange);
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .sidebar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.85);
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            border-left: 5px solid transparent;
+            text-decoration: none;
+        }
+
+        .sidebar-nav .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-left-color: var(--accent-orange);
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar-nav .nav-link i { margin-right: 15px; font-size: 1.1rem; }
+
+        .sidebar-footer {
+            padding: 15px;
+            text-align: center;
+            font-size: 0.75rem;
+            background: rgba(0,0,0,0.2);
+            color: rgba(255,255,255,0.6);
+            margin-top: auto;
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        /* Voting Specific Cards */
+        .candidate-card {
+            background: white;
+            border-radius: 20px;
+            border: none;
+            overflow: hidden;
+            box-shadow: 0 4px 15px var(--shadow-light);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+
+        .candidate-card:hover { transform: translateY(-10px); }
+
+        .candidate-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-bottom: 5px solid var(--accent-orange);
+        }
+
+        .candidate-body { padding: 25px; }
+
+        .candidate-info p { margin-bottom: 5px; font-size: 0.85rem; }
+
+        /* Timer Styling */
+        .timer-box {
+            background: var(--primary-blue);
+            color: white;
+            border-radius: 10px;
+            padding: 10px 20px;
+            display: inline-block;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* Radio Selection Styling */
+        .vote-check { display: none; }
+        .vote-label {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            text-align: center;
+            background: #f1f3f9;
+            color: var(--primary-blue);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        .vote-check:checked + .vote-label {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--accent-orange);
+        }
+
+        .btn-submit-vote {
+            background: var(--accent-orange);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(255, 87, 34, 0.3);
+            transition: all 0.3s;
+        }
+
+        .btn-submit-vote:hover {
+            transform: scale(1.05);
+            background: #e64a19;
+            color: white;
+        }
+
+        /* Status Colors */
+        .info-box-custom {
+            border-radius: 15px;
+            padding: 20px;
+            border-left: 6px solid;
+            margin-bottom: 30px;
+        }
+        .info-upcoming { background: #e3f2fd; border-color: #2196f3; color: #0d47a1; }
+        .info-warning { background: #fffde7; border-color: #fbc02d; color: #7f6000; }
+        .info-success { background: #e8f5e9; border-color: #4caf50; color: #1b5e20; }
+        .info-closed { background: #ffebee; border-color: #f44336; color: #b71c1c; }
+
+        @media (max-width: 992px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.show { transform: translateX(0); }
+            .main-content-area { margin-left: 0; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-wrapper">
+        
+        <nav id="sidebarMenu" class="sidebar">
+            <div class="sidebar-header">
+                <img src="/public/assets/images/eeprom logo.png" alt="Logo" width="120" class="mb-2" onerror="this.src='https://via.placeholder.com/45'">
+                <!-- <h3>EEPROM Member</h3> -->
+            </div>
+            
+            <div class="sidebar-nav">
+                <a href="/src/Views/member-area/dashboard.html" class="nav-link"><i class="bi bi-house-door-fill"></i><span>Dashboard</span></a>
+                <a href="/src/Views/member-area/profile/index.html" class="nav-link"><i class="bi bi-person-circle"></i><span>My Profile</span></a>
+                <a href="/src/Views/member-area/gallery/index.html" class="nav-link"><i class="bi bi-images"></i><span>Gallery</span></a>
+                <a href="/src/Views/member-area/attendance/index.html" class="nav-link"><i class="bi bi-calendar-check"></i><span>Attendance</span></a>
+                <a href="/src/Views/member-area/announcements/index.html" class="nav-link"><i class="bi bi-megaphone"></i><span>Announcements</span></a>
+                <a href="/src/Views/member-area/voting/index.html" class="nav-link active"><i class="bi bi-patch-check"></i><span>Voting</span></a>
+                <a href="/src/Views/member-area/forum/index.html" class="nav-link"><i class="bi bi-chat-dots"></i><span>Forum</span></a>
+                <a href="/src/Views/member-area/documents/index.html" class="nav-link"><i class="bi bi-file-earmark-text"></i><span>Documents</span></a>
+                
+                <hr class="mx-3 opacity-10">
+                <a href="/logout.php" class="nav-link text-danger"><i class="bi bi-box-arrow-right"></i><span>Logout</span></a>
+
+                <div class="sidebar-footer">
+                © 2024 EEPROM POLINEMA
+            </div>
+            </div>
+        </nav>
+        
+        <div id="mainContentWrapper" class="main-content-area">
+
+            <nav class="top-navbar d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-primary me-3 d-lg-none" id="mobile-toggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <h4 class="m-0 fw-bold">Pemilihan Ketua Umum 2026</h4>
+                </div>
+                <div class="d-flex align-items-center">
+                    <span class="timer-box d-none d-md-block" id="topTimer">00 : 00 : 00</span>
+                </div>
+            </nav>
+
+            <div class="mb-4 d-flex gap-2 flex-wrap">
+                <button class="btn btn-sm btn-outline-secondary" onclick="switchMode('upcoming')">Mode: Belum Buka</button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="switchMode('active')">Mode: Aktif (Belum Vote)</button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="switchMode('voted')">Mode: Sudah Vote</button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="switchMode('closed')">Mode: Selesai</button>
+            </div>
+
+            <div id="section-upcoming" class="voting-section d-none text-center py-5">
+                <div class="info-box-custom info-upcoming mx-auto" style="max-width: 600px;">
+                    <i class="bi bi-calendar-event fs-1 mb-3"></i>
+                    <h4>Voting Belum Dibuka</h4>
+                    <p>Voting Pemilihan Ketua Umum EEPROM 2026 akan dibuka pada tanggal <strong>1 Januari 2026</strong>.</p>
+                    <div class="timer-box fs-3 mt-3">05 Hari : 12 Jam : 30 Menit</div>
+                </div>
+            </div>
+
+            <div id="section-active" class="voting-section d-none">
+                <div class="info-box-custom info-warning">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <strong>Penting:</strong> Anda hanya memiliki satu kali kesempatan memilih. Pilihan yang sudah dikirim tidak dapat diubah kembali!
+                </div>
+
+                <div class="row g-4 mb-5">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="candidate-card">
+                            <img src="https://ui-avatars.com/api/?name=Kandidat+01&size=250&background=1A237E&color=fff" class="candidate-img" alt="Kandidat 01">
+                            <div class="candidate-body">
+                                <span class="badge bg-primary mb-2">No. Urut 01</span>
+                                <h5 class="fw-bold text-dark">Ahmad Fauzi</h5>
+                                <div class="candidate-info mb-3">
+                                    <p class="text-muted"><i class="bi bi-card-text me-2"></i>2241720001</p>
+                                    <p class="text-muted"><i class="bi bi-layers me-2"></i>Generasi 15 (Software)</p>
+                                </div>
+                                
+                                <div class="accordion mb-4" id="visimisi1">
+                                    <div class="accordion-item border-0">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed rounded bg-light small fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#desc1">
+                                                Lihat Visi Misi
+                                            </button>
+                                        </h2>
+                                        <div id="desc1" class="accordion-collapse collapse" data-bs-parent="#visimisi1">
+                                            <div class="accordion-body small">
+                                                <strong>Visi:</strong> Mewujudkan EEPROM sebagai kiblat robotika yang inovatif. <br><br>
+                                                <strong>Misi:</strong>
+                                                <ul class="ps-3 mt-1">
+                                                    <li>Mengadakan workshop berkala.</li>
+                                                    <li>Meningkatkan prestasi nasional.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <input type="radio" name="candidate" id="vote1" class="vote-check">
+                                <label for="vote1" class="vote-label">Pilih Kandidat Ini</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="candidate-card">
+                            <img src="https://ui-avatars.com/api/?name=Kandidat+02&size=250&background=FF5722&color=fff" class="candidate-img" alt="Kandidat 02">
+                            <div class="candidate-body">
+                                <span class="badge bg-primary mb-2">No. Urut 02</span>
+                                <h5 class="fw-bold text-dark">Siti Aminah</h5>
+                                <div class="candidate-info mb-3">
+                                    <p class="text-muted"><i class="bi bi-card-text me-2"></i>2241720055</p>
+                                    <p class="text-muted"><i class="bi bi-layers me-2"></i>Generasi 15 (Elektrik)</p>
+                                </div>
+                                
+                                <div class="accordion mb-4" id="visimisi2">
+                                    <div class="accordion-item border-0">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed rounded bg-light small fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#desc2">
+                                                Lihat Visi Misi
+                                            </button>
+                                        </h2>
+                                        <div id="desc2" class="accordion-collapse collapse" data-bs-parent="#visimisi2">
+                                            <div class="accordion-body small">
+                                                <strong>Visi:</strong> EEPROM Harmonis dan Berprestasi.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <input type="radio" name="candidate" id="vote2" class="vote-check">
+                                <label for="vote2" class="vote-label">Pilih Kandidat Ini</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center pb-5">
+                    <button class="btn btn-submit-vote" onclick="confirmVote()">
+                        <i class="bi bi-send-fill me-2"></i> Submit Vote Saya
+                    </button>
+                </div>
+            </div>
+
+            <div id="section-voted" class="voting-section d-none">
+                <div class="info-box-custom info-success text-center py-5">
+                    <i class="bi bi-check-circle-fill fs-1 mb-3"></i>
+                    <h3>Terima Kasih Sudah Memilih!</h3>
+                    <p class="mb-4">Partisipasi Anda sangat berarti untuk masa depan EEPROM Polinema.</p>
+                    <div class="bg-white p-4 rounded-4 shadow-sm d-inline-block text-start border">
+                        <p class="mb-1 small text-muted">Anda Telah Memilih:</p>
+                        <h5 class="fw-bold text-dark">Ahmad Fauzi (No. Urut 01)</h5>
+                        <p class="small text-muted m-0">Pada: 20 Desember 2025, 22:45 WIB</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-closed" class="voting-section d-none">
+                <div class="info-box-custom info-closed mb-4">
+                    <i class="bi bi-lock-fill me-2"></i> Voting telah ditutup pada 15 Januari 2026.
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-7">
+                        <div class="widget-card-admin bg-white p-4 rounded-4 shadow-sm h-100">
+                            <h5 class="fw-bold mb-4">Hasil Perolehan Suara</h5>
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between small fw-bold mb-1">
+                                    <span>Ahmad Fauzi</span>
+                                    <span>65% (162 Votes)</span>
+                                </div>
+                                <div class="progress" style="height: 25px;">
+                                    <div class="progress-bar" style="width: 65%; background: var(--primary-blue);"></div>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between small fw-bold mb-1">
+                                    <span>Siti Aminah</span>
+                                    <span>35% (88 Votes)</span>
+                                </div>
+                                <div class="progress" style="height: 25px;">
+                                    <div class="progress-bar" style="width: 35%; background: var(--accent-orange);"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="candidate-card bg-white text-center p-4">
+                            <h6 class="fw-bold text-muted mb-3">KETUA UMUM TERPILIH</h6>
+                            <img src="https://ui-avatars.com/api/?name=Ahmad+Fauzi&size=150&background=28a745&color=fff" class="rounded-circle mb-3 border border-4 border-success p-1" width="150" alt="Pemenang">
+                            <h4 class="fw-bold mb-0">Ahmad Fauzi</h4>
+                            <span class="badge bg-success px-4 py-2 mt-2">Terpilih sebagai Ketua Umum 2026</span>
+                            <hr>
+                            <div class="row text-center">
+                                <div class="col-6 border-end">
+                                    <p class="small text-muted mb-0">Total Suara</p>
+                                    <h5 class="fw-bold mb-0">162</h5>
+                                </div>
+                                <div class="col-6">
+                                    <p class="small text-muted mb-0">Persentase</p>
+                                    <h5 class="fw-bold mb-0">65%</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirmModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0" style="border-radius: 20px;">
+                <div class="modal-body text-center p-4">
+                    <i class="bi bi-question-circle text-warning fs-1"></i>
+                    <h4 class="fw-bold mt-3">Konfirmasi Pilihan</h4>
+                    <p>Apakah Anda yakin ingin memilih kandidat ini? Pilihan Anda tidak dapat diubah setelah Anda klik 'Konfirmasi'.</p>
+                    <div class="d-flex gap-2 justify-content-center mt-4">
+                        <button class="btn btn-light px-4" data-bs-dismiss="modal">Batal</button>
+                        <button class="btn btn-primary px-4" onclick="submitVote()" style="background: var(--primary-blue);">Ya, Konfirmasi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Logic untuk mendemonstrasikan mode (frontend only)
+        function switchMode(mode) {
+            document.querySelectorAll('.voting-section').forEach(s => s.classList.add('d-none'));
+            document.getElementById('section-' + mode).classList.remove('d-none');
+        }
+
+        // Jalankan mode aktif sebagai default
+        switchMode('active');
+
+        function confirmVote() {
+            const selected = document.querySelector('input[name="candidate"]:checked');
+            if(!selected) {
+                alert("Silakan pilih salah satu kandidat terlebih dahulu!");
+                return;
+            }
+            const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+            modal.show();
+        }
+
+        function submitVote() {
+            bootstrap.Modal.getInstance(document.getElementById('confirmModal')).hide();
+            switchMode('voted');
+        }
+
+        document.getElementById('mobile-toggle').addEventListener('click', () => {
+            document.getElementById('sidebarMenu').classList.toggle('show');
+        });
+    </script>
+</body>
+</html>

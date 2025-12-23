@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin EEPROM - Gallery Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="icon" href="/img/eeprom logo.png" type="image/png">
+    
+    <style>
+        /* ========================================
+           CSS Variables & Reset (Adapted)
+        ======================================== */
+        :root {
+            --primary-blue: #1A237E;
+            --secondary-blue: #3F51B5;
+            --accent-orange: #FF5722;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E8EAF6;
+            --dark-text: #212529;
+            --soft-text: #495057;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --bs-body-font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-gray);
+            font-family: var(--bs-body-font-family);
+        }
+        
+        /* Kustomisasi Sidebar */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: var(--primary-blue);
+            padding-top: 20px;
+            color: white;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar-header {
+            padding: 0 20px 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-header h5 {
+            font-weight: 700;
+            color: var(--accent-orange);
+        }
+
+        .sidebar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            transition: background-color 0.3s, color 0.3s;
+            border-left: 5px solid transparent;
+            font-weight: 500;
+        }
+
+        .sidebar-nav .nav-link:hover {
+            color: white;
+            background-color: var(--secondary-blue);
+            border-left-color: var(--accent-orange);
+        }
+        
+        .sidebar-nav .nav-link.active {
+            color: white;
+            background-color: var(--secondary-blue);
+            border-left-color: var(--accent-orange);
+            font-weight: 600;
+        }
+        
+        /* Kustomisasi Top Navbar */
+        .top-navbar {
+            margin-left: 250px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        /* Konten Utama */
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+        }
+        
+        /* Kustomisasi Utility Classes (Adapted) */
+        .btn-primary-custom {
+            background-color: var(--accent-orange);
+            border-color: var(--accent-orange);
+            color: white;
+            font-weight: 600;
+            transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            background-color: #E64A19; /* Darker orange */
+            border-color: #E64A19;
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px var(--shadow-light);
+            transition: all 0.3s ease;
+        }
+        
+        /* Gallery Card Styling */
+        .gallery-item {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            margin-bottom: 20px; /* Jarak antar item galeri */
+            transition: transform 0.2s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .gallery-content {
+            padding: 10px;
+        }
+        
+        .gallery-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .gallery-item:hover .gallery-actions {
+            opacity: 1;
+        }
+
+        .gallery-checkbox {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 5;
+        }
+        
+        .gallery-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--dark-text);
+            margin-bottom: 5px;
+        }
+        
+        .gallery-meta {
+            font-size: 12px;
+            color: var(--soft-text);
+        }
+        
+        /* Modal Upload/Edit Preview Styling */
+        .upload-preview-list .upload-preview-item {
+            position: relative;
+            width: 100%;
+            border: 1px solid var(--medium-gray);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: white;
+        }
+        
+        .upload-preview-item img {
+            width: 100px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        
+        .upload-preview-item .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--accent-orange);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            font-size: 14px;
+            line-height: 1;
+            padding: 0;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                z-index: 1050;
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .main-content, .top-navbar {
+                margin-left: 0;
+                width: 100%;
+            }
+            .main-content {
+                padding-top: 80px;
+            }
+            .toggle-btn {
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar d-flex flex-column" id="sidebar">
+        <div class="sidebar-header d-flex align-items-center mb-4">
+            <img src="/img/eeprom logo.png" alt="EEPROM Logo" style="width: 40px; margin-right: 10px;">
+            <h5 class="mb-0">EEPROM Admin</h5>
+        </div>
+        
+        <div class="sidebar-nav flex-grow-1">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="bi bi-people-fill me-2"></i> Members Management</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="bi bi-activity me-2"></i> Activities Management</a>
+                </li>
+                 <li class="nav-item">
+                    <a class="nav-link active" href="#"><i class="bi bi-image-fill me-2"></i> Gallery Management</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="bi bi-gear-fill me-2"></i> Settings</a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-footer p-3 text-center">
+            <small>&copy; 2024 EEPROM POLINEMA</small>
+        </div>
+    </div>
+
+    <nav class="top-navbar navbar navbar-expand-lg bg-white py-3">
+        <div class="container-fluid">
+            <button class="btn btn-outline-secondary d-lg-none toggle-btn me-3" type="button" id="sidebarToggle">
+                <i class="bi bi-list"></i>
+            </button>
+            <span class="navbar-brand mb-0 h1 text-primary">Gallery Management</span>
+            
+            <div class="ms-auto d-flex align-items-center">
+                <a href="#" class="text-secondary me-3"><i class="bi bi-bell-fill fs-5"></i></a>
+                <div class="dropdown">
+                    <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="/img/profile.png" alt="Admin" width="32" height="32" class="rounded-circle">
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="dropdownUser1">
+                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                        <li><a class="dropdown-item" href="#">Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#">Sign out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <h2 class="h3 mb-0 text-primary-blue" style="font-weight: 700;">Kelola Galeri Foto</h2>
+            
+            <div class="d-flex align-items-center gap-2">
+                 <div class="dropdown" id="bulkActionsDropdown">
+                    <button class="btn btn-outline-danger btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" disabled>
+                        Aksi Massal (0 dipilih)
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item text-danger" href="#" onclick="alert('Delete Selected Photos')"><i class="bi bi-trash-fill me-2"></i> Hapus yang Dipilih</a></li>
+                    </ul>
+                </div>
+                <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#uploadModal" id="mainUploadBtn">
+                    <i class="bi bi-upload me-2"></i> Upload Foto
+                </button>
+            </div>
+        </div>
+        
+        <div class="card p-4 mb-4">
+            <h5 class="card-title text-primary-blue mb-3">Filter & Search</h5>
+            <div class="row g-3">
+                <div class="col-md-5">
+                    <input type="text" class="form-control" id="photoSearch" placeholder="Cari berdasarkan Judul...">
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="filterKategori">
+                        <option selected>Filter Kategori</option>
+                        <option value="Pelatihan">Pelatihan</option>
+                        <option value="Workshop">Workshop</option>
+                        <option value="Lomba">Lomba/Kompetisi</option>
+                        <option value="Umum">Umum</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select" id="filterTahun">
+                        <option selected>Filter Tahun</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-outline-secondary w-100"><i class="bi bi-funnel-fill me-1"></i> Apply</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card p-4">
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" value="" id="selectAllPhotos">
+                <label class="form-check-label" for="selectAllPhotos">Pilih Semua Foto</label>
+            </div>
+            
+            <div class="row" id="galleryGrid">
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="gallery-item">
+                         <input class="form-check-input gallery-checkbox photo-checkbox" type="checkbox" value="1">
+                        <img src="/img/galeri_1.jpg" alt="Robotik Event" style="height: 250px;">
+                        <div class="gallery-actions btn-group btn-group-sm">
+                            <button class="btn btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editModal" data-id="1"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-danger" title="Delete" onclick="confirmDeletePhoto('Foto Robotik 2024')"><i class="bi bi-trash"></i></button>
+                        </div>
+                        <div class="gallery-content">
+                            <div class="gallery-title">Foto Workshop Robotik 2024</div>
+                            <div class="gallery-meta">
+                                <span class="badge text-bg-info">Pelatihan</span> | 
+                                <span class="text-muted">15 Jan 2024</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="gallery-item">
+                         <input class="form-check-input gallery-checkbox photo-checkbox" type="checkbox" value="2">
+                        <img src="/img/galeri_2.jpg" alt="Outbound" style="height: 180px;">
+                        <div class="gallery-actions btn-group btn-group-sm">
+                            <button class="btn btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editModal" data-id="2"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-danger" title="Delete" onclick="confirmDeletePhoto('Foto Outbound')"><i class="bi bi-trash"></i></button>
+                        </div>
+                        <div class="gallery-content">
+                            <div class="gallery-title">Outbound Anggota Baru</div>
+                            <div class="gallery-meta">
+                                <span class="badge text-bg-success">Non-Teknis</span> | 
+                                <span class="text-muted">01 Sep 2024</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="gallery-item">
+                         <input class="form-check-input gallery-checkbox photo-checkbox" type="checkbox" value="3">
+                        <img src="/img/galeri_3.jpg" alt="Lomba KRI" style="height: 300px;">
+                        <div class="gallery-actions btn-group btn-group-sm">
+                            <button class="btn btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editModal" data-id="3"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-danger" title="Delete" onclick="confirmDeletePhoto('Foto KRI 2023')"><i class="bi bi-trash"></i></button>
+                        </div>
+                        <div class="gallery-content">
+                            <div class="gallery-title">Foto Kontes Robot Indonesia 2023</div>
+                            <div class="gallery-meta">
+                                <span class="badge text-bg-warning">Lomba</span> | 
+                                <span class="text-muted">20 Nov 2023</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="gallery-item">
+                         <input class="form-check-input gallery-checkbox photo-checkbox" type="checkbox" value="4">
+                        <img src="/img/galeri_4.jpg" alt="Rapat Rutin" style="height: 200px;">
+                        <div class="gallery-actions btn-group btn-group-sm">
+                            <button class="btn btn-info" title="Edit" data-bs-toggle="modal" data-bs-target="#editModal" data-id="4"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-danger" title="Delete" onclick="confirmDeletePhoto('Foto Rapat')"><i class="bi bi-trash"></i></button>
+                        </div>
+                        <div class="gallery-content">
+                            <div class="gallery-title">Rapat Koordinasi Divisi Software</div>
+                            <div class="gallery-meta">
+                                <span class="badge text-bg-secondary">Umum</span> | 
+                                <span class="text-muted">10 Feb 2024</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                </div>
+            
+            <nav aria-label="Page navigation" class="mt-3">
+                <ul class="pagination justify-content-end">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+    </div>
+    
+    <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white" style="background-color: var(--primary-blue) !important;">
+                    <h5 class="modal-title" id="uploadModalLabel"><i class="bi bi-upload me-2"></i> Upload Foto Baru (Maks 10 Files)</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formUpload" enctype="multipart/form-data">
+                    <div class="modal-body">
+                         <div class="mb-3">
+                            <label for="multiFileUpload" class="form-label">Pilih Foto (Maksimal 10 file sekaligus)</label>
+                            <input class="form-control" type="file" id="multiFileUpload" multiple accept="image/*" required>
+                        </div>
+                        
+                        <hr>
+                        
+                        <h6 class="text-primary-blue mb-3">Detail Foto yang Diunggah:</h6>
+                        <div id="uploadPreviewList" class="upload-preview-list row">
+                            <p class="text-muted text-center" id="uploadPlaceholder">Belum ada foto yang dipilih.</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary-custom" id="saveUploadBtn" disabled>
+                            <i class="bi bi-save-fill me-1"></i> Simpan Semua Foto
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white" style="background-color: var(--primary-blue) !important;">
+                    <h5 class="modal-title" id="editModalLabel"><i class="bi bi-pencil-square me-2"></i> Edit Detail Foto</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formEdit">
+                    <div class="modal-body">
+                        <input type="hidden" id="editPhotoId">
+                        <div class="mb-3 text-center">
+                            <img id="editPhotoPreview" src="/img/galeri_1.jpg" alt="Preview Foto" class="img-fluid rounded" style="max-height: 200px;">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editJudul" class="form-label">Judul Foto (Optional)</label>
+                            <input type="text" class="form-control" id="editJudul" value="Foto Workshop Robotik 2024">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editKategori" class="form-label">Kategori</label>
+                            <select class="form-select" id="editKategori" required>
+                                <option value="Umum">Umum</option>
+                                <option value="Pelatihan" selected>Pelatihan</option>
+                                <option value="Workshop">Workshop</option>
+                                <option value="Lomba">Lomba/Kompetisi</option>
+                                <option value="Non-Teknis">Non-Teknis</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editTanggal" class="form-label">Tanggal Foto</label>
+                            <input type="date" class="form-control" id="editTanggal" value="2024-01-15" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary-custom">
+                            <i class="bi bi-save-fill me-1"></i> Update Foto
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            // ========================================
+            // Sidebar Toggle Logic for Mobile
+            // ========================================
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                
+                if (sidebar.classList.contains('active')) {
+                    const overlay = document.createElement('div');
+                    overlay.classList.add('sidebar-overlay');
+                    overlay.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1040;';
+                    document.body.appendChild(overlay);
+                    
+                    overlay.addEventListener('click', function() {
+                        sidebar.classList.remove('active');
+                        overlay.remove();
+                    });
+                } else {
+                    document.querySelector('.sidebar-overlay')?.remove();
+                }
+            });
+
+            // ========================================
+            // Bulk Actions Logic
+            // ========================================
+            const selectAllCheckbox = document.getElementById('selectAllPhotos');
+            const photoCheckboxes = document.querySelectorAll('.photo-checkbox');
+            const bulkActionsDropdown = document.getElementById('bulkActionsDropdown');
+
+            function updateBulkActions() {
+                const checkedCount = document.querySelectorAll('.photo-checkbox:checked').length;
+                const toggleButton = bulkActionsDropdown.querySelector('button');
+                
+                toggleButton.textContent = `Aksi Massal (${checkedCount} dipilih)`;
+                toggleButton.disabled = checkedCount === 0;
+
+                // Update select all checkbox state
+                if (checkedCount === 0) {
+                    selectAllCheckbox.checked = false;
+                    selectAllCheckbox.indeterminate = false;
+                } else if (checkedCount === photoCheckboxes.length) {
+                    selectAllCheckbox.checked = true;
+                    selectAllCheckbox.indeterminate = false;
+                } else {
+                    selectAllCheckbox.checked = false;
+                    selectAllCheckbox.indeterminate = true;
+                }
+            }
+            
+            selectAllCheckbox.addEventListener('change', function() {
+                photoCheckboxes.forEach(cb => {
+                    cb.checked = this.checked;
+                });
+                updateBulkActions();
+            });
+
+            photoCheckboxes.forEach(cb => {
+                cb.addEventListener('change', updateBulkActions);
+            });
+
+            updateBulkActions(); // Initial check
+            
+            window.confirmDeletePhoto = function(photoName) {
+                 if (confirm(`Apakah Anda yakin ingin menghapus foto "${photoName}"?`)) {
+                    alert(`Foto ${photoName} berhasil dihapus (simulasi).`);
+                }
+            }
+            
+            // ========================================
+            // Modal Upload Foto (Multiple) Logic
+            // ========================================
+            const multiFileUpload = document.getElementById('multiFileUpload');
+            const uploadPreviewList = document.getElementById('uploadPreviewList');
+            const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+            const saveUploadBtn = document.getElementById('saveUploadBtn');
+            let filesToUpload = []; // Array of {file: File, judul: string, kategori: string, tanggal: string}
+
+            const KATEGORI_OPTIONS = `
+                <option value="Umum">Umum</option>
+                <option value="Pelatihan">Pelatihan</option>
+                <option value="Workshop">Workshop</option>
+                <option value="Lomba">Lomba/Kompetisi</option>
+                <option value="Non-Teknis">Non-Teknis</option>
+            `;
+
+            function renderUploadPreviews() {
+                uploadPreviewList.innerHTML = '';
+                
+                if (filesToUpload.length === 0) {
+                    uploadPlaceholder.style.display = 'block';
+                    saveUploadBtn.disabled = true;
+                    return;
+                }
+                
+                uploadPlaceholder.style.display = 'none';
+                saveUploadBtn.disabled = false;
+
+                filesToUpload.forEach((item, index) => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const previewItem = document.createElement('div');
+                        previewItem.className = 'upload-preview-item col-lg-6';
+                        previewItem.innerHTML = `
+                            <button type="button" class="remove-btn" data-index="${index}">&times;</button>
+                            <div class="d-flex mb-2">
+                                <img src="${e.target.result}" alt="Preview" class="me-3">
+                                <div>
+                                    <small class="d-block text-muted">File: ${item.file.name}</small>
+                                    <small class="d-block text-muted">Ukuran: ${(item.file.size / 1024 / 1024).toFixed(2)} MB</small>
+                                </div>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <input type="text" class="form-control form-control-sm foto-judul" data-index="${index}" placeholder="Judul Foto (Optional)" value="${item.judul || ''}">
+                                </div>
+                                <div class="col-md-6">
+                                    <select class="form-select form-select-sm foto-kategori" data-index="${index}" required>
+                                        <option value="" disabled>Pilih Kategori</option>
+                                        ${KATEGORI_OPTIONS}
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="date" class="form-control form-control-sm foto-tanggal" data-index="${index}" required value="${item.tanggal || ''}">
+                                </div>
+                            </div>
+                        `;
+                        
+                        // Set nilai kategori yang sudah ada
+                        const selectKategori = previewItem.querySelector('.foto-kategori');
+                        selectKategori.value = item.kategori || '';
+
+                        uploadPreviewList.appendChild(previewItem);
+                    };
+                    reader.readAsDataURL(item.file);
+                });
+
+                // Attach event listeners for dynamic form fields
+                setTimeout(attachUploadFormListeners, 100);
+            }
+            
+            function attachUploadFormListeners() {
+                // Remove button
+                uploadPreviewList.querySelectorAll('.remove-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        filesToUpload.splice(index, 1);
+                        renderUploadPreviews();
+                    });
+                });
+
+                // Update data on change
+                uploadPreviewList.querySelectorAll('.foto-judul, .foto-kategori, .foto-tanggal').forEach(input => {
+                    input.addEventListener('change', function() {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        const fieldName = this.classList.contains('foto-judul') ? 'judul' : 
+                                          this.classList.contains('foto-kategori') ? 'kategori' : 'tanggal';
+                        filesToUpload[index][fieldName] = this.value;
+                    });
+                });
+            }
+
+            multiFileUpload.addEventListener('change', function(event) {
+                const files = Array.from(event.target.files).slice(0, 10);
+                
+                filesToUpload = files.map(file => ({
+                    file: file,
+                    judul: '',
+                    kategori: 'Umum',
+                    tanggal: new Date().toISOString().split('T')[0] // Default today
+                }));
+                
+                renderUploadPreviews();
+                // Reset input file agar bisa memilih file yang sama lagi
+                this.value = null;
+            });
+            
+            document.getElementById('formUpload').addEventListener('submit', function(e) {
+                e.preventDefault();
+                // Cek validitas formulir dinamis
+                let isValid = true;
+                filesToUpload.forEach((item, index) => {
+                    if (!item.kategori || !item.tanggal) {
+                        isValid = false;
+                    }
+                });
+
+                if (filesToUpload.length === 0) {
+                    alert('Pilih minimal satu foto untuk diunggah.');
+                    return;
+                }
+
+                if (!isValid) {
+                     alert('Mohon lengkapi semua data Kategori dan Tanggal untuk setiap foto.');
+                     return;
+                }
+                
+                alert(`Simulasi: Berhasil mengunggah dan menyimpan ${filesToUpload.length} foto.`);
+                
+                // Reset setelah simulasi upload
+                filesToUpload = [];
+                document.getElementById('uploadModal').querySelector('.btn-close').click();
+                renderUploadPreviews();
+            });
+
+
+            // ========================================
+            // Modal Edit Foto (Single) Logic
+            // ========================================
+            const editModal = document.getElementById('editModal');
+            
+            editModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const photoId = button.getAttribute('data-id');
+                
+                // Simulasi memuat data foto
+                document.getElementById('editPhotoId').value = photoId;
+                
+                if (photoId === '1') {
+                    document.getElementById('editPhotoPreview').src = '/img/galeri_1.jpg';
+                    document.getElementById('editJudul').value = 'Foto Workshop Robotik 2024';
+                    document.getElementById('editKategori').value = 'Pelatihan';
+                    document.getElementById('editTanggal').value = '2024-01-15';
+                } else if (photoId === '2') {
+                    document.getElementById('editPhotoPreview').src = '/img/galeri_2.jpg';
+                    document.getElementById('editJudul').value = 'Outbound Anggota Baru';
+                    document.getElementById('editKategori').value = 'Non-Teknis';
+                    document.getElementById('editTanggal').value = '2024-09-01';
+                } else if (photoId === '3') {
+                    document.getElementById('editPhotoPreview').src = '/img/galeri_3.jpg';
+                    document.getElementById('editJudul').value = 'Foto Kontes Robot Indonesia 2023';
+                    document.getElementById('editKategori').value = 'Lomba';
+                    document.getElementById('editTanggal').value = '2023-11-20';
+                }
+            });
+            
+            document.getElementById('formEdit').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert(`Data foto ID ${document.getElementById('editPhotoId').value} berhasil di-UPDATE (Simulasi Frontend).`);
+                document.getElementById('editModal').querySelector('.btn-close').click();
+            });
+
+        });
+    </script>
+</body>
+</html>

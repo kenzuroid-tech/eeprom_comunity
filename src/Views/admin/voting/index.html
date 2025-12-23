@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Management - EEPROM POLINEMA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="icon" href="/public/assets/images/eeprom logo.png" type="image/png">
+
+    <style>
+        :root {
+            --primary-blue: #1A237E;
+            --secondary-blue: #3F51B5;
+            --accent-orange: #FF5722;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E8EAF6;
+            --dark-text: #212529;
+            --soft-text: #495057;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --sidebar-width: 280px;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--medium-gray);
+            color: var(--soft-text);
+            min-height: 100vh;
+        }
+
+        /* Layout */
+        .dashboard-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content-area {
+            flex-grow: 1;
+            padding: 30px;
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Sidebar Styling (Identik Dashboard) */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--primary-blue);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            z-index: 1030;
+            transition: transform 0.3s ease;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar-header {
+            padding: 25px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h3 {
+            color: var(--accent-orange);
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .sidebar-nav {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 15px 0;
+        }
+
+        .sidebar-nav::-webkit-scrollbar { width: 4px; }
+        .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
+
+        .sidebar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.85);
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            border-left: 5px solid transparent;
+            text-decoration: none;
+        }
+
+        .sidebar-nav .nav-link i { margin-right: 15px; font-size: 1.1rem; }
+
+        .sidebar-nav .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .sidebar-nav .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-left-color: var(--accent-orange);
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Dropdown Style */
+        .nav-dropdown-items {
+            background: rgba(0, 0, 0, 0.1);
+            list-style: none;
+            padding: 0;
+            display: none;
+        }
+        .nav-dropdown-items.show { display: block; }
+        .nav-dropdown-items .nav-link { padding-left: 55px; font-size: 0.85rem; }
+
+        .sidebar-footer {
+            padding: 15px;
+            text-align: center;
+            font-size: 0.75rem;
+            background: rgba(0,0,0,0.2);
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .nav-dropdown-items {
+            background: rgba(0, 0, 0, 0.1);
+            display: none;
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-dropdown-items.show {
+            display: block;
+        }
+
+        .nav-dropdown-items .nav-link {
+            padding-left: 55px;
+            font-size: 0.85rem;
+        }
+
+        .sidebar-footer {
+            padding: 15px;
+            text-align: center;
+            font-size: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Voting Dashboard (Active) */
+        .active-voting-banner {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 6px solid var(--accent-orange);
+            box-shadow: 0 6px 20px var(--shadow-light);
+            margin-bottom: 35px;
+        }
+
+        .countdown-display {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent-orange);
+            line-height: 1;
+        }
+
+        .stat-card-voting {
+            background-color: var(--light-gray);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            height: 100%;
+            border-bottom: 4px solid var(--medium-gray);
+            transition: border-color 0.3s;
+        }
+
+        .stat-card-voting:hover {
+            border-bottom-color: var(--secondary-blue);
+        }
+
+        .stat-card-voting h5 {
+            font-size: 0.85rem;
+            color: var(--soft-text);
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .stat-card-voting .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+        }
+
+        /* Election History Cards */
+        .election-card {
+            background: white;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+
+        .election-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .status-badge {
+            font-size: 0.7rem;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .bg-active {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .bg-draft {
+            background: #fffde7;
+            color: #f9a825;
+        }
+
+        .bg-closed {
+            background: #eeeeee;
+            color: #616161;
+        }
+
+        .btn-orange {
+            background-color: var(--accent-orange);
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+
+        .btn-orange:hover {
+            background-color: #e64a19;
+            color: white;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content-area {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-wrapper">
+        <nav id="sidebarMenu" class="sidebar">
+            <div class="sidebar-header">
+                <img src="/public/assets/images/eeprom logo.png" alt="Logo" width="45" class="mb-2">
+                <h3>EEPROM Admin</h3>
+            </div>
+            
+            <div class="sidebar-nav">
+                <a href="/admin/dashboard.php" class="nav-link active">
+                    <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+                </a>
+
+                <a href="javascript:void(0)" class="nav-link dropdown-btn">
+                    <i class="bi bi-people-fill"></i><span>Members</span>
+                    <i class="bi bi-chevron-down ms-auto small"></i>
+                </a>
+                <div class="nav-dropdown-items">
+                    <a href="/src/Views/admin/members/index.html" class="nav-link">Daftar Anggota</a>
+                    <a href="/src/Views/admin/divisions/index.html" class="nav-link">Divisi</a>
+                    <a href="/src/Views/admin/recruitment/index.html" class="nav-link">Recruitment</a>
+                </div>
+
+                <a href="/src/Views/admin/about/index.html" class="nav-link">
+                    <i class="bi bi-info-square-fill"></i><span>Info Komunitas</span>
+                </a>
+
+                <a href="/src/Views/admin/activities/index.html" class="nav-link">
+                    <i class="bi bi-activity"></i><span>Activities</span>
+                </a>
+
+                <a href="/src/Views/admin/achievements/index.html" class="nav-link">
+                    <i class="bi bi-trophy-fill"></i><span>Achievements</span>
+                </a>
+
+                <a href="javascript:void(0)" class="nav-link dropdown-btn">
+                    <i class="bi bi-calendar-check-fill"></i><span>Events & Meetings</span>
+                    <i class="bi bi-chevron-down ms-auto small"></i>
+                </a>
+                <div class="nav-dropdown-items">
+                    <a href="#" class="nav-link">Jadwal Rapat</a>
+                    <a href="#" class="nav-link">Presensi</a>
+                </div>
+
+                <a href="/admin/announcements/index.php" class="nav-link">
+                    <i class="bi bi-megaphone-fill"></i><span>Announcements</span>
+                </a>
+
+                <a href="/src/Views/admin/gallery/index.html" class="nav-link">
+                    <i class="bi bi-images"></i><span>Gallery</span>
+                </a>
+
+                <a href="javascript:void(0)" class="nav-link dropdown-btn">
+                    <i class="bi bi-patch-check-fill"></i><span>Election</span>
+                    <i class="bi bi-chevron-down ms-auto small"></i>
+                </a>
+                <div class="nav-dropdown-items">
+                    <a href="/src/Views/admin/voting/candidates.html" class="nav-link">Kandidat</a>
+                    <a href="/src/Views/admin/voting/index.html" class="nav-link">Sesi Voting</a>
+                    <a href="/src/Views/admin/voting/results.html" class="nav-link">Hasil Pemilihan</a>
+                </div>
+
+                <a href="/admin/reports/index.php" class="nav-link">
+                    <i class="bi bi-file-earmark-bar-graph"></i><span>Reports</span>
+                </a>
+
+                <a href="/admin/contacts/index.php" class="nav-link">
+                    <i class="bi bi-person-lines-fill"></i><span>Contacts</span>
+                </a>
+
+                <hr class="mx-3 opacity-10">
+
+                <a href="/admin/settings/index.php" class="nav-link">
+                    <i class="bi bi-gear-fill"></i><span>Settings</span>
+                </a>
+
+                <a href="/logout.php" class="nav-link text-danger">
+                    <i class="bi bi-box-arrow-right"></i><span>Logout</span>
+                </a>
+            </div>
+
+            <div class="sidebar-footer">
+                © 2024 EEPROM POLINEMA
+            </div>
+        </nav>
+
+        <div class="main-content-area">
+            <nav class="top-navbar d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-primary me-3 d-lg-none" id="mobile-toggle"><i
+                            class="bi bi-list"></i></button>
+                    <h4 class="m-0 fw-bold">Voting Management</h4>
+                </div>
+                <button class="btn btn-orange rounded-pill px-4" data-bs-toggle="modal"
+                    data-bs-target="#newElectionModal">
+                    <a href="/src/Views/admin/voting/create.html">
+                        <i class="bi bi-plus-lg me-2"></i>Buat Pemilihan Baru
+                    </a>
+                </button>
+            </nav>
+
+            <div class="active-voting-banner">
+                <div class="row align-items-center mb-4">
+                    <div class="col-lg-8">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="status-badge bg-active"><i class="bi bi-record-fill me-1"></i>Voting
+                                Aktif</span>
+                            <h4 class="m-0 text-primary-blue fw-bold">Pemilihan Ketua Umum 2026/2027</h4>
+                        </div>
+                        <p class="text-muted small mb-0"><i class="bi bi-calendar3 me-2"></i>Periode: 18 Des 2025
+                            (08:00) s/d 19 Des 2025 (16:00)</p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                        <small class="text-danger fw-bold d-block mb-1">WAKTU TERSISA:</small>
+                        <div class="countdown-display" id="countdownTimer">14:45:30</div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-card-voting">
+                            <h5>Total Pemilih</h5>
+                            <div class="stat-value">150</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card-voting">
+                            <h5>Sudah Memilih (Live)</h5>
+                            <div class="stat-value" id="liveVotes">100</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card-voting">
+                            <h5>Partisipasi</h5>
+                            <div class="stat-value text-success" id="participationRate">74.0%</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card-voting">
+                            <h5>Kandidat</h5>
+                            <div class="stat-value">3</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4 align-items-center">
+                    <div class="col-lg-8">
+                        <h6 class="fw-bold mb-3"><i class="bi bi-bar-chart-fill me-2 text-primary"></i>Hasil Sementara
+                        </h6>
+                        <div class="p-3 bg-light rounded border">
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1 small fw-bold">
+                                    <span>Kandidat #01</span>
+                                    <span>45% (83 Votes)</span>
+                                </div>
+                                <div class="progress" style="height: 12px;">
+                                    <div class="progress-bar bg-primary" style="width: 45%"></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1 small fw-bold">
+                                    <span>Kandidat #02</span>
+                                    <span>30% (56 Votes)</span>
+                                </div>
+                                <div class="progress" style="height: 12px;">
+                                    <div class="progress-bar bg-info" style="width: 30%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="d-flex justify-content-between mb-1 small fw-bold">
+                                    <span>Kandidat #03</span>
+                                    <span>25% (46 Votes)</span>
+                                </div>
+                                <div class="progress" style="height: 12px;">
+                                    <div class="progress-bar bg-warning" style="width: 25%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 d-flex flex-column gap-2">
+                        <a href="/src/Views/admin/voting/candidates.html">
+                            <button class="btn btn-outline-primary fw-bold"><i class="bi bi-people me-2"></i>Kelola
+                            Kandidat</button>
+                        </a>
+                        
+                        <button class="btn btn-outline-danger fw-bold"><i class="bi bi-stop-circle me-2"></i>Tutup
+                            Voting Sekarang</button>
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="fw-bold mb-4"><i class="bi bi-clock-history me-2 text-primary"></i>Riwayat Pemilihan</h5>
+            <div class="row g-4">
+                <div class="col-md-6 col-xl-4">
+                    <div class="election-card p-4 h-100">
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="status-badge bg-closed">Closed</span>
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </div>
+                        <h6 class="fw-bold mb-1">Pemilihan Ketua Umum 2024/2025</h6>
+                        <p class="text-muted small mb-4">15 Des 2024 - 16 Des 2024</p>
+
+                        <div class="row text-center g-0 border-top pt-3 mb-4">
+                            <div class="col-6 border-end">
+                                <div class="fw-bold">4</div>
+                                <div class="small text-muted">Kandidat</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="fw-bold">245</div>
+                                <div class="small text-muted">Total Votes</div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button class="btn btn-light border btn-sm fw-bold"><i
+                                    class="bi bi-trophy me-2 text-warning"></i>Lihat Hasil Akhir</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-xl-4">
+                    <div class="election-card p-4 h-100" style="border-left: 5px solid #ffc107;">
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="status-badge bg-draft">Draft</span>
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </div>
+                        <h6 class="fw-bold mb-1">Pemilihan Ketua Umum 2027/2028</h6>
+                        <p class="text-muted small mb-4">Periode Belum Ditentukan</p>
+
+                        <div class="row text-center g-0 border-top pt-3 mb-4">
+                            <div class="col-6 border-end">
+                                <div class="fw-bold">0</div>
+                                <div class="small text-muted">Kandidat</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="fw-bold">0</div>
+                                <div class="small text-muted">Votes</div>
+                            </div>
+                        </div>
+
+                        <div class="btn-group w-100">
+                            <button class="btn btn-outline-secondary btn-sm">Edit</button>
+                            <button class="btn btn-outline-danger btn-sm">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="newElectionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white"
+                    style="background-color: var(--primary-blue) !important;">
+                    <h5 class="modal-title fw-bold">Buat Sesi Pemilihan Baru</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="formNewElection">
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nama Pemilihan</label>
+                            <input type="text" class="form-control" placeholder="Contoh: Pemilihan Ketua Umum 2026"
+                                required>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label class="form-label fw-bold">Mulai</label>
+                                <input type="date" class="form-control" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-bold">Selesai</label>
+                                <input type="date" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="mb-0">
+                            <label class="form-label fw-bold">Status Awal</label>
+                            <select class="form-select">
+                                <option value="draft">Simpan sebagai Draft</option>
+                                <option value="active">Langsung Aktifkan</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-orange">Buat Pemilihan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Dropdown Menu Toggle (Identik Dashboard)
+            document.querySelectorAll('.dropdown-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const dropdownItems = this.nextElementSibling;
+                    dropdownItems.classList.toggle('show');
+                    const icon = this.querySelector('.bi-chevron-down');
+                    if (icon) icon.style.transform = dropdownItems.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0deg)';
+                });
+            });
+
+            // Mobile Sidebar Toggle
+            document.getElementById('mobile-toggle').addEventListener('click', () => {
+                document.getElementById('sidebarMenu').classList.toggle('show');
+            });
+
+            // Countdown Timer Simulation
+            function startTimer(duration, display) {
+                let timer = duration, hours, minutes, seconds;
+                setInterval(() => {
+                    hours = parseInt(timer / 3600, 10);
+                    minutes = parseInt((timer % 3600) / 60, 10);
+                    seconds = parseInt(timer % 60, 10);
+
+                    hours = hours < 10 ? "0" + hours : hours;
+                    minutes = minutes < 10 ? "0" + minutes : minutes;
+                    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                    display.textContent = hours + ":" + minutes + ":" + seconds;
+
+                    if (--timer < 0) timer = duration;
+                }, 1000);
+            }
+            startTimer(53130, document.querySelector('#countdownTimer'));
+
+            // Real-time Votes Simulation
+            setInterval(() => {
+                let liveVotes = document.getElementById('liveVotes');
+                let participation = document.getElementById('participationRate');
+                let current = parseInt(liveVotes.innerText);
+
+                if (current < 250 && Math.random() > 0.6) {
+                    current++;
+                    liveVotes.innerText = current;
+                    participation.innerText = ((current / 250) * 100).toFixed(1) + '%';
+                }
+            }, 5000);
+        });
+    </script>
+</body>
+
+</html>

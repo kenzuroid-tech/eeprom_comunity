@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Aktivitas - EEPROM POLINEMA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="icon" href="/public/assets/images/eeprom logo.png" type="image/png">
+
+    <style>
+        /* ========================================
+           CSS Variables (Sesuai index.html)
+        ======================================== */
+        :root {
+            --primary-blue: #1A237E;
+            --secondary-blue: #3F51B5;
+            --accent-orange: #FF5722;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E8EAF6;
+            --dark-text: #212529;
+            --soft-text: #495057;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-md: rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            background-color: var(--light-gray);
+            font-family: 'Poppins', sans-serif;
+            color: var(--soft-text);
+            line-height: 1.8;
+        }
+
+        /* ========================================
+           Navigation & Breadcrumb
+        ======================================== */
+        .navbar { box-shadow: 0 4px 15px var(--shadow-light); }
+        .navbar-brand h1 { font-size: 20px; font-weight: 800; color: var(--primary-blue); margin: 0; }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 25px;
+            transition: 0.3s;
+        }
+        .back-link:hover { color: var(--accent-orange); transform: translateX(-5px); }
+
+        /* ========================================
+           Article Header
+        ======================================== */
+        .category-badge {
+            background-color: var(--accent-orange);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .article-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .meta-info {
+            display: flex;
+            gap: 20px;
+            color: #777;
+            font-size: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .meta-info i { color: var(--accent-orange); margin-right: 8px; }
+
+        .featured-image-container {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px var(--shadow-light);
+            margin-bottom: 40px;
+        }
+        .featured-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+        }
+
+        /* ========================================
+           Content Section
+        ======================================== */
+        .content-body p { margin-bottom: 25px; font-size: 17px; }
+
+        /* Gallery */
+        .gallery-grid img {
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+        }
+        .gallery-grid img:hover { transform: scale(1.03); filter: brightness(0.8); }
+
+        /* Share Buttons */
+        .share-container {
+            padding: 25px 0;
+            border-top: 2px solid var(--medium-gray);
+            border-bottom: 2px solid var(--medium-gray);
+            margin: 50px 0;
+        }
+        .btn-share {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 10px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .btn-facebook { background: #3b5998; }
+        .btn-twitter { background: #1da1f2; }
+        .btn-whatsapp { background: #25d366; }
+        .btn-copy { background: var(--primary-blue); }
+        .btn-share:hover { transform: translateY(-5px); color: white; opacity: 0.9; }
+
+        /* ========================================
+           Related Activities Card
+        ======================================== */
+        .related-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 5px 15px var(--shadow-light);
+            transition: 0.3s;
+            height: 100%;
+        }
+        .related-card:hover { transform: translateY(-10px); box-shadow: 0 10px 25px var(--shadow-md); }
+        .related-img { height: 180px; object-fit: cover; width: 100%; }
+        .related-body { padding: 20px; }
+        .related-title { 
+            font-size: 16px; 
+            font-weight: 700; 
+            color: var(--primary-blue); 
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* ========================================
+           Footer
+        ======================================== */
+        .footer { background-color: var(--primary-blue); color: white; padding: 60px 0 30px; }
+        .social-icons a {
+            color: white; border: 1px solid white; width: 35px; height: 35px;
+            display: inline-flex; justify-content: center; align-items: center;
+            border-radius: 50%; margin-right: 10px; transition: 0.3s;
+        }
+        .social-icons a:hover { border-color: var(--accent-orange); color: var(--accent-orange); }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="/public/assets/images/eeprom logo.png" alt="Logo" width="45" class="me-2">
+                <h1>EEPROM POLINEMA</h1>
+            </a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="activity.html">Activity</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <a href="activity.html" class="back-link">
+                    <i class="bi bi-arrow-left me-2"></i> Kembali ke Daftar Aktivitas
+                </a>
+
+                <header>
+                    <span class="category-badge">Competition</span>
+                    <h1 class="article-title">Persiapan Intensif Tim EEPROM Menuju RoboCup 2024 Tokyo</h1>
+                    <div class="meta-info">
+                        <span><i class="bi bi-calendar3"></i> 20 Desember 2024</span>
+                        <span><i class="bi bi-geo-alt"></i> Gedung Sipil, Lab Robotika Polinema</span>
+                        <span><i class="bi bi-person"></i> Oleh Humas EEPROM</span>
+                    </div>
+                </header>
+
+                <div class="featured-image-container">
+                    <!-- <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80" class="featured-image" alt="RoboCup Preparation"> -->
+                </div>
+
+                <article class="content-body">
+                    <p class="lead fw-bold">Tim robotika EEPROM POLINEMA tengah memasuki tahap akhir persiapan untuk ajang internasional RoboCup 2024 yang akan digelar di Tokyo, Jepang.</p>
+                    <p>Setelah melalui proses seleksi internal yang ketat, tim yang terdiri dari divisi elektrik, mekanik, dan software ini bekerja siang dan malam untuk menyempurnakan algoritma navigasi robot kategori rescue. Fokus utama tahun ini adalah meningkatkan presisi sensor LiDAR dalam memetakan medan yang kompleks.</p>
+                    <p>Ketua komunitas menyampaikan bahwa dukungan dari pihak kampus dan sponsor sangat membantu dalam pengadaan komponen-komponen high-end yang dibutuhkan. "Kami optimis tahun ini bisa membawa pulang piala ke Malang," ujarnya.</p>
+
+                    <h3 class="fw-bold mt-5 mb-4 text-dark">Galeri Dokumentasi</h3>
+                    <div class="row g-3 gallery-grid">
+                        <div class="col-6 col-md-4">
+                            <!-- <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80" alt="Gallery 1" onclick="console.log('Open Lightbox')"> -->
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <!-- <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&q=80" alt="Gallery 2"> -->
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <!-- <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80" alt="Gallery 3"> -->
+                        </div>
+                    </div>
+
+                    <div class="share-container d-flex align-items-center">
+                        <span class="fw-bold me-3">Bagikan :</span>
+                        <a href="#" class="btn-share btn-facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="btn-share btn-twitter"><i class="fab fa-x-twitter"></i></a>
+                        <a href="#" class="btn-share btn-whatsapp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" class="btn-share btn-copy" id="copyLink"><i class="bi bi-link-45deg fs-4"></i></a>
+                    </div>
+                </article>
+
+                <section class="related-section mt-5">
+                    <h3 class="fw-bold mb-4 text-dark">Aktivitas Terkait</h3>
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="related-card">
+                                <!-- <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&q=80" class="related-img" alt="Rel 1"> -->
+                                <div class="related-body">
+                                    <h4 class="related-title">Workshop IoT dan Robotika Masa Depan</h4>
+                                    <a href="#" class="text-decoration-none small fw-bold text-accent-orange">Baca Selengkapnya</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="related-card">
+                                <!-- <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&q=80" class="related-img" alt="Rel 2"> -->
+                                <div class="related-body">
+                                    <h4 class="related-title">Kunjungan Industri ke PT. PINDAD</h4>
+                                    <a href="#" class="text-decoration-none small fw-bold text-accent-orange">Baca Selengkapnya</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="related-card">
+                                <!-- <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80" class="related-img" alt="Rel 3"> -->
+                                <div class="related-body">
+                                    <h4 class="related-title">Internal Gathering EEPROM Gen 14</h4>
+                                    <a href="#" class="text-decoration-none small fw-bold text-accent-orange">Baca Selengkapnya</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer mt-5">
+        <div class="container text-center">
+            <h4 class="fw-bold mb-3">EEPROM POLINEMA</h4>
+            <p class="opacity-75">Inovasi Robotika untuk Masa Depan.</p>
+            <div class="social-icons mb-4">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <p class="small opacity-50 mb-0">&copy; 2024 EEPROM POLINEMA. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Copy Link Functionality
+        document.getElementById('copyLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('Link berhasil disalin ke clipboard!');
+            });
+        });
+
+        // Simple Image Click Handler (Placeholder for Lightbox)
+        document.querySelectorAll('.gallery-grid img').forEach(img => {
+            img.addEventListener('click', () => {
+                alert('Membuka gambar: ' + img.alt + '\n(Di sini Anda bisa mengintegrasikan Lighbox library)');
+            });
+        });
+    </script>
+</body>
+</html>

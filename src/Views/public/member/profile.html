@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Profile - EEPROM POLINEMA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="icon" href="/public/assets/images/eeprom logo.png" type="image/png">
+
+    <style>
+        /* ========================================
+           CSS Variables (Sesuai index.html)
+        ======================================== */
+        :root {
+            --primary-blue: #1A237E;
+            --secondary-blue: #3F51B5;
+            --accent-orange: #FF5722;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E8EAF6;
+            --dark-text: #212529;
+            --soft-text: #495057;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-md: rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            background-color: var(--light-gray);
+            font-family: 'Poppins', sans-serif;
+            color: var(--soft-text);
+            line-height: 1.6;
+        }
+
+        /* ========================================
+           Navigation
+        ======================================== */
+        .navbar { box-shadow: 0 4px 15px var(--shadow-light); }
+        .navbar-brand h1 { font-size: 20px; font-weight: 800; color: var(--primary-blue); margin: 0; }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 25px;
+            transition: 0.3s;
+        }
+        .back-link:hover { color: var(--accent-orange); transform: translateX(-5px); }
+
+        /* ========================================
+           Profile Header Section
+        ======================================== */
+        .profile-header-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            margin-bottom: 30px;
+            border-bottom: 5px solid var(--accent-orange);
+        }
+
+        .profile-avatar-container {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            padding: 8px;
+            border: 4px solid var(--medium-gray);
+            margin: 0 auto 20px;
+            overflow: hidden;
+        }
+
+        .profile-avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .member-name {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin-bottom: 5px;
+        }
+
+        .member-id {
+            color: #888;
+            font-weight: 500;
+            font-size: 16px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .status-badge {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 6px 15px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .social-links a {
+            font-size: 20px;
+            color: var(--secondary-blue);
+            margin: 0 10px;
+            transition: 0.3s;
+        }
+        .social-links a:hover { color: var(--accent-orange); transform: scale(1.2); }
+
+        /* ========================================
+           Sidebar & Main Content
+        ======================================== */
+        .info-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px var(--shadow-light);
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 20px;
+            border-left: 4px solid var(--accent-orange);
+            padding-left: 15px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .contact-item i {
+            width: 35px;
+            height: 35px;
+            background: var(--light-gray);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-blue);
+            margin-right: 15px;
+        }
+
+        .skill-badge {
+            background: var(--medium-gray);
+            color: var(--primary-blue);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 0 5px 10px 0;
+            display: inline-block;
+        }
+
+        .achievement-item {
+            padding: 15px;
+            border-left: 2px dashed var(--secondary-blue);
+            margin-left: 10px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .achievement-item::before {
+            content: "\f091";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            left: -12px;
+            top: 15px;
+            background: white;
+            color: var(--accent-orange);
+            padding: 2px;
+        }
+
+        /* Sticky Sidebar */
+        @media (min-width: 992px) {
+            .sticky-sidebar {
+                position: sticky;
+                top: 100px;
+            }
+        }
+
+        /* Footer */
+        .footer { background-color: var(--primary-blue); color: white; padding: 40px 0 20px; }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="/public/assets/images/eeprom logo.png" alt="Logo" width="45" class="me-2">
+                <h1>EEPROM POLINEMA</h1>
+            </a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="members.html">Members</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container py-5">
+        <a href="/src/Views/member/index.html" class="back-link">
+            <i class="bi bi-arrow-left me-2"></i> Kembali ke Daftar Anggota
+        </a>
+
+        <div class="profile-header-card text-center">
+            <div class="profile-avatar-container">
+                <img src="https://ui-avatars.com/api/?name=Ahmad+Fauzi&size=200&background=1A237E&color=fff" alt="Ahmad Fauzi">
+            </div>
+            <h1 class="member-name">Ahmad Fauzi</h1>
+            <span class="member-id">NIM: 2141720001</span>
+            
+            <div class="d-flex justify-content-center gap-2 mb-3">
+                <span class="badge bg-primary px-3 py-2">Software Division</span>
+                <span class="badge bg-dark px-3 py-2">Ketua Umum</span>
+            </div>
+            
+            <p class="text-muted fw-bold">Gen 14 (Angkatan 2021)</p>
+            <span class="status-badge"><i class="bi bi-check-circle-fill me-1"></i> Active Member</span>
+
+            <div class="social-links mt-2">
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <div class="sticky-sidebar">
+                    <div class="info-card">
+                        <h3 class="section-title">Contact Information</h3>
+                        <div class="contact-item">
+                            <i class="bi bi-envelope"></i>
+                            <span>ahmad.fauzi@example.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="bi bi-whatsapp"></i>
+                            <span>+62 812-3456-7890</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="bi bi-calendar-check"></i>
+                            <div>
+                                <small class="text-muted d-block">Joined Since</small>
+                                <strong>Agustus 2021</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h3 class="section-title">Skills & Expertise</h3>
+                        <div class="d-flex flex-wrap">
+                            <span class="skill-badge">Embedded System</span>
+                            <span class="skill-badge">C++ Programming</span>
+                            <span class="skill-badge">Circuit Design</span>
+                            <span class="skill-badge">IoT Development</span>
+                            <span class="skill-badge">Team Leadership</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="info-card">
+                    <h3 class="section-title">About Me</h3>
+                    <p>Halo! Saya Ahmad Fauzi, seorang mahasiswa Teknik Elektro yang sangat antusias dengan dunia robotika dan sistem cerdas. Selama bergabung di EEPROM, saya fokus pada pengembangan backend robot dan integrasi sensor.</p>
+                    <p>Saya percaya bahwa kolaborasi dan inovasi adalah kunci utama dalam memajukan teknologi robotika di Indonesia. Hobi saya adalah melakukan riset pada mikrokontroler terbaru dan aktif berdiskusi dalam forum open-source.</p>
+                </div>
+
+                <div class="info-card">
+                    <h3 class="section-title">Achievements</h3>
+                    
+                    <div class="achievement-item">
+                        <h5 class="fw-bold mb-1">Juara 1 Kontes Robot Indonesia (KRI) 2023</h5>
+                        <p class="text-muted small">Tingkat Nasional - Kategori Robot SAR</p>
+                    </div>
+
+                    <div class="achievement-item">
+                        <h5 class="fw-bold mb-1">Finalis RoboCup Tokyo 2024</h5>
+                        <p class="text-muted small">Tingkat Internasional - Japan</p>
+                    </div>
+
+                    <div class="achievement-item">
+                        <h5 class="fw-bold mb-1">Best Programmer Award</h5>
+                        <p class="text-muted small">Internal EEPROM Competition 2022</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer text-center">
+        <div class="container">
+            <p class="mb-0 small opacity-50">&copy; 2024 EEPROM POLINEMA. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Copy Email to clipboard function (Contoh JavaScript Internal)
+        document.querySelector('.bi-envelope').parentElement.addEventListener('click', function() {
+            const email = this.querySelector('span').innerText;
+            navigator.clipboard.writeText(email).then(() => {
+                alert('Email berhasil disalin: ' + email);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Ketua Umum 2026 - Alumni EEPROM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="icon" href="/public/assets/images/eeprom logo.png" type="image/png">
+
+    <style>
+        /* ========================================
+           CSS Variables (Sesuai index.html)
+        ======================================== */
+        :root {
+            --primary-blue: #1A237E;
+            --secondary-blue: #3F51B5;
+            --accent-orange: #FF5722;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E8EAF6;
+            --dark-text: #212529;
+            --soft-text: #495057;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-md: rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            background-color: var(--light-gray);
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styling */
+        #sidebar {
+            width: 280px;
+            background: var(--primary-blue);
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-link {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            padding: 12px 20px;
+            display: block;
+            transition: 0.3s;
+        }
+        .sidebar-link:hover, .sidebar-link.active {
+            background: rgba(255,255,255,0.1);
+            color: var(--accent-orange);
+            border-left: 4px solid var(--accent-orange);
+        }
+
+        /* Content Styling */
+        #content { width: 100%; }
+        .top-navbar { background: white; box-shadow: var(--shadow-light); padding: 15px 30px; }
+
+        .card-custom {
+            background: white;
+            border-radius: 15px;
+            border: none;
+            box-shadow: var(--shadow-light);
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        .btn-eeprom {
+            background: var(--primary-blue);
+            color: white;
+            border-radius: 8px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: 0.3s;
+            border: none;
+        }
+        .btn-eeprom:hover { background: var(--secondary-blue); transform: translateY(-2px); color: white; }
+
+        .btn-accent {
+            background: var(--accent-orange);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 10px 25px;
+        }
+        .btn-accent:hover { background: #E64A19; color: white; }
+
+        /* Candidate Card */
+        .candidate-card {
+            border: 2px solid var(--medium-gray);
+            border-radius: 12px;
+            transition: 0.3s;
+            height: 100%;
+        }
+        .candidate-card:hover { border-color: var(--accent-orange); box-shadow: var(--shadow-md); }
+        .candidate-img {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .token-input {
+            letter-spacing: 3px;
+            font-weight: 700;
+            text-align: center;
+            font-size: 1.2rem;
+            border: 2px solid var(--primary-blue);
+        }
+
+        .countdown-timer {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-orange);
+        }
+
+        .section-heading-small {
+            color: var(--primary-blue);
+            font-weight: 800;
+            border-left: 5px solid var(--accent-orange);
+            padding-left: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav id="sidebar" class="d-none d-lg-block">
+        <div class="sidebar-header text-center">
+            <img src="/public/assets/images/eeprom logo.png" alt="Logo" width="60">
+            <h5 class="mt-2 fw-bold">EEPROM ALUMNI</h5>
+        </div>
+        <div class="py-4">
+            <a href="#" class="sidebar-link"><i class="fas fa-home me-2"></i> Dashboard</a>
+            <a href="#" class="sidebar-link active"><i class="fas fa-vote-yea me-2"></i> Pemilihan 2026</a>
+            <a href="#" class="sidebar-link"><i class="fas fa-user-friends me-2"></i> Database Alumni</a>
+            <hr class="mx-3 bg-white opacity-25">
+            <a href="#" class="sidebar-link"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
+        </div>
+    </nav>
+
+    <div id="content">
+        <nav class="top-navbar d-flex justify-content-between align-items-center">
+            <h5 class="m-0 fw-bold text-primary"><i class="fas fa-bars me-3 d-lg-none"></i>Pemilihan Ketua Umum 2026</h5>
+            <div class="d-flex align-items-center">
+                <span class="me-3 d-none d-md-inline text-muted">Selamat datang, <strong>Alumni</strong></span>
+                <i class="bi bi-person-circle fs-3 text-primary"></i>
+            </div>
+        </nav>
+
+        <div class="container py-4">
+
+            <div id="step-token" class="row justify-content-center py-5">
+                <div class="col-md-6">
+                    <div class="card-custom text-center">
+                        <i class="fas fa-key fs-1 text-accent-orange mb-3"></i>
+                        <h4 class="fw-bold">Validasi Token Voting</h4>
+                        <p class="text-muted">Silakan masukkan token voting Anda yang telah dikirim melalui Email/WhatsApp untuk melanjutkan.</p>
+                        
+                        <div id="token-error" class="alert alert-danger d-none mt-3">
+                            <i class="fas fa-exclamation-circle me-2"></i> Token tidak valid atau sudah digunakan!
+                        </div>
+
+                        <form id="token-form" class="mt-4">
+                            <input type="text" class="form-control token-input mb-3" placeholder="XXXX-XXXX-XXXX-XXXX" id="input-token-val">
+                            <button type="submit" class="btn-eeprom w-100">Validasi Token <i class="fas fa-check-circle ms-2"></i></button>
+                        </form>
+                        
+                        <div class="mt-4 small">
+                            <p class="mb-1">Belum menerima token?</p>
+                            <a href="#" class="text-accent-orange fw-bold">Hubungi Admin EEPROM</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step-voting" class="d-none">
+                <div class="alert alert-warning border-0 shadow-sm mb-4">
+                    <div class="d-flex">
+                        <i class="fas fa-exclamation-triangle fs-4 me-3"></i>
+                        <div>
+                            <h6 class="fw-bold mb-1">Peringatan Penting!</h6>
+                            <p class="mb-0 small">Anda hanya dapat memberikan suara <strong>SATU KALI</strong>. Pilihan yang sudah dikirimkan tidak dapat diubah kembali.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <div class="card-custom">
+                            <h5 class="section-heading-small">Data Alumni EEPROM</h5>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <p class="mb-1 text-muted small">Nama Lengkap</p>
+                                    <p class="fw-bold mb-3">Mohammad Nisho Alumni</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-1 text-muted small">Status / Generasi</p>
+                                    <p class="fw-bold mb-3 text-primary">Alumni - Generasi X (2018)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card-custom text-center">
+                            <p class="text-muted small mb-2">Voting ditutup dalam:</p>
+                            <div class="countdown-timer">02:45:12</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class="fw-bold text-primary mb-4 mt-5">Kandidat Ketua Umum 2026</h4>
+                <div class="row g-4 mb-5">
+                    <div class="col-md-6">
+                        <div class="candidate-card bg-white p-0">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80" class="candidate-img" alt="Cand 1">
+                            <div class="p-4">
+                                <h5 class="fw-bold text-primary">Andi Pratama</h5>
+                                <p class="text-muted small mb-3">NIM: 22411700XX | Gen 14 | Divisi Software</p>
+                                
+                                <div class="accordion" id="acc1">
+                                    <div class="accordion-item border-0">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed py-2 px-0 bg-white fw-bold shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#visi1">
+                                                Lihat Visi Misi
+                                            </button>
+                                        </h2>
+                                        <div id="visi1" class="accordion-collapse collapse" data-bs-parent="#acc1">
+                                            <div class="accordion-body px-0 py-2 small">
+                                                <strong>Visi:</strong> Mewujudkan EEPROM sebagai kiblat robotika Indonesia yang inovatif.<br><br>
+                                                <strong>Misi:</strong>
+                                                <ul class="ps-3 mt-2">
+                                                    <li>Peningkatan riset berkelanjutan.</li>
+                                                    <li>Kolaborasi lintas generasi alumni.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-check mt-4 p-3 bg-light rounded">
+                                    <input class="form-check-input" type="radio" name="candidate" id="c1" value="Andi Pratama">
+                                    <label class="form-check-label fw-bold ms-2" for="c1">Pilih Kandidat Nomor 01</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="candidate-card bg-white p-0">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80" class="candidate-img" alt="Cand 2">
+                            <div class="p-4">
+                                <h5 class="fw-bold text-primary">Budi Cahyono</h5>
+                                <p class="text-muted small mb-3">NIM: 22411700YY | Gen 14 | Divisi Mekanik</p>
+                                
+                                <button class="btn btn-link p-0 fw-bold text-decoration-none mb-3" data-bs-toggle="collapse" data-bs-target="#visi2">Lihat Visi Misi <i class="bi bi-chevron-down"></i></button>
+                                <div class="collapse" id="visi2">
+                                    <div class="small mb-3"><strong>Visi:</strong> Solidaritas tanpa batas untuk EEPROM juara.</div>
+                                </div>
+
+                                <div class="form-check mt-4 p-3 bg-light rounded">
+                                    <input class="form-check-input" type="radio" name="candidate" id="c2" value="Budi Cahyono">
+                                    <label class="form-check-label fw-bold ms-2" for="c2">Pilih Kandidat Nomor 02</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center pb-5">
+                    <button id="submit-vote" class="btn btn-accent btn-lg px-5">Submit Pilihan Saya <i class="fas fa-paper-plane ms-2"></i></button>
+                    <p class="text-muted small mt-3 italic">"Sebagai alumni, suara Anda sangat berharga untuk kemajuan EEPROM"</p>
+                </div>
+            </div>
+
+            <div id="step-success" class="d-none py-5">
+                <div class="card-custom text-center border-top border-5 border-success">
+                    <div class="mb-4">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+                    </div>
+                    <h2 class="fw-bold">Terima Kasih Sudah Memilih!</h2>
+                    <p class="text-muted">Kontribusi Anda sebagai alumni sangat berarti untuk masa depan EEPROM POLINEMA.</p>
+                    
+                    <div class="row justify-content-center mt-4">
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded text-start">
+                                <table class="table table-borderless m-0 small">
+                                    <tr><td class="text-muted">Pilihan Anda:</td><td class="fw-bold text-primary" id="final-choice">Andi Pratama</td></tr>
+                                    <tr><td class="text-muted">Waktu Vote:</td><td class="fw-bold">22 Des 2025, 10:45 WIB</td></tr>
+                                    <tr><td class="text-muted">Status:</td><td class="fw-bold"><span class="badge bg-success">Sudah Verifikasi</span></td></tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5">
+                        <button class="btn btn-eeprom">Lihat Real-Time Hasil (Draft) <i class="fas fa-chart-bar ms-2"></i></button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirmModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0" style="border-radius: 15px;">
+                <div class="modal-body text-center p-5">
+                    <i class="fas fa-question-circle fs-1 text-accent-orange mb-3"></i>
+                    <h4 class="fw-bold">Konfirmasi Pilihan</h4>
+                    <p class="text-muted">Anda yakin memilih <strong id="modal-name">Nama</strong> sebagai Ketua Umum?<br>Pilihan tidak dapat diubah setelah submit.</p>
+                    <div class="d-flex gap-2 mt-4">
+                        <button class="btn btn-light flex-grow-1" data-bs-dismiss="modal">Batal</button>
+                        <button id="final-confirm" class="btn btn-accent flex-grow-1">Ya, Kirim Suara</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Simulation Logic
+        const tokenForm = document.getElementById('token-form');
+        const tokenInput = document.getElementById('input-token-val');
+        const tokenError = document.getElementById('token-error');
+        const stepToken = document.getElementById('step-token');
+        const stepVoting = document.getElementById('step-voting');
+        const stepSuccess = document.getElementById('step-success');
+        
+        const submitVoteBtn = document.getElementById('submit-vote');
+        const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+        const finalConfirmBtn = document.getElementById('final-confirm');
+
+        // 1. Validate Token (Simulated)
+        tokenForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (tokenInput.value.toUpperCase() === 'VOTE-2026') {
+                stepToken.classList.add('d-none');
+                stepVoting.classList.remove('d-none');
+                window.scrollTo(0,0);
+            } else {
+                tokenError.classList.remove('d-none');
+            }
+        });
+
+        // 2. Voting Submission
+        let selectedCandidate = "";
+        submitVoteBtn.addEventListener('click', () => {
+            const checked = document.querySelector('input[name="candidate"]:checked');
+            if (checked) {
+                selectedCandidate = checked.value;
+                document.getElementById('modal-name').innerText = selectedCandidate;
+                confirmModal.show();
+            } else {
+                alert("Silakan pilih salah satu kandidat terlebih dahulu!");
+            }
+        });
+
+        // 3. Final Confirm
+        finalConfirmBtn.addEventListener('click', () => {
+            confirmModal.hide();
+            document.getElementById('final-choice').innerText = selectedCandidate;
+            stepVoting.classList.add('d-none');
+            stepSuccess.classList.remove('d-none');
+            window.scrollTo(0,0);
+        });
+    </script>
+</body>
+
+</html>

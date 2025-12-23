@@ -1,0 +1,389 @@
+    <!DOCTYPE html>
+    <html lang="id">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Members - EEPROM POLINEMA</title>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+        <link rel="icon" href="/public/assets/images/eeprom logo.png" type="image/png">
+
+        <style>
+            /* ========================================
+            CSS Variables (Konsisten dengan Index)
+            ======================================== */
+            :root {
+                --primary-blue: #1A237E;
+                --secondary-blue: #3F51B5;
+                --accent-orange: #FF5722;
+                --light-gray: #F8F9FA;
+                --medium-gray: #E8EAF6;
+                --dark-text: #212529;
+                --soft-text: #495057;
+                --shadow-light: rgba(0, 0, 0, 0.08);
+                --shadow-md: rgba(0, 0, 0, 0.15);
+            }
+
+            body {
+                background-color: var(--light-gray);
+                font-family: 'Poppins', sans-serif;
+                color: var(--soft-text);
+            }
+
+            /* ========================================
+            Page Header
+            ======================================== */
+            .page-header {
+                background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+                padding: 80px 0;
+                color: white;
+                text-align: center;
+                margin-bottom: 50px;
+            }
+
+            .section-heading-white {
+                font-size: 38px;
+                font-weight: 800;
+                margin-bottom: 15px;
+                color: white;
+                position: relative;
+                padding-bottom: 15px;
+            }
+
+            .section-heading-white::after {
+                content: '';
+                display: block;
+                width: 80px;
+                height: 5px;
+                background-color: var(--accent-orange);
+                margin: 10px auto 0;
+                border-radius: 3px;
+            }
+
+            /* ========================================
+            Tabs Styling
+            ======================================== */
+            .nav-tabs-custom {
+                border: none;
+                justify-content: center;
+                gap: 10px;
+                margin-bottom: 40px;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 10px;
+            }
+
+            .nav-tabs-custom .nav-link {
+                border: 2px solid var(--medium-gray) !important;
+                border-radius: 50px !important;
+                color: var(--primary-blue) !important;
+                font-weight: 600;
+                padding: 8px 25px;
+                white-space: nowrap;
+                transition: 0.3s;
+            }
+
+            .nav-tabs-custom .nav-link:hover {
+                border-color: var(--secondary-blue) !important;
+            }
+
+            .nav-tabs-custom .nav-link.active {
+                background-color: var(--primary-blue) !important;
+                color: white !important;
+                border-color: var(--primary-blue) !important;
+                box-shadow: 0 4px 10px var(--shadow-md);
+            }
+
+            /* ========================================
+            Statistics Card
+            ======================================== */
+            .stats-summary {
+                background-color: white;
+                border-left: 5px solid var(--accent-orange);
+                border-radius: 12px;
+                padding: 20px 30px;
+                margin-bottom: 40px;
+                box-shadow: 0 4px 15px var(--shadow-light);
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+            }
+
+            .stat-item h4 {
+                font-weight: 800;
+                color: var(--primary-blue);
+                margin-bottom: 0;
+            }
+
+            /* ========================================
+            Member Card
+            ======================================== */
+            .member-card {
+                background: white;
+                border-radius: 15px;
+                overflow: hidden;
+                box-shadow: 0 5px 15px var(--shadow-light);
+                transition: all 0.3s ease;
+                text-align: center;
+                border: none;
+                height: 100%;
+            }
+
+            .member-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 30px var(--shadow-md);
+            }
+
+            .member-img-wrapper {
+                width: 120px;
+                height: 120px;
+                margin: 30px auto 15px;
+                border-radius: 50%;
+                padding: 5px;
+                border: 3px solid var(--medium-gray);
+                overflow: hidden;
+            }
+
+            .member-img-wrapper img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 50%;
+            }
+
+            .member-info {
+                padding: 0 20px 25px;
+            }
+
+            .member-name {
+                font-size: 18px;
+                font-weight: 700;
+                color: var(--primary-blue);
+                margin-bottom: 5px;
+            }
+
+            .member-nim {
+                font-size: 14px;
+                color: #888;
+                margin-bottom: 15px;
+                display: block;
+            }
+
+            .badge-divisi {
+                background-color: var(--medium-gray);
+                color: var(--primary-blue);
+                font-size: 11px;
+                font-weight: 600;
+                padding: 5px 12px;
+                border-radius: 50px;
+                text-transform: uppercase;
+            }
+
+            .badge-status {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                font-size: 10px;
+                padding: 4px 10px;
+                border-radius: 5px;
+                font-weight: 700;
+            }
+
+            .status-active { background-color: #e8f5e9; color: #2e7d32; }
+            .status-alumni { background-color: #eceff1; color: #455a64; }
+
+            .btn-profile {
+                margin-top: 15px;
+                font-size: 13px;
+                font-weight: 600;
+                color: var(--accent-orange);
+                text-decoration: none;
+                display: inline-block;
+                transition: 0.3s;
+            }
+
+            .btn-profile:hover {
+                color: var(--primary-blue);
+                letter-spacing: 0.5px;
+            }
+
+            /* ========================================
+            Footer
+            ======================================== */
+            .footer {
+                background-color: var(--primary-blue);
+                color: white;
+                padding: 60px 0 20px;
+                margin-top: 80px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="index.html">
+                    <img src="/public/assets/images/eeprom logo.png" alt="Logo" width="45" class="me-2">
+                    <h1 style="font-size: 20px; font-weight: 800; color: #1A237E; margin: 0;">EEPROM POLINEMA</h1>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/src/Views/home/index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" aria-current="page"href="/src/Views/activity/index.html">Activity</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/src/Views/member/index.html">Members</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/src/Views/contact/index.html">Contact</a></li>
+                </ul>
+                </div>
+            </div>
+        </nav>
+
+        <header class="page-header">
+            <div class="container">
+                <h1 class="section-heading-white">Our Members</h1>
+                <p class="lead opacity-75">Keluarga besar inovator robotika dari masa ke masa</p>
+            </div>
+        </header>
+
+        <main class="container mb-5">
+            <ul class="nav nav-tabs nav-tabs-custom" id="genTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#gen14" type="button">Gen 14</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#gen13" type="button">Gen 13</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#gen12" type="button">Gen 12</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#gen11" type="button">Gen 11</button>
+                </li>
+                </ul>
+
+            <div class="tab-content" id="genTabsContent">
+                <div class="tab-pane fade show active" id="gen14" role="tabpanel">
+                    <div class="stats-summary shadow-sm">
+                        <div class="stat-item text-center">
+                            <p class="text-muted small mb-0">Total Anggota</p>
+                            <h4>42 Anggota</h4>
+                        </div>
+                        <div class="stat-item text-center border-start border-end px-5">
+                            <p class="text-muted small mb-0">Tahun Angkatan</p>
+                            <h4>2023 / 2024</h4>
+                        </div>
+                        <div class="stat-item text-center">
+                            <p class="text-muted small mb-0">Status</p>
+                            <h4 class="text-success">Active</h4>
+                        </div>
+                    </div>
+
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+                        <div class="col">
+                            <div class="member-card">
+                                <span class="badge-status status-active">Active</span>
+                                <div class="member-img-wrapper">
+                                    <img src="https://ui-avatars.com/api/?name=Ahmad+Fauzi&background=1A237E&color=fff" alt="Member">
+                                </div>
+                                <div class="member-info">
+                                    <h5 class="member-name">Ahmad Fauzi</h5>
+                                    <span class="member-nim">2141720001</span>
+                                    <span class="badge-divisi">Software</span>
+                                    <br>
+                                    <a href="#" class="btn-profile">View Profile <i class="bi bi-arrow-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="member-card">
+                                <span class="badge-status status-active">Active</span>
+                                <div class="member-img-wrapper">
+                                    <img src="https://ui-avatars.com/api/?name=Siti+Aminah&background=FF5722&color=fff" alt="Member">
+                                </div>
+                                <div class="member-info">
+                                    <h5 class="member-name">Siti Aminah</h5>
+                                    <span class="member-nim">2141720045</span>
+                                    <span class="badge-divisi">Elektrik</span>
+                                    <br>
+                                    <a href="#" class="btn-profile">View Profile <i class="bi bi-arrow-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="member-card">
+                                <span class="badge-status status-active">Active</span>
+                                <div class="member-img-wrapper">
+                                    <img src="https://ui-avatars.com/api/?name=Budi+Santoso&background=3F51B5&color=fff" alt="Member">
+                                </div>
+                                <div class="member-info">
+                                    <h5 class="member-name">Budi Santoso</h5>
+                                    <span class="member-nim">2141720090</span>
+                                    <span class="badge-divisi">Mekanik</span>
+                                    <br>
+                                    <a href="#" class="btn-profile">View Profile <i class="bi bi-arrow-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="member-card">
+                                <span class="badge-status status-active">Active</span>
+                                <div class="member-img-wrapper">
+                                    <img src="https://ui-avatars.com/api/?name=Rina+Wijaya&background=1A237E&color=fff" alt="Member">
+                                </div>
+                                <div class="member-info">
+                                    <h5 class="member-name">Rina Wijaya</h5>
+                                    <span class="member-nim">2141720102</span>
+                                    <span class="badge-divisi">Humas</span>
+                                    <br>
+                                    <a href="#" class="btn-profile">View Profile <i class="bi bi-arrow-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="gen13" role="tabpanel">
+                    <div class="text-center py-5">
+                        <i class="bi bi-people fs-1 text-muted"></i>
+                        <p class="mt-3">Memuat data alumni Gen 13...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="container text-center">
+                <img src="/public/assets/images/eeprom logo.png" alt="Logo" width="60" class="mb-3">
+                <h4 class="fw-bold mb-3">EEPROM POLINEMA</h4>
+                <div class="social-icons mb-4">
+                    <a href="#" style="color: white; border: 1px solid white; width: 35px; height: 35px; display: inline-flex; justify-content: center; align-items: center; border-radius: 50%; margin-right: 10px; text-decoration: none;"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color: white; border: 1px solid white; width: 35px; height: 35px; display: inline-flex; justify-content: center; align-items: center; border-radius: 50%; margin-right: 10px; text-decoration: none;"><i class="fab fa-youtube"></i></a>
+                    <a href="#" style="color: white; border: 1px solid white; width: 35px; height: 35px; display: inline-flex; justify-content: center; align-items: center; border-radius: 50%; margin-right: 10px; text-decoration: none;"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                <p class="small opacity-50">&copy; 2024 EEPROM POLINEMA. All rights reserved.</p>
+            </div>
+        </footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // Internal JS untuk handle interaksi tab atau animasi tambahan
+            document.addEventListener('DOMContentLoaded', function() {
+                const tabs = document.querySelectorAll('.nav-link');
+                tabs.forEach(tab => {
+                    tab.addEventListener('shown.bs.tab', function (event) {
+                        console.log('Switched to: ' + event.target.innerText);
+                        // Di sini bisa ditambahkan trigger AOS (Animate on Scroll) jika digunakan
+                    });
+                });
+            });
+        </script>
+    </body>
+    </html>
