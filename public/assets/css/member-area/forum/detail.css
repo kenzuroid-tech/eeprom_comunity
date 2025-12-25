@@ -1,0 +1,232 @@
+        :root {
+            --primary-blue: #1A237E;
+            --secondary-blue: #3F51B5;
+            --accent-orange: #FF5722;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E8EAF6;
+            --dark-text: #212529;
+            --soft-text: #495057;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --sidebar-width: 280px;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--medium-gray);
+            color: var(--soft-text);
+            min-height: 100vh;
+        }
+
+        /* Layout */
+        .dashboard-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content-area {
+            flex-grow: 1;
+            padding: 30px;
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--primary-blue);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            z-index: 1030;
+            transition: transform 0.3s ease;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar-header {
+            padding: 25px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h3 {
+            color: var(--accent-orange);
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .sidebar-nav {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 15px 0;
+        }
+
+        .sidebar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.85);
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            border-left: 5px solid transparent;
+            text-decoration: none;
+        }
+
+        .sidebar-nav .nav-link i {
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+
+        .sidebar-nav .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .sidebar-nav .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-left-color: var(--accent-orange);
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            padding: 15px;
+            text-align: center;
+            font-size: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Custom Forum Components */
+        .btn-back {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .btn-back:hover {
+            color: var(--accent-orange);
+            transform: translateX(-5px);
+        }
+
+        .topic-header-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--shadow-light);
+            margin-bottom: 30px;
+            border-left: 5px solid var(--accent-orange);
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .category-discussion {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .original-post {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--soft-text);
+        }
+
+        /* Reply Cards */
+        .reply-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: 0.3s;
+        }
+
+        .reply-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .reply-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        /* Reply Form */
+        .reply-form-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: var(--shadow-light);
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary-blue);
+            box-shadow: 0 0 0 0.25rem rgba(63, 81, 181, 0.1);
+        }
+
+        .btn-submit-reply {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-submit-reply:hover {
+            background-color: var(--secondary-blue);
+            color: white;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content-area {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }

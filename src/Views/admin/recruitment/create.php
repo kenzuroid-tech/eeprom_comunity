@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,14 +8,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
+    <link rel="icon" href="/public/assets/images/eeprom logo.png" type="image/png">
     <link rel="stylesheet" href="/public/assets/css/admin/recruitment/create.css">
 </head>
 
 <body>
     <div class="dashboard-wrapper">
         <?php include '../includes/sidebar.php'; ?>
-        
+
         <div class="main-content-area">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4 class="fw-bold m-0 text-dark">Buat Recruitment Baru</h4>
@@ -31,7 +32,7 @@
                     <div class="col-lg-8">
                         <div class="widget-card-admin">
                             <h5 class="mb-4 fw-bold border-bottom pb-2">Informasi Dasar</h5>
-                            
+
                             <div class="mb-3">
                                 <label class="form-label">Nama Periode Recruitment</label>
                                 <input type="text" name="recruitment_name" class="form-control" placeholder="Contoh: Open Recruitment Anggota Baru 2024" required>
@@ -68,7 +69,7 @@
                                     <i class="bi bi-plus-circle me-1"></i> Tambah Tahap
                                 </a>
                             </div>
-                            
+
                             <div id="timeline-container">
                                 <div class="timeline-item">
                                     <span class="fw-bold text-primary me-2">Step 1</span>
@@ -100,15 +101,15 @@
                         <div class="widget-card-admin">
                             <h5 class="mb-4 fw-bold border-bottom pb-2">Divisi Dibuka</h5>
                             <div class="division-grid">
-                                <?php 
+                                <?php
                                 // Contoh array divisi (Bisa diambil dari Database)
                                 $divisions = ['Mekanik', 'Software', 'Elektrik', 'Humas', 'Media'];
-                                foreach($divisions as $index => $div): 
+                                foreach ($divisions as $index => $div):
                                 ?>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="divisions[]" value="<?= $div ?>" id="div<?= $index ?>">
-                                    <label class="form-check-label small" for="div<?= $index ?>"><?= $div ?></label>
-                                </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="divisions[]" value="<?= $div ?>" id="div<?= $index ?>">
+                                        <label class="form-check-label small" for="div<?= $index ?>"><?= $div ?></label>
+                                    </div>
                                 <?php endforeach; ?>
                             </div>
                         </div>
@@ -128,4 +129,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/public/assets/js/admin/recruitment/create.js"></script>
 </body>
+
 </html>

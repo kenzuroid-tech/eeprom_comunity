@@ -1,0 +1,158 @@
+        :root {
+            --primary-blue: #1A237E;
+            --secondary-blue: #3F51B5;
+            --accent-orange: #FF5722;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E8EAF6;
+            --dark-text: #212529;
+            --soft-text: #495057;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+        }
+
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            background-color: var(--medium-gray);
+            color: var(--soft-text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .attendance-container {
+            width: 100%;
+            max-width: 450px;
+        }
+
+        /* Card Styling matched with dashboard.html widget style */
+        .scan-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border-top: 6px solid var(--primary-blue);
+        }
+
+        .logo-box {
+            background: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: -65px auto 20px auto;
+            box-shadow: 0 5px 15px rgba(26, 35, 126, 0.3);
+        }
+
+        .meeting-info-box {
+            background-color: var(--light-gray);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            text-align: left;
+            border-left: 4px solid var(--accent-orange);
+        }
+
+        .meeting-title {
+            color: var(--primary-blue);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .info-item {
+            font-size: 0.85rem;
+            color: var(--soft-text);
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .info-item i {
+            margin-right: 10px;
+            color: var(--secondary-blue);
+        }
+
+        /* Form Controls matched with dashboard.html */
+        .form-label {
+            font-weight: 600;
+            color: var(--primary-blue);
+            font-size: 0.9rem;
+            display: block;
+            text-align: left;
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 1px solid #dee2e6;
+            font-size: 0.95rem;
+            background-color: #fff;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-blue);
+            box-shadow: 0 0 0 0.25rem rgba(63, 81, 181, 0.1);
+        }
+
+        .btn-absen {
+            background-color: var(--primary-blue);
+            color: white;
+            font-weight: 700;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-absen:hover {
+            background-color: var(--secondary-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Success Message Overlay */
+        #success-overlay {
+            display: none;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.75rem;
+            color: var(--soft-text);
+            opacity: 0.7;
+        }
+
+        .divider {
+            height: 1px;
+            background: #eee;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .divider span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 0 10px;
+            font-size: 0.75rem;
+            color: #999;
+        }
