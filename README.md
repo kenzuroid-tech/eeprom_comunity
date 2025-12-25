@@ -1,4 +1,4 @@
-EEPROM Community Management System
+**EEPROM Community Management System**
 
 Overview
 This project is a web-based management system for the EEPROM Community (a robotics community at Politeknik Negeri Malang). It provides tools for managing members, activities, galleries, documents, voting, and recruitment. The system includes admin panels, member areas, and public-facing pages.
