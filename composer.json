@@ -1,0 +1,10 @@
+{
+    "name": "project/eeprom-community",
+    "description": "Project Community",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "require": {}
+}

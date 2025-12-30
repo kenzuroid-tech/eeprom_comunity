@@ -1,20 +1,21 @@
 <nav id="sidebarMenu" class="sidebar">
     <div class="sidebar-header">
-        <img src="/public/assets/images/eeprom logo.png" alt="Logo" width="45" class="mb-2">
+        <img src="/assets/images/eeprom_logo.png" alt="Logo" width="45" class="mb-2">
         <h3>EEPROM Admin</h3>
     </div>
 
     <div class="sidebar-nav">
         <?php
-        $current_page = $_SERVER['REQUEST_URI'];
+        // Mengambil path URL saja (tanpa query string) untuk deteksi menu aktif
+        $current_page = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $active_dropdowns = [];
         ?>
 
-        <a href="/src/Views/admin/dashboard.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/dashboard.php') !== false) ? 'active' : ''; ?>">
+        <a href="/admin/dashboard" class="nav-link <?php echo ($current_page == '/admin/dashboard') ? 'active' : ''; ?>">
             <i class="bi bi-speedometer2"></i><span>Dashboard</span>
         </a>
 
-        <a href="javascript:void(0)" class="nav-link dropdown-btn <?php if (strpos($current_page, '/src/Views/admin/members/') !== false || strpos($current_page, '/src/Views/admin/divisions/') !== false) {
+        <a href="javascript:void(0)" class="nav-link dropdown-btn <?php if (strpos($current_page, '/admin/members') !== false || strpos($current_page, '/admin/divisions') !== false) {
                                                                         echo 'active';
                                                                         $active_dropdowns[] = 'member';
                                                                     } ?>">
@@ -22,16 +23,12 @@
             <i class="bi bi-chevron-down ms-auto small"></i>
         </a>
         <div class="nav-dropdown-items <?php echo in_array('member', $active_dropdowns) ? 'show' : ''; ?>">
-            <a href="/src/Views/admin/members/index.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/members/index.php') !== false) ? 'active' : ''; ?>">Daftar Anggota</a>
-            <a href="/src/Views/admin/members/create.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/members/create.php') !== false) ? 'active' : ''; ?>">Tambah Anggota</a>
-            <a href="/src/Views/admin/members/edit.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/members/edit.php') !== false) ? 'active' : ''; ?>">Edit Anggota</a>
-
-            <a href="/src/Views/admin/divisions/index.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/divisions/index.php') !== false) ? 'active' : ''; ?>">Divisi</a>
-
-            <!-- <a href="/src/Views/admin/recruitment/index.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/recruitment/index.php') !== false) ? 'active' : ''; ?>">Recruitment</a> -->
+            <a href="/admin/members" class="nav-link <?php echo ($current_page == '/admin/members') ? 'active' : ''; ?>">Daftar Anggota</a>
+            <a href="/admin/members/create" class="nav-link <?php echo ($current_page == '/admin/members/create') ? 'active' : ''; ?>">Tambah Anggota</a>
+            <a href="/admin/divisions" class="nav-link <?php echo ($current_page == '/admin/divisions') ? 'active' : ''; ?>">Divisi</a>
         </div>
 
-        <a href="javascript:void(0)" class="nav-link dropdown-btn <?php if (strpos($current_page, '/src/Views/admin/recruitment/') !== false || strpos($current_page, '/src/Views/admin/recruitment/') !== false || strpos($current_page, '/src/Views/admin/recruitment/') !== false) {
+        <a href="javascript:void(0)" class="nav-link dropdown-btn <?php if (strpos($current_page, '/admin/recruitment') !== false) {
                                                                         echo 'active';
                                                                         $active_dropdowns[] = 'recruitment';
                                                                     } ?>">
@@ -39,75 +36,26 @@
             <i class="bi bi-chevron-down ms-auto small"></i>
         </a>
         <div class="nav-dropdown-items <?php echo in_array('recruitment', $active_dropdowns) ? 'show' : ''; ?>">
-            <a href="/src/Views/admin/recruitment/index.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/recruitment/index.php') !== false) ? 'active' : ''; ?>">Dashboard Recruitment</a>
-            <a href="/src/Views/admin/recruitment/create.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/recruitment/create.php') !== false) ? 'active' : ''; ?>">Buat Recruitment</a>
-            <a href="/src/Views/admin/recruitment/applicant.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/recruitment/applicant.php') !== false) ? 'active' : ''; ?>">Daftar Pelamar</a>
+            <a href="/admin/recruitment" class="nav-link <?php echo ($current_page == '/admin/recruitment') ? 'active' : ''; ?>">Dashboard</a>
+            <a href="/admin/recruitment/applicants" class="nav-link <?php echo ($current_page == '/admin/recruitment/applicants') ? 'active' : ''; ?>">Daftar Pelamar</a>
+            <a href="/admin/recruitment/create" class="nav-link <?php echo ($current_page == '/admin/recruitment/create') ? 'active' : ''; ?>">Buka Pendaftaran</a>
+            <a href="/admin/recruitment/edit" class="nav-link <?php echo ($current_page == '/admin/recruitment/edit') ? 'active' : ''; ?>">Edit Pendaftaran</a>
+
         </div>
 
-        <a href="/src/Views/admin/about/index.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/about/index.php') !== false) ? 'active' : ''; ?>">
-            <i class="bi bi-info-square-fill"></i><span>Info Komunitas</span>
+        <a href="/admin/meetings" class="nav-link <?php echo (strpos($current_page, '/admin/meetings') !== false) ? 'active' : ''; ?>">
+            <i class="bi bi-calendar-check-fill"></i><span>Rapat & Pertemuan</span>
         </a>
 
-        <a href="javascript:void(0)" class="nav-link dropdown-btn <?php if (strpos($current_page, '/src/Views/admin/activities/' ) !== false) {
-                                                                        echo 'active';
-                                                                        $active_dropdowns[] = 'activities';
-                                                                    } ?>">
-            <i class="bi bi-activity"></i><span>Aktivitas</span>
-            <i class="bi bi-chevron-down ms-auto small"></i>
-        </a>
-        <div class="nav-dropdown-items <?php echo in_array('activities', $active_dropdowns) ? 'show' : ''; ?>">
-            <a href="/src/Views/admin/activities/index.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/activities/index.php') !== false) ? 'active' : ''; ?>">Management Aktivitas</a>
-            <a href="/src/Views/admin/activities/create.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/activities/create.php') !== false) ? 'active' : ''; ?>">Buat Aktivitas</a>
-            <a href="/src/Views/admin/activities/edit.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/activities/edit.php') !== false) ? 'active' : ''; ?>">Edit Aktivitas</a>
-        </div>
-
-        <!-- <a href="/src/Views/admin/achievements/index.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/achievements/index.php') !== false) ? 'active' : ''; ?>">
-            <i class="bi bi-trophy-fill"></i><span>Penghargaan</span>
-        </a> -->
-
-        <a href="javascript:void(0)" class="nav-link dropdown-btn <?php if (strpos($current_page, '/src/Views/admin/meetings/' ) !== false) {
-                                                                        echo 'active';
-                                                                        $active_dropdowns[] = 'meetings';
-                                                                    } ?>">
-            <i class="bi bi-calendar-check-fill"></i><span>Rapat dan Pertemuan</span>
-            <i class="bi bi-chevron-down ms-auto small"></i>
-        </a>
-        <div class="nav-dropdown-items <?php echo in_array('meetings', $active_dropdowns) ? 'show' : ''; ?>">
-            <a href="/src/Views/admin/meetings/index.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/meetings/index.php') !== false) ? 'active' : ''; ?>">Jadwal Rapat</a>
-            <a href="/src/Views/admin/meetings/create.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/meetings/create.php') !== false) ? 'active' : ''; ?>">Buat Rapat</a>
-            <a href="/src/Views/admin/meetings/edit.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/meetings/edit.php') !== false) ? 'active' : ''; ?>">Edit Rapat</a>
-        </div>
-
-        <a href="javascript:void(0)" class="nav-link dropdown-btn <?php if (strpos($current_page, '/src/Views/admin/attendance/') !== false || strpos($current_page, '/src/Views/admin/attendance/') !== false) {
-                                                                        echo 'active';
-                                                                        $active_dropdowns[] = 'attendance';
-                                                                    } ?>">
+        <a href="/admin/attendance" class="nav-link <?php echo (strpos($current_page, '/admin/attendance') !== false) ? 'active' : ''; ?>">
             <i class="bi-person-check"></i><span>Absensi</span>
-            <i class="bi bi-chevron-down ms-auto small"></i>
         </a>
-        <div class="nav-dropdown-items <?php echo in_array('attendance', $active_dropdowns) ? 'show' : ''; ?>">
-            <a href="/src/Views/admin/attendance/index.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/attendance/index.php') !== false) ? 'active' : ''; ?>">Input Absensi</a>
-            <a href="/src/Views/admin/attendance/scan.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/attendance/scan.php') !== false) ? 'active' : ''; ?>">Scan QR</a>
-        </div>
 
-        <a href="javascript:void(0)" class="nav-link dropdown-btn <?php if (strpos($current_page, '/src/Views/admin/announcements/') !== false) {
-                                                                        echo 'active';
-                                                                        $active_dropdowns[] = 'announcements';
-                                                                    } ?>">
+        <a href="/admin/announcements" class="nav-link <?php echo (strpos($current_page, '/admin/announcements') !== false) ? 'active' : ''; ?>">
             <i class="bi bi-megaphone-fill"></i><span>Pengumuman</span>
-            <i class="bi bi-chevron-down ms-auto small"></i>
-        </a>
-        <div class="nav-dropdown-items <?php echo in_array('announcements', $active_dropdowns) ? 'show' : ''; ?>">
-            <a href="/src/Views/admin/announcements/index.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/announcements/index.php') !== false) ? 'active' : ''; ?>">List Pengumuman</a>
-            <a href="/src/Views/admin/announcements/create.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/announcements/create.php') !== false) ? 'active' : ''; ?>">Tambah Pengumuman</a>
-            <a href="/src/Views/admin/announcements/edit.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/announcements/edit.php') !== false) ? 'active' : ''; ?>">Edit Pengumuman</a>
-        </div>
-
-        <a href="/src/Views/admin/gallery/index.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/gallery/index.php') !== false) ? 'active' : ''; ?>">
-            <i class="bi bi-images"></i><span>Gallery</span>
         </a>
 
-        <a href="javascript:void(0)" class="nav-link dropdown-btn <?php if (strpos($current_page, '/src/Views/admin/voting/') !== false) {
+        <a href="javascript:void(0)" class="nav-link dropdown-btn <?php if (strpos($current_page, '/admin/voting') !== false) {
                                                                         echo 'active';
                                                                         $active_dropdowns[] = 'election';
                                                                     } ?>">
@@ -115,32 +63,22 @@
             <i class="bi bi-chevron-down ms-auto small"></i>
         </a>
         <div class="nav-dropdown-items <?php echo in_array('election', $active_dropdowns) ? 'show' : ''; ?>">
-            <a href="/src/Views/admin/voting/create.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/voting/create.php') !== false) ? 'active' : ''; ?>">Buat Voting</a>
-            <a href="/src/Views/admin/voting/edit.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/voting/edit.php') !== false) ? 'active' : ''; ?>">Edit Voting</a>
-            <a href="/src/Views/admin/voting/candidates.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/voting/candidates.php') !== false) ? 'active' : ''; ?>">Kandidat</a>
-            <a href="/src/Views/admin/voting/index.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/voting/index.php') !== false) ? 'active' : ''; ?>">Sesi Voting</a>
-            <a href="/src/Views/admin/voting/results.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/voting/results.php') !== false) ? 'active' : ''; ?>">Hasil Pemilihan</a>
+            <a href="/admin/voting" class="nav-link <?php echo ($current_page == '/admin/voting') ? 'active' : ''; ?>">Sesi Voting</a>
+            <a href="/admin/voting/candidates" class="nav-link <?php echo ($current_page == '/admin/voting/candidates') ? 'active' : ''; ?>">Kandidat</a>
+            <a href="/admin/voting/results" class="nav-link <?php echo ($current_page == '/admin/voting/results') ? 'active' : ''; ?>">Hasil Pemilihan</a>
         </div>
 
-        <!-- <a href="/admin/documents.php" class="nav-link active">
-            <i class="bi bi-file-earmark-text-fill me-3"></i><span>Documents</span>
-        </a> -->
-
-        <a href="/src/Views/admin/documents/index.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/documents/index.php') !== false) ? 'active' : ''; ?>">
-            <i class="bi bi-file-earmark-text-fill me-3"></i><span>Documents</span>
+        <a href="/admin/documents" class="nav-link <?php echo (strpos($current_page, '/admin/documents') !== false) ? 'active' : ''; ?>">
+            <i class="bi bi-file-earmark-text-fill"></i><span>Documents</span>
         </a>
 
-        <a href="/src/Views/admin/contacts/index.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/contacts/index.php') !== false) ? 'active' : ''; ?>">
-            <i class="bi bi-person-lines-fill"></i><span>Contacts</span>
+        <a href="/admin/gallery" class="nav-link <?php echo (strpos($current_page, '/admin/gallery') !== false) ? 'active' : ''; ?>">
+            <i class="bi bi-images"></i><span>Gallery</span>
         </a>
 
         <hr class="mx-3 opacity-10">
 
-        <a href="/src/Views/admin/settings/index.php" class="nav-link <?php echo (strpos($current_page, '/src/Views/admin/settings/index.php') !== false) ? 'active' : ''; ?>">
-            <i class="bi bi-gear-fill"></i><span>Settings</span>
-        </a>
-
-        <a href="/src/Views/public/auth/login.php" class="nav-link text-danger">
+        <a href="/logout" class="nav-link text-danger">
             <i class="bi bi-box-arrow-right"></i><span>Logout</span>
         </a>
     </div>

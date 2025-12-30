@@ -1,3 +1,11 @@
+<?php
+/**
+ * File: src/Views/admin/recruitment/edit.php
+ */
+$adminData = $adminData ?? [];
+$period = $period ?? [];
+$divisions = $divisions ?? []; 
+?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -8,139 +16,139 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="icon" href="/public/assets/images/eeprom logo.png" type="image/png">
-    <link rel="stylesheet" href="/public/assets/css/admin/recruitment/edit.css">
+    <link rel="icon" href="/assets/images/eeprom_logo.png" type="image/png">
+    <link rel="stylesheet" href="/assets/css/admin/dashboard.css">
+    <link rel="stylesheet" href="/assets/css/admin/recruitment/edit.css">
 </head>
 
 <body>
     <div class="dashboard-wrapper">
-        <?php include '../includes/sidebar.php'; ?>
+        <?php include_once __DIR__ . '/../includes/sidebar.php'; ?>
 
-        <div class="main-content-area">
+        <div class="main-content-area p-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
                     <h4 class="fw-bold m-0 text-dark">Edit Recruitment</h4>
-                    <small class="text-muted">ID: #REC-2024-001</small>
+                    <small class="text-muted">ID: #REC-<?= date('Y', strtotime($period['created_at'] ?? 'now')) ?>-<?= str_pad($period['id'] ?? '0', 3, '0', STR_PAD_LEFT) ?></small>
                 </div>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="/admin/recruitment.php">Recruitment</a></li>
+                        <li class="breadcrumb-item"><a href="/admin/recruitment">Recruitment</a></li>
                         <li class="breadcrumb-item active">Edit</li>
                     </ol>
                 </nav>
             </div>
 
-            <form action="update_process.php" method="POST">
+            <form action="/admin/recruitment/update" method="POST">
+                <input type="hidden" name="id" value="<?= $period['id'] ?>">
+
                 <div class="row">
                     <div class="col-lg-8">
-                        <div class="widget-card-admin">
+                        <div class="widget-card-admin bg-white p-4 rounded shadow-sm mb-4">
                             <h5 class="mb-4 fw-bold border-bottom pb-2">Detail Recruitment</h5>
 
                             <div class="mb-3">
-                                <label class="form-label">Nama Periode Recruitment</label>
-                                <input type="text" name="title" class="form-control" value="Open Recruitment Anggota Baru 2024" required>
+                                <label class="form-label fw-bold small">Nama Periode Recruitment</label>
+                                <input type="text" name="nama_periode" class="form-control" value="<?= htmlspecialchars($period['nama_periode'] ?? '') ?>" required>
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label">Deskripsi Singkat</label>
-                                <textarea name="description" class="form-control" rows="3">Membuka kesempatan bagi mahasiswa aktif Polinema untuk bergabung dalam pengembangan riset robotika.</textarea>
+                                <label class="form-label fw-bold small">Deskripsi Singkat</label>
+                                <textarea name="description" class="form-control" rows="3"><?= htmlspecialchars($period['description'] ?? '') ?></textarea>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Tanggal Mulai</label>
-                                    <input type="datetime-local" name="start_date" class="form-control" value="2024-10-01T08:00" required>
+                                    <label class="form-label fw-bold small">Semester</label>
+                                    <select name="semester" class="form-select">
+                                        <option value="Ganjil" <?= ($period['semester'] ?? '') == 'Ganjil' ? 'selected' : '' ?>>Ganjil</option>
+                                        <option value="Genap" <?= ($period['semester'] ?? '') == 'Genap' ? 'selected' : '' ?>>Genap</option>
+                                    </select>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Tanggal Selesai</label>
-                                    <input type="datetime-local" name="end_date" class="form-control" value="2024-10-31T23:59" required>
+                                    <label class="form-label fw-bold small">Tahun Akademik</label>
+                                    <input type="text" name="tahun_akademik" class="form-control" value="<?= htmlspecialchars($period['tahun_akademik'] ?? '') ?>" placeholder="2024/2025">
                                 </div>
                             </div>
 
-                            <div class="mb-3 mt-3">
-                                <label class="form-label">Persyaratan</label>
-                                <div class="border rounded-3 p-3 bg-light">
-                                    <textarea name="requirements" class="form-control" rows="8">1. Mahasiswa aktif tingkat 1 & 2.
-2. Memiliki minat di bidang teknologi.
-3. Berkomitmen mengikuti program pelatihan.
-4. Mampu bekerja dalam tim.</textarea>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold small">Tanggal Mulai</label>
+                                    <input type="datetime-local" name="tanggal_mulai" class="form-control" value="<?= date('Y-m-d\TH:i', strtotime($period['tanggal_mulai'] ?? 'now')) ?>" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold small">Tanggal Selesai</label>
+                                    <input type="datetime-local" name="tanggal_selesai" class="form-control" value="<?= date('Y-m-d\TH:i', strtotime($period['tanggal_selesai'] ?? 'now')) ?>" required>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="widget-card-admin">
+                        <div class="widget-card-admin bg-white p-4 rounded shadow-sm mb-4">
                             <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
-                                <h5 class="fw-bold m-0">Timeline Seleksi</h5>
-                                <a href="javascript:void(0)" class="btn-add-step" id="add-timeline-btn">
+                                <h5 class="fw-bold m-0 text-dark">Timeline Seleksi</h5>
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="add-timeline-btn">
                                     <i class="bi bi-plus-circle me-1"></i> Tambah Tahap
-                                </a>
+                                </button>
                             </div>
 
                             <div id="timeline-container">
-                                <div class="timeline-item">
-                                    <span class="fw-bold text-primary me-2">Step 1</span>
-                                    <input type="text" class="form-control" name="timeline[]" value="Pendaftaran Online & Berkas">
-                                    <button type="button" class="btn btn-outline-danger btn-sm border-0 remove-step"><i class="bi bi-trash"></i></button>
-                                </div>
-                                <div class="timeline-item">
-                                    <span class="fw-bold text-primary me-2">Step 2</span>
-                                    <input type="text" class="form-control" name="timeline[]" value="Wawancara Internal">
-                                    <button type="button" class="btn btn-outline-danger btn-sm border-0 remove-step"><i class="bi bi-trash"></i></button>
-                                </div>
-                                <div class="timeline-item">
-                                    <span class="fw-bold text-primary me-2">Step 3</span>
-                                    <input type="text" class="form-control" name="timeline[]" value="Pengumuman Akhir">
-                                    <button type="button" class="btn btn-outline-danger btn-sm border-0 remove-step"><i class="bi bi-trash"></i></button>
-                                </div>
+                                <?php
+                                // Mengambil data timeline yang disimpan (format string dipisah |)
+                                $savedTimeline = explode('|', $period['timeline'] ?? 'Pendaftaran Online');
+                                foreach ($savedTimeline as $index => $step):
+                                ?>
+                                    <div class="timeline-item d-flex gap-2 mb-2">
+                                        <span class="btn btn-light disabled fw-bold"><?= $index + 1 ?></span>
+                                        <input type="text" class="form-control" name="timeline[]" value="<?= htmlspecialchars($step) ?>" required>
+                                        <button type="button" class="btn btn-outline-danger btn-sm border-0 remove-step"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-lg-4">
-                        <div class="widget-card-admin">
+                        <div class="widget-card-admin bg-white p-4 rounded shadow-sm mb-4">
                             <h5 class="mb-4 fw-bold border-bottom pb-2">Status & Visibilitas</h5>
                             <div class="mb-4">
-                                <label class="form-label">Status Saat Ini</label>
+                                <label class="form-label fw-bold small">Status Saat Ini</label>
                                 <select name="status" class="form-select border-success fw-bold text-success">
-                                    <option value="Draft">Draft</option>
-                                    <option value="Active" selected>Active</option>
-                                    <option value="Closed">Closed</option>
+                                    <option value="Draft" <?= ($period['status'] ?? '') == 'Draft' ? 'selected' : '' ?>>Draft</option>
+                                    <option value="Active" <?= ($period['status'] ?? '') == 'Active' ? 'selected' : '' ?>>Active</option>
+                                    <option value="Closed" <?= ($period['status'] ?? '') == 'Closed' ? 'selected' : '' ?>>Closed</option>
                                 </select>
-                                <p class="small text-muted mt-2">Terakhir diupdate: 15 Sep 2024</p>
+                                <p class="small text-muted mt-2">Dibuat: <?= date('d M Y', strtotime($period['created_at'] ?? 'now')) ?></p>
                             </div>
                         </div>
 
-                        <div class="widget-card-admin">
-                            <h5 class="mb-4 fw-bold border-bottom pb-2">Divisi Dibuka</h5>
-                            <div class="division-grid">
-                                <?php
-                                // Simulasi data checkbox dari DB
-                                $divisions = [
-                                    'div1' => ['label' => 'Mekanik', 'checked' => 'checked'],
-                                    'div2' => ['label' => 'Software', 'checked' => 'checked'],
-                                    'div3' => ['label' => 'Elektrik', 'checked' => 'checked'],
-                                    'div4' => ['label' => 'Humas', 'checked' => ''],
-                                    'div5' => ['label' => 'Media', 'checked' => ''],
-                                ];
-                                foreach ($divisions as $id => $data):
+                        <div class="widget-card-admin bg-white p-4 rounded shadow-sm mb-4">
+                            <h5 class="mb-4 fw-bold border-bottom pb-2 text-dark">Divisi Dibuka</h5>
+                            <div class="division-grid" style="max-height: 200px; overflow-y: auto;">
+                                <?php 
+                                // Mengambil data divisi yang dibuka (format string dipisah koma)
+                                $openedDivs = explode(', ', $period['opened_divisions'] ?? '');
+                                if (empty($divisions)): 
                                 ?>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="divisions[]" id="<?= $id ?>" value="<?= $data['label'] ?>" <?= $data['checked'] ?>>
-                                        <label class="form-check-label small" for="<?= $id ?>"><?= $data['label'] ?></label>
+                                    <p class="small text-muted">Belum ada data divisi.</p>
+                                <?php else: foreach ($divisions as $index => $div): ?>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" name="divisions[]" 
+                                               value="<?= htmlspecialchars($div['name']) ?>" 
+                                               id="div_<?= $index ?>"
+                                               <?= in_array($div['name'], $openedDivs) ? 'checked' : '' ?>>
+                                        <label class="form-check-label small" for="div_<?= $index ?>">
+                                            <?= htmlspecialchars($div['name']) ?>
+                                        </label>
                                     </div>
-                                <?php endforeach; ?>
+                                <?php endforeach; endif; ?>
                             </div>
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn custom-btn-update">
+                            <button type="submit" class="btn btn-primary fw-bold py-2 shadow-sm">
                                 <i class="bi bi-check-all me-2"></i>Simpan Perubahan
                             </button>
-                            <a href="/admin/recruitment.php" class="btn btn-outline-secondary py-2 fw-semibold">Batal</a>
-                        </div>
-                        <div class="mt-4 p-3 bg-white border-start border-danger border-4 rounded shadow-sm">
-                            <h6 class="text-danger fw-bold small"><i class="bi bi-info-circle me-1"></i> Zona Bahaya</h6>
-                            <p style="font-size: 11px;" class="m-0">Menutup pendaftaran akan menghentikan seluruh proses aplikasi yang sedang berjalan.</p>
+                            <a href="/admin/recruitment" class="btn btn-outline-secondary py-2 fw-semibold">Batal</a>
                         </div>
                     </div>
                 </div>
@@ -148,10 +156,33 @@
         </div>
     </div>
 
-    <?php include '../includes/footer.php'; ?>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/public/assets/js/admin/recruitment/edit.js"></script>
-</body>
+    <script>
+        // JS Tambah Step Timeline
+        document.getElementById('add-timeline-btn').addEventListener('click', function() {
+            const container = document.getElementById('timeline-container');
+            const stepCount = container.children.length + 1;
+            const div = document.createElement('div');
+            div.className = 'timeline-item d-flex gap-2 mb-2';
+            div.innerHTML = `
+                <span class="btn btn-light disabled fw-bold">${stepCount}</span>
+                <input type="text" class="form-control" name="timeline[]" placeholder="Tahap selanjutnya..." required>
+                <button type="button" class="btn btn-outline-danger btn-sm border-0 remove-step"><i class="bi bi-trash"></i></button>
+            `;
+            container.appendChild(div);
+        });
 
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.remove-step')) {
+                const item = e.target.closest('.timeline-item');
+                if (document.querySelectorAll('.timeline-item').length > 1) {
+                    item.remove();
+                    document.querySelectorAll('.timeline-item').forEach((el, index) => {
+                        el.querySelector('span').innerText = index + 1;
+                    });
+                }
+            }
+        });
+    </script>
+</body>
 </html>
