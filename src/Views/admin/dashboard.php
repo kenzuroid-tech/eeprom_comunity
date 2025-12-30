@@ -1,81 +1,70 @@
+<?php
+$adminData = $adminData ?? [];
+$chartLabels = json_encode(array_column($chartData ?? [], 'title'));
+$chartValues = json_encode(array_column($chartData ?? [], 'hadir'));
+?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - EEPROM POLINEMA</title>
-    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="icon" href="/public/assets/images/eeprom logo.png" type="image/png">
-    
-    <link rel="stylesheet" href="/public/assets/css/admin/dashboard.css">
+    <link rel="stylesheet" href="/assets/css/admin/dashboard.css">
+    <link rel="icon" href="/assets/images/eeprom_logo.png" type="image/png">
 </head>
 
 <body>
     <div class="dashboard-wrapper">
-        <?php include 'includes/sidebar.php'; ?>
-        
-        <div id="mainContentWrapper" class="main-content-area">
-            <?php include 'includes/header.php'; ?>
+        <?php include __DIR__ . '/includes/sidebar.php'; ?>
+
+        <div id="mainContentWrapper" class="main-content-area p-4">
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-white rounded shadow-sm mb-4 px-3 d-flex justify-content-between">
+                <h4 class="m-0 fw-bold">Admin Dashboard</h4>
+                <div class="d-flex align-items-center">
+                    <span class="me-3 fw-bold small text-muted"><?= htmlspecialchars($adminData['nama_lengkap'] ?? 'Super Admin') ?></span>
+                    <img src="<?= !empty($adminData['foto_url']) ? $adminData['foto_url'] : 'https://ui-avatars.com/api/?name=Admin' ?>" width="35" height="35" class="rounded-circle border">
+                </div>
+            </nav>
 
             <div class="row g-4 mb-5">
                 <div class="col-md-3">
-                    <div class="stat-card-admin" style="border-left-color: #28a745;">
-                        <i class="bi bi-people stat-icon" style="color: #28a745;"></i>
-                        <div><h3 class="m-0">250</h3><p class="small m-0">Anggota</p></div>
+                    <div class="stat-card-admin shadow-sm bg-white p-3 rounded" style="border-left: 5px solid #28a745;">
+                        <i class="bi bi-people stat-icon fs-1" style="color: #28a745;"></i>
+                        <div>
+                            <h3 class="m-0 fw-bold"><?= $totalAnggota ?></h3>
+                            <p class="small m-0 text-muted">Anggota</p>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="stat-card-admin">
-                        <i class="bi bi-calendar-event stat-icon"></i>
-                        <div><h3 class="m-0">12</h3><p class="small m-0">Kegiatan</p></div>
+                    <div class="stat-card-admin shadow-sm bg-white p-3 rounded" style="border-left: 5px solid #0d6efd;">
+                        <i class="bi bi-calendar-event stat-icon fs-1 text-primary"></i>
+                        <div>
+                            <h3 class="m-0 fw-bold"><?= $totalKegiatan ?></h3>
+                            <p class="small m-0 text-muted">Kegiatan</p>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="stat-card-admin" style="border-left-color: #ffc107;">
-                        <i class="bi bi-envelope-paper stat-icon" style="color: #ffc107;"></i>
-                        <div><h3 class="m-0">5</h3><p class="small m-0">Lamaran Baru</p></div>
+                    <div class="stat-card-admin shadow-sm bg-white p-3 rounded" style="border-left: 5px solid #ffc107;">
+                        <i class="bi bi-megaphone stat-icon fs-1" style="color: #ffc107;"></i>
+                        <div>
+                            <h3 class="m-0 fw-bold"><?= $totalAnnouncements ?></h3>
+                            <p class="small m-0 text-muted">Pengumuman</p>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="stat-card-admin" style="border-left-color: #f44336;">
-                        <i class="bi bi-trophy stat-icon" style="color: #f44336;"></i>
-                        <div><h3 class="m-0">17</h3><p class="small m-0">Prestasi</p></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="widget-card-admin">
-                <h5 class="mb-4 fw-bold"><i class="bi bi-check2-all me-2 text-primary"></i>Status Tugas Divisi</h5>
-                <div class="row g-3">
-                    <div class="col-6 col-lg-3">
-                        <div class="division-card text-center">
-                            <i class="bi bi-gear-wide-connected fs-2 mb-2 text-secondary"></i>
-                            <h6 class="mb-2">Mekanik</h6>
-                            <span class="status-badge status-selesai">Selesai</span>
-                        </div>
-                    </div>
-                    <div class="col-6 col-lg-3">
-                        <div class="division-card text-center">
-                            <i class="bi bi-code-slash fs-2 mb-2 text-primary"></i>
-                            <h6 class="mb-2">Software</h6>
-                            <span class="status-badge status-belum">Belum Selesai</span>
-                        </div>
-                    </div>
-                    <div class="col-6 col-lg-3">
-                        <div class="division-card text-center">
-                            <i class="bi bi-cpu fs-2 mb-2 text-warning"></i>
-                            <h6 class="mb-2">Elektrik</h6>
-                            <span class="status-badge status-selesai">Selesai</span>
-                        </div>
-                    </div>
-                    <div class="col-6 col-lg-3">
-                        <div class="division-card text-center">
-                            <i class="bi bi-megaphone fs-2 mb-2 text-danger"></i>
-                            <h6 class="mb-2">Humas</h6>
-                            <span class="status-badge status-telat">Segera Lapor</span>
+                    <div class="stat-card-admin shadow-sm bg-white p-3 rounded" style="border-left: 5px solid #f44336;">
+                        <i class="bi bi-box2-heart stat-icon fs-1" style="color: #f44336;"></i>
+                        <div>
+                            <h3 class="m-0 fw-bold"><?= $totalVotes ?></h3>
+                            <p class="small m-0 text-muted">Total Suara</p>
                         </div>
                     </div>
                 </div>
@@ -83,29 +72,23 @@
 
             <div class="row">
                 <div class="col-lg-8">
-                    <div class="widget-card-admin">
-                        <h5 class="mb-4 fw-bold">Statistik Kehadiran Anggota</h5>
-                        <div class="chart-placeholder">
-                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-                        </div>
+                    <div class="widget-card-admin bg-white p-4 rounded shadow-sm h-100">
+                        <h5 class="mb-4 fw-bold text-dark">Statistik Kehadiran Anggota (Hadir)</h5>
+                        <canvas id="attendanceChart" style="max-height: 300px;"></canvas>
                     </div>
                 </div>
 
                 <div class="col-lg-4">
-                    <div class="widget-card-admin">
-                        <h5 class="mb-4 fw-bold">Recent Logs</h5>
+                    <div class="widget-card-admin bg-white p-4 rounded shadow-sm h-100">
+                        <h5 class="mb-4 fw-bold text-dark">Sistem Log Terbaru</h5>
                         <ul class="list-unstyled">
-                            <li class="mb-3 small pb-2 border-bottom">
+                            <li class="mb-3 small pb-2 border-bottom text-muted">
                                 <i class="bi bi-circle-fill text-success me-2" style="font-size: 8px;"></i>
-                                Admin A merubah status rekrutmen.
+                                Database terhubung dengan lancar.
                             </li>
-                            <li class="mb-3 small pb-2 border-bottom">
+                            <li class="mb-3 small pb-2 border-bottom text-muted">
                                 <i class="bi bi-circle-fill text-primary me-2" style="font-size: 8px;"></i>
-                                Update info komunitas dilakukan.
-                            </li>
-                            <li class="small">
-                                <i class="bi bi-circle-fill text-warning me-2" style="font-size: 8px;"></i>
-                                Sesi voting baru dimulai.
+                                Sesi login Admin (ID 3) divalidasi.
                             </li>
                         </ul>
                     </div>
@@ -114,9 +97,9 @@
         </div>
     </div>
 
-    <?php include 'includes/footer.php'; ?>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/public/assets/js/admin/dashboard.js"></script>
+    <script src="/assets/js/admin/dashboard.js"></script>
 </body>
+
 </html>
