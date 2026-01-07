@@ -39,7 +39,7 @@ $userFotoNavbar = !empty($userData['foto_url']) ? $userData['foto_url'] : 'https
                     <button class="btn btn-primary me-3 d-lg-none" id="mobile-toggle"><i class="bi bi-list"></i></button>
                     <h5 class="m-0 fw-bold">Detail Topik Forum</h5>
                 </div>
-                <div class="dropdown">
+                <!-- <div class="dropdown">
                     <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
                         <img src="<?= $userFotoNavbar ?>" alt="Profile" width="35" height="35" class="rounded-circle me-2" style="object-fit: cover;">
                         <span class="d-none d-sm-inline text-dark fw-bold small"><?= htmlspecialchars($userData['nama_lengkap'] ?? 'Nisho') ?></span>
@@ -51,7 +51,7 @@ $userFotoNavbar = !empty($userData['foto_url']) ? $userData['foto_url'] : 'https
                         </li>
                         <li><a class="dropdown-item text-danger" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
                     </ul>
-                </div>
+                </div> -->
             </nav>
 
             <div class="container-fluid p-0">

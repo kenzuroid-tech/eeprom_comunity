@@ -1,8 +1,17 @@
 <?php
 $adminData = $adminData ?? [];
+// Tambahkan inisialisasi default agar tidak error jika variabel belum dikirim
+$totalAnggota = $totalAnggota ?? 0;
+$totalKegiatan = $totalKegiatan ?? 0;
+$totalAnnouncements = $totalAnnouncements ?? 0;
+$totalVotes = $totalVotes ?? 0;
+$fotoPath = $fotoPath ?? '/assets/images/default_profile.png';
+$adminFotoNavbar = !empty($adminData['foto_url']) ? $adminData['foto_url'] : 'https://ui-avatars.com/api/?name=' . urlencode($adminData['nama_lengkap'] ?? 'Admin');
+
 $chartLabels = json_encode(array_column($chartData ?? [], 'title'));
 $chartValues = json_encode(array_column($chartData ?? [], 'hadir'));
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -25,9 +34,36 @@ $chartValues = json_encode(array_column($chartData ?? [], 'hadir'));
 
             <nav class="navbar navbar-expand-lg navbar-light bg-white rounded shadow-sm mb-4 px-3 d-flex justify-content-between">
                 <h4 class="m-0 fw-bold">Admin Dashboard</h4>
-                <div class="d-flex align-items-center">
-                    <span class="me-3 fw-bold small text-muted"><?= htmlspecialchars($adminData['nama_lengkap'] ?? 'Super Admin') ?></span>
-                    <img src="<?= !empty($adminData['foto_url']) ? $adminData['foto_url'] : 'https://ui-avatars.com/api/?name=Admin' ?>" width="35" height="35" class="rounded-circle border">
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
+                        id="adminDropdown"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <img src="<?= htmlspecialchars($adminFotoNavbar) ?>"
+                            alt="Profile"
+                            width="35"
+                            height="35"
+                            class="rounded-circle me-2"
+                            style="object-fit: cover; border: 1px solid #ddd;">
+                        <span class="d-none d-sm-inline text-dark fw-bold">
+                            <?= htmlspecialchars($adminData['nama_lengkap'] ?? 'Super Admin') ?>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="adminDropdown">
+                        <li>
+                            <a class="dropdown-item py-2" href="/member/profile">
+                                <i class="bi bi-person me-2 text-primary"></i>Profile
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-danger py-2" href="/logout">
+                                <i class="bi bi-box-arrow-right me-2"></i>Logout
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </nav>
 

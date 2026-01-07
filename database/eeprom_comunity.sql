@@ -1,4 +1,4 @@
-CREATE TYPE user_role AS ENUM ('admin', 'anggota'); -- untuk login dengan peran anggota atau admin
+CREATE TYPE user_role AS ENUM ('admin', 'anggota');
 
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS members (
     status_keanggotaan VARCHAR(20) DEFAULT 'active',
     foto_url TEXT,
     bio TEXT,
-    social_links JSONB, -- Pastikan koma di sini ada jika ada baris berikutnya
+    social_links JSONB,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     -- Bagian Constraint (Pastikan didahului koma dari baris sebelumnya)
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS announcements (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
-    category VARCHAR(50) DEFAULT 'Umum', -- 'Umum', 'Kegiatan', 'Penting'
+    category VARCHAR(50) DEFAULT 'Umum',
     author VARCHAR(100) DEFAULT 'Admin',
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );

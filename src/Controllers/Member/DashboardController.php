@@ -2,50 +2,59 @@
 
 namespace App\Controllers\Member;
 
-use App\Helpers\DatabaseHelper; // Pastikan helper database di-import
+use App\Helpers\DatabaseHelper;
 
-class DashboardController 
+class DashboardController
 {
-    public function index() 
+    public function index()
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        // Bypass sementara jika login belum stabil (seperti di ProfileController)
-        if (!isset($_SESSION['id'])) {
-            $_SESSION['id'] = 2; 
+        // Ambil ID User dari session login
+        $userId = $_SESSION['user_id'] ?? null;
+        if (!$userId) {
+            header('Location: /login');
+            exit;
         }
 
-        try {
-            $db = DatabaseHelper::getConnection();
+        $db = \App\Helpers\DatabaseHelper::getConnection();
 
-            // Ambil data nama lengkap dan foto dari tabel members
-            $stmt = $db->prepare("
-                SELECT u.role, m.nama_lengkap, m.foto_url 
-                FROM users u 
-                LEFT JOIN members m ON u.id = m.user_id 
-                WHERE u.id = :id
-            ");
-            $stmt->execute(['id' => $_SESSION['id']]);
-            $userData = $stmt->fetch(\PDO::FETCH_ASSOC);
+        // 1. Ambil data dasar member (Nama & Foto)
+        $stmt = $db->prepare("SELECT nama_lengkap, foto_url, created_at FROM members WHERE user_id = :id");
+        $stmt->execute(['id' => $userId]);
+        $member = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-            // Siapkan data untuk dikirim ke view
-            $dashboardData = [
-                'nama' => $userData['nama_lengkap'] ?? 'Anggota',
-                'role' => $userData['role'] ?? 'Member',
-                'foto' => $userData['foto_url'] ?? '/assets/images/memeng.jpg',
-                'attendance' => 0, // Nanti diisi dengan query asli
-                'total_meetings' => 0,
-                'voting_status' => 'Belum Voting',
-                'active_since' => '2025'
-            ];
+        // 2. Hitung Statistik Kehadiran
+        $stmtAtt = $db->prepare("
+        SELECT 
+            COUNT(*) as total_pertemuan,
+            COUNT(CASE WHEN status = 'Hadir' THEN 1 END) as total_hadir
+        FROM attendance WHERE user_id = :id
+    ");
+        $stmtAtt->execute(['id' => $userId]);
+        $att = $stmtAtt->fetch(\PDO::FETCH_ASSOC);
 
-            // Load view dashboard dengan membawa variabel $dashboardData
-            require_once __DIR__ . '/../../Views/member-area/dashboard.php';
+        $totalMeetings = (int)$att['total_pertemuan'];
+        $totalHadir = (int)$att['total_hadir'];
+        $attendancePercent = ($totalMeetings > 0) ? round(($totalHadir / $totalMeetings) * 100) : 0;
 
-        } catch (\PDOException $e) {
-            die("Kesalahan Database: " . $e->getMessage());
-        }
+        // 3. Cek Status Voting
+        $stmtVote = $db->prepare("SELECT id FROM votes WHERE user_id = :id");
+        $stmtVote->execute(['id' => $userId]);
+        $hasVoted = $stmtVote->fetch();
+
+        // 4. Susun data untuk dikirim ke View
+        $dashboardData = [
+            'nama'           => $member['nama_lengkap'],
+            'foto'           => !empty($member['foto_url']) ? $member['foto_url'] : '/assets/images/default-avatar.png',
+            'attendance'     => $attendancePercent,
+            'total_meetings' => $totalMeetings,
+            'voting_status'  => $hasVoted ? 'Sudah Memilih' : 'Belum Memilih',
+            'active_since'   => date('F Y', strtotime($member['created_at']))
+        ];
+
+        require_once __DIR__ . '/../../Views/member-area/dashboard.php';
     }
 }

@@ -1,13 +1,10 @@
 <?php
-/**
- * File: src/Views/member-area/gallery/index.php
- */
 
-// Data dikirim dari GalleryController
 $galleryItems = $galleryItems ?? [];
 $userData = $userData ?? [];
+$profileData = $profileData ?? [];
+$socialLinks = json_decode($profileData['social_links'] ?? '{}', true);
 
-// Logika foto profil user di navbar
 $userFoto = !empty($userData['foto_url']) ? $userData['foto_url'] : 'https://ui-avatars.com/api/?name=' . urlencode($userData['nama_lengkap'] ?? 'Member');
 ?>
 <!DOCTYPE html>
@@ -42,22 +39,50 @@ $userFoto = !empty($userData['foto_url']) ? $userData['foto_url'] : 'https://ui-
         <?php include __DIR__ . '/../../layouts/sidebar-ma.php'; ?>
 
         <div id="mainContentWrapper" class="main-content-area p-4">
-            
-            <nav class="top-navbar d-flex justify-content-between align-items-center mb-4">
+
+            <nav class="top-navbar d-flex justify-content-between align-items-center bg-white p-3 rounded shadow-sm mb-4">
                 <div class="d-flex align-items-center">
-                    <button class="btn btn-primary me-3 d-lg-none" id="mobile-toggle"><i class="bi bi-list"></i></button>
-                    <h4 class="m-0 fw-bold text-dark"></>Community Gallery</h4>
+                    <button class="btn btn-light border me-3 d-lg-none" id="mobile-toggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div>
+                        <h5 class="m-0 fw-bold text-dark">Community Gallery</h5>
+                    </div>
                 </div>
 
                 <div class="dropdown">
-                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-                        <img src="<?= $userFoto ?>" alt="Profile" width="35" height="35" class="rounded-circle me-2" style="object-fit: cover; border: 1px solid #ddd;">
-                        <span class="d-none d-sm-inline text-dark fw-bold small"><?= htmlspecialchars($userData['nama_lengkap'] ?? 'Member') ?></span>
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle p-1 rounded-pill hover-bg-light" data-bs-toggle="dropdown">
+                        <img src="<?= htmlspecialchars($fotoPath) ?>"
+                            alt="Profile"
+                            width="35"
+                            height="35"
+                            class="rounded-circle border"
+                            style="object-fit: cover;">
+                        <span class="d-none d-sm-inline text-dark fw-bold small ms-2 me-1">
+                            <?= htmlspecialchars($userData['nama_lengkap'] ?? 'Member') ?>
+                        </span>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
-                        <li><a class="dropdown-item" href="/member/profile"><i class="bi bi-person me-2"></i>Profile Saya</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-3 animate slideIn">
+                        <div class="px-3 py-2 d-sm-none border-bottom mb-2">
+                            <p class="m-0 fw-bold small text-truncate" style="max-width: 150px;">
+                                <?= htmlspecialchars($userData['nama_lengkap'] ?? 'Member') ?>
+                            </p>
+                        </div>
+
+                        <li>
+                            <a class="dropdown-item py-2" href="/member/settings">
+                                <i class="bi bi-gear me-2 text-secondary"></i>Pengaturan
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-danger py-2" href="/logout">
+                                <i class="bi bi-box-arrow-right me-2"></i>Logout
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </nav>
@@ -85,7 +110,7 @@ $userFoto = !empty($userData['foto_url']) ? $userData['foto_url'] : 'https://ui-
                         <label class="form-label small fw-bold">Tahun</label>
                         <select name="year" class="form-select">
                             <option value="">Semua Tahun</option>
-                            <?php for($i = date('Y'); $i >= 2023; $i--): ?>
+                            <?php for ($i = date('Y'); $i >= 2023; $i--): ?>
                                 <option value="<?= $i ?>"><?= $i ?></option>
                             <?php endfor; ?>
                         </select>
@@ -104,18 +129,18 @@ $userFoto = !empty($userData['foto_url']) ? $userData['foto_url'] : 'https://ui-
                     </div>
                 <?php else: ?>
                     <?php foreach ($galleryItems as $item): ?>
-                    <div class="col-sm-6 col-lg-4 col-xl-3">
-                        <div class="gallery-item" onclick="openLightbox('<?= $item['image_url'] ?>', '<?= htmlspecialchars($item['title']) ?>')">
-                            <div class="gallery-img-wrapper">
-                                <span class="category-badge"><?= htmlspecialchars($item['category']) ?></span>
-                                <img src="<?= $item['image_url'] ?>" alt="<?= htmlspecialchars($item['title']) ?>">
-                            </div>
-                            <div class="gallery-info">
-                                <h6><?= htmlspecialchars($item['title']) ?></h6>
-                                <span class="date"><i class="bi bi-calendar-event me-1"></i><?= date('d M Y', strtotime($item['event_date'])) ?></span>
+                        <div class="col-sm-6 col-lg-4 col-xl-3">
+                            <div class="gallery-item" onclick="openLightbox('<?= $item['image_url'] ?>', '<?= htmlspecialchars($item['title']) ?>')">
+                                <div class="gallery-img-wrapper">
+                                    <span class="category-badge"><?= htmlspecialchars($item['category']) ?></span>
+                                    <img src="<?= $item['image_url'] ?>" alt="<?= htmlspecialchars($item['title']) ?>">
+                                </div>
+                                <div class="gallery-info">
+                                    <h6><?= htmlspecialchars($item['title']) ?></h6>
+                                    <span class="date"><i class="bi bi-calendar-event me-1"></i><?= date('d M Y', strtotime($item['event_date'])) ?></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
@@ -165,4 +190,5 @@ $userFoto = !empty($userData['foto_url']) ? $userData['foto_url'] : 'https://ui-
         });
     </script>
 </body>
+
 </html>

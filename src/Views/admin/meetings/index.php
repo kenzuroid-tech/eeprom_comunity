@@ -1,5 +1,40 @@
+<?php
+
+/**
+ * File: src/Views/admin/meetings/index.php
+ */
+$adminData = $adminData ?? [];
+$meetings = $meetings ?? [];
+$today = date('Y-m-d');
+
+// Memisahkan rapat berdasarkan waktu
+$upcomingMeetings = array_filter($meetings, function ($m) use ($today) {
+    return $m['date'] >= $today;
+});
+
+$pastMeetings = array_filter($meetings, function ($m) use ($today) {
+    return $m['date'] < $today;
+});
+$adminFotoNavbar = !empty($adminData['foto_url']) ? $adminData['foto_url'] : 'https://ui-avatars.com/api/?name=' . urlencode($adminData['nama_lengkap'] ?? 'Admin');
+
+$adminData = $adminData ?? [];
+$meetings = $meetings ?? [];
+$allMembers = $allMembers ?? []; // Variabel baru untuk dropdown laporan
+$today = date('Y-m-d');
+
+// Filter Rapat
+$upcomingMeetings = array_filter($meetings, function ($m) use ($today) {
+    return $m['date'] >= $today;
+});
+
+$pastMeetings = array_filter($meetings, function ($m) use ($today) {
+    return $m['date'] < $today;
+});
+?>
+
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,41 +42,54 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
-    <link rel="stylesheet" href="/public/assets/css/admin/meetings/index.css">
-    <link rel="icon" href="/img/eeprom logo.png" type="image/png">
+    <link rel="stylesheet" href="/assets/css/admin/meetings/index.css">
+    <link rel="icon" href="/assets/images/eeprom_logo.png" type="image/png">
 </head>
 
 <body>
     <div class="dashboard-wrapper">
-        <?php include '../includes/sidebar.php'; ?>
-        
-        <div id="mainContentWrapper" class="main-content-area">
+        <?php include_once __DIR__ . '/../includes/sidebar.php'; ?>
 
-            <nav class="top-navbar d-flex justify-content-between align-items-center">
+        <div id="mainContentWrapper" class="main-content-area p-4">
+            <nav class="navbar navbar-expand-lg navbar-light bg-white rounded shadow-sm mb-4 px-3 d-flex justify-content-between">
                 <div class="d-flex align-items-center">
-                    <button class="btn btn-primary me-3 d-lg-none" id="mobile-toggle">
-                        <i class="bi bi-list"></i>
-                    </button>
-                    <h4 class="m-0 fw-bold">Meetings & Attendance</h4>
+                    <button class="btn btn-primary me-3 d-lg-none" id="mobile-toggle"><i class="bi bi-list"></i></button>
+                    <h4 class="m-0 fw-bold text-primary">Meetings & Attendance</h4>
                 </div>
-                
-                <div class="d-flex align-items-center">
-                    <div class="dropdown">
-                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-                            <img src="https://ui-avatars.com/api/?name=Admin+EEPROM&background=1A237E&color=fff" alt="Profile" width="35" class="rounded-circle me-2">
-                            <span class="d-none d-sm-inline text-dark fw-bold">Super Admin</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
-                        </ul>
-                    </div>
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
+                        id="adminDropdown"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <img src="<?= htmlspecialchars($adminFotoNavbar) ?>"
+                            alt="Profile"
+                            width="35"
+                            height="35"
+                            class="rounded-circle me-2"
+                            style="object-fit: cover; border: 1px solid #ddd;">
+                        <span class="d-none d-sm-inline text-dark fw-bold">
+                            <?= htmlspecialchars($adminData['nama_lengkap'] ?? 'Super Admin') ?>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="adminDropdown">
+                        <li>
+                            <a class="dropdown-item py-2" href="/member/profile">
+                                <i class="bi bi-person me-2 text-primary"></i>Profile
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-danger py-2" href="/logout">
+                                <i class="bi bi-box-arrow-right me-2"></i>Logout
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </nav>
 
-            <div class="widget-card-admin">
+            <div class="widget-card-admin bg-white p-4 rounded shadow-sm">
                 <ul class="nav nav-tabs nav-tabs-custom mb-4" id="meetingTabs" role="tablist">
                     <li class="nav-item">
                         <button class="nav-link active" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming" type="button">Upcoming Meetings</button>
@@ -55,73 +103,73 @@
                 </ul>
 
                 <div class="tab-content" id="meetingTabsContent">
-                    
                     <div class="tab-pane fade show active" id="upcoming" role="tabpanel">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h6 class="fw-bold mb-0">Rapat Terjadwal</h6>
-                            <button class="btn btn-orange btn-sm shadow-sm"><i class="bi bi-calendar-plus me-2"></i>Jadwalkan Rapat Baru</button>
+                            <a href="/admin/meetings/create" class="btn btn-orange btn-sm shadow-sm">
+                                <i class="bi bi-calendar-plus me-2"></i>Jadwalkan Rapat Baru
+                            </a>
                         </div>
-                        
+
                         <div class="row g-4">
-                            <div class="col-md-6 col-lg-4">
-                                <div class="meeting-card p-4 border">
-                                    <div class="d-flex justify-content-between mb-3">
-                                        <span class="badge bg-primary-subtle text-primary rounded-pill">Koordinasi</span>
-                                        <i class="bi bi-three-dots-vertical text-muted"></i>
-                                    </div>
-                                    <h5 class="fw-bold mb-3">Rapat Mingguan Divisi Software</h5>
-                                    <ul class="list-unstyled small text-muted mb-4">
-                                        <li class="mb-2"><i class="bi bi-calendar-event me-2"></i>Kamis, 19 Des 2024</li>
-                                        <li class="mb-2"><i class="bi bi-clock me-2"></i>19.00 - 21.00 WIB</li>
-                                        <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>Lab Robotika / Online</li>
-                                        <li><i class="bi bi-people me-2"></i>45 Anggota Terdaftar</li>
-                                    </ul>
-                                    <div class="d-grid gap-2">
-                                        <a href="#" class="btn btn-primary btn-sm"><i class="bi bi-qr-code-scan me-2"></i>Input Attendance</a>
-                                        <div class="btn-group">
-                                            <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-pencil me-1"></i> Edit</button>
-                                            <button class="btn btn-outline-danger btn-sm"><i class="bi bi-x-circle me-1"></i> Cancel</button>
+                            <?php if (empty($upcomingMeetings)): ?>
+                                <div class="col-12 text-center py-5">
+                                    <img src="/assets/images/empty_state.svg" width="150" class="mb-3 opacity-50">
+                                    <p class="text-muted">Tidak ada rapat mendatang.</p>
+                                </div>
+                                <?php else: foreach ($upcomingMeetings as $m): ?>
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="meeting-card p-4 border rounded shadow-sm position-relative">
+                                            <div class="d-flex justify-content-between mb-3">
+                                                <span class="badge bg-primary-subtle text-primary rounded-pill">Koordinasi</span>
+                                                <div class="dropdown">
+                                                    <i class="bi bi-three-dots-vertical text-muted cursor-pointer" data-bs-toggle="dropdown"></i>
+                                                    <ul class="dropdown-menu border-0 shadow-sm">
+                                                        <li><a class="dropdown-item" href="/admin/meetings/edit?id=<?= $m['id'] ?>">Edit</a></li>
+                                                        <li><a class="dropdown-item text-danger" href="/admin/meetings/delete?id=<?= $m['id'] ?>">Hapus</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <h5 class="fw-bold mb-3"><?= htmlspecialchars($m['title']) ?></h5>
+                                            <ul class="list-unstyled small text-muted mb-4">
+                                                <li class="mb-2"><i class="bi bi-calendar-event me-2"></i><?= date('D, d M Y', strtotime($m['date'])) ?></li>
+                                                <li class="mb-2"><i class="bi bi-clock me-2"></i><?= date('H:i', strtotime($m['start_time'])) ?> WIB</li>
+                                                <li class="mb-2"><i class="bi bi-geo-alt me-2"></i><?= htmlspecialchars($m['location']) ?></li>
+                                            </ul>
+                                            <div class="d-grid gap-2">
+                                                <a href="/admin/attendance/input?id=<?= $m['id'] ?>" class="btn btn-primary btn-sm">
+                                                    <i class="bi bi-qr-code-scan me-2"></i>Input Attendance
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+                            <?php endforeach;
+                            endif; ?>
                         </div>
                     </div>
 
                     <div class="tab-pane fade" id="past" role="tabpanel">
-                        <div class="row mb-4 align-items-end g-3">
-                            <div class="col-md-4">
-                                <label class="small fw-bold mb-2">Filter Rentang Tanggal</label>
-                                <div class="input-group input-group-sm">
-                                    <input type="date" class="form-control">
-                                    <span class="input-group-text">to</span>
-                                    <input type="date" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="table-responsive">
                             <table class="table table-hover align-middle">
                                 <thead class="table-light">
                                     <tr>
                                         <th>Judul Rapat</th>
                                         <th>Tanggal</th>
-                                        <th>Kehadiran</th>
-                                        <th>Persentase</th>
+                                        <th>Lokasi</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody class="small">
-                                    <tr>
-                                        <td class="fw-bold">Evaluasi Lomba KRI</td>
-                                        <td>10 Des 2024</td>
-                                        <td>42/45</td>
-                                        <td><span class="badge bg-success">93.3%</span></td>
-                                        <td>
-                                            <button class="btn btn-light btn-sm border"><i class="bi bi-eye"></i> View</button>
-                                            <button class="btn btn-light btn-sm border"><i class="bi bi-pencil"></i> Edit</button>
-                                        </td>
-                                    </tr>
+                                    <?php foreach ($pastMeetings as $pm): ?>
+                                        <tr>
+                                            <td class="fw-bold"><?= htmlspecialchars($pm['title']) ?></td>
+                                            <td><?= date('d M Y', strtotime($pm['date'])) ?></td>
+                                            <td><?= htmlspecialchars($pm['location']) ?></td>
+                                            <td>
+                                                <a href="/admin/attendance/report?id=<?= $pm['id'] ?>" class="btn btn-light btn-sm border"><i class="bi bi-eye"></i> View</a>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
                                 </tbody>
                             </table>
                         </div>
@@ -130,58 +178,27 @@
                     <div class="tab-pane fade" id="reports" role="tabpanel">
                         <div class="row mb-5 g-4">
                             <div class="col-lg-4">
-                                <label class="small fw-bold mb-2">Pilih Anggota</label>
-                                <select class="form-select mb-4 shadow-sm">
-                                    <option selected disabled>Cari Nama / NIM...</option>
-                                    <option>Ahmad Fauzan (2241720XXX)</option>
-                                    <option>Budi Santoso (2241720XXX)</option>
-                                </select>
-                                <button class="btn btn-orange w-100 shadow-sm"><i class="bi bi-file-earmark-arrow-down me-2"></i>Export Report (PDF/Excel)</button>
-                            </div>
-                            <div class="col-lg-8">
-                                <div class="row text-center g-3">
-                                    <div class="col-4">
-                                        <div class="stat-circle" style="color: var(--primary-blue);">15</div>
-                                        <p class="small text-muted fw-bold">Total Rapat</p>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="stat-circle text-success">13</div>
-                                        <p class="small text-muted fw-bold">Total Hadir</p>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="stat-circle text-primary">86%</div>
-                                        <p class="small text-muted fw-bold">Persentase</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                <label class="small fw-bold mb-2">Cari Anggota</label>
+                                <form action="/admin/meetings/search-report" method="GET">
+                                    <select name="user_id" class="form-select mb-4 shadow-sm" required>
+                                        <option value="" selected disabled>Pilih Nama Anggota...</option>
 
-                        <h6 class="fw-bold mb-3"><i class="bi bi-clock-history me-2 text-primary"></i>Riwayat Kehadiran</h6>
-                        <div class="table-responsive">
-                            <table class="table table-hover border-top">
-                                <thead class="small fw-bold">
-                                    <tr>
-                                        <th>Pertemuan</th>
-                                        <th>Tanggal</th>
-                                        <th>Status</th>
-                                        <th>Keterangan</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="small">
-                                    <tr>
-                                        <td>Rapat Mingguan Divisi Software</td>
-                                        <td>12 Des 2024</td>
-                                        <td><span class="text-success fw-bold">HADIR</span></td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Briefing Kunjungan Industri</td>
-                                        <td>05 Des 2024</td>
-                                        <td><span class="text-danger fw-bold">ABSEN</span></td>
-                                        <td>Sakit (Surat terlampir)</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                        <?php if (!empty($allMembers)): ?>
+                                            <?php foreach ($allMembers as $member): ?>
+                                                <option value="<?= $member['user_id'] ?>">
+                                                    <?= htmlspecialchars($member['nama_lengkap']) ?> (<?= $member['nim'] ?>)
+                                                </option>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <option disabled>Data anggota tidak tersedia</option>
+                                        <?php endif; ?>
+
+                                    </select>
+                                    <button type="submit" class="btn btn-orange w-100 shadow-sm">
+                                        <i class="bi bi-file-earmark-arrow-down me-2"></i>Export Report
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -190,6 +207,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/public/assets/js/admin/meetings/index.js"></script>
+    <script src="/assets/js/admin/dashboard.js"></script>
 </body>
+
 </html>

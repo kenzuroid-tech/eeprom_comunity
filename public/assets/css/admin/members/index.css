@@ -12,9 +12,9 @@
 }
 
 /* GLOBAL STYLES */
-* { 
-    box-sizing: border-box; 
-    font-family: 'Poppins', sans-serif; 
+* {
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
 
 body {
@@ -25,9 +25,9 @@ body {
 }
 
 /* LAYOUT STRUCTURE */
-.dashboard-wrapper { 
-    display: flex; 
-    min-height: 100vh; 
+.dashboard-wrapper {
+    display: flex;
+    min-height: 100vh;
 }
 
 .main-content-area {
@@ -71,8 +71,13 @@ body {
     padding: 15px 0;
 }
 
-.sidebar-nav::-webkit-scrollbar { width: 4px; }
-.sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
+.sidebar-nav::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+}
 
 .sidebar-nav .nav-link {
     color: rgba(255, 255, 255, 0.85);
@@ -85,7 +90,10 @@ body {
     text-decoration: none;
 }
 
-.sidebar-nav .nav-link i { margin-right: 15px; font-size: 1.1rem; }
+.sidebar-nav .nav-link i {
+    margin-right: 15px;
+    font-size: 1.1rem;
+}
 
 .sidebar-nav .nav-link:hover {
     background-color: rgba(255, 255, 255, 0.1);
@@ -104,24 +112,25 @@ body {
     background: rgba(0, 0, 0, 0.1);
     list-style: none;
     padding: 0;
-    display: none; /* Hidden by default */
+    display: none;
+    /* Hidden by default */
 }
 
-.nav-dropdown-items.show { 
-    display: block; 
+.nav-dropdown-items.show {
+    display: block;
 }
 
-.nav-dropdown-items .nav-link { 
-    padding-left: 55px; 
-    font-size: 0.85rem; 
+.nav-dropdown-items .nav-link {
+    padding-left: 55px;
+    font-size: 0.85rem;
 }
 
 .sidebar-footer {
     padding: 15px;
     text-align: center;
     font-size: 0.75rem;
-    background: rgba(0,0,0,0.2);
-    color: rgba(255,255,255,0.6);
+    background: rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 0.6);
 }
 
 /* TOP NAVBAR */
@@ -130,7 +139,7 @@ body {
     padding: 15px 30px;
     border-radius: 12px;
     margin-bottom: 30px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 /* CARDS & WIDGETS */
@@ -145,13 +154,17 @@ body {
     height: 100%;
 }
 
-.stat-icon { font-size: 2rem; margin-right: 15px; color: var(--secondary-blue); }
+.stat-icon {
+    font-size: 2rem;
+    margin-right: 15px;
+    color: var(--secondary-blue);
+}
 
 .widget-card-admin {
-    background: white; 
-    padding: 25px; 
+    background: white;
+    padding: 25px;
     border-radius: 15px;
-    box-shadow: 0 4px 15px var(--shadow-light); 
+    box-shadow: 0 4px 15px var(--shadow-light);
     margin-bottom: 30px;
 }
 
@@ -182,11 +195,13 @@ body {
     border-radius: 12px;
     padding: 15px;
     background: white;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s;
 }
 
-.division-card:hover { transform: translateY(-5px); }
+.division-card:hover {
+    transform: translateY(-5px);
+}
 
 .status-badge {
     font-size: 0.75rem;
@@ -195,9 +210,20 @@ body {
     font-weight: 600;
 }
 
-.status-selesai { background: #e8f5e9; color: #2e7d32; }
-.status-belum { background: #fffde7; color: #f9a825; }
-.status-telat { background: #ffebee; color: #c62828; }
+.status-selesai {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-belum {
+    background: #fffde7;
+    color: #f9a825;
+}
+
+.status-telat {
+    background: #ffebee;
+    color: #c62828;
+}
 
 /* CHART PLACEHOLDER */
 .chart-placeholder {
@@ -211,9 +237,102 @@ body {
     color: #999;
 }
 
+/* FORM SEARCH & FILTER STYLING */
+
+/* Memastikan label memiliki jarak yang pas dan font yang konsisten */
+.form-label {
+    color: var(--dark-text);
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+}
+
+/* Mempercantik input text dan select */
+.form-control,
+.form-select {
+    border: 1px solid #e0e0e0;
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Efek fokus yang halus senada dengan tema biru */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--secondary-blue);
+    box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.1);
+    outline: none;
+}
+
+/* Mengatur input group (icon search di sebelah kiri) */
+.input-group-text {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px 0 0 8px;
+    color: #adb5bd;
+}
+
+.input-group .form-control {
+    border-radius: 0 8px 8px 0;
+}
+
+/* Mempercantik tombol Cari */
+.btn-primary {
+    background-color: var(--primary-blue);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(26, 35, 126, 0.2);
+}
+
+/* Tombol Export (Excel & PDF) */
+.btn-outline-success,
+.btn-outline-danger {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border-width: 1.5px;
+}
+
+.btn-outline-success:hover,
+.btn-outline-danger:hover {
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* Responsif: Menyesuaikan margin tombol di layar kecil */
+@media (max-width: 768px) {
+    .text-end {
+        text-align: left !important;
+        margin-top: 10px;
+    }
+
+    .btn-primary {
+        margin-bottom: 10px;
+    }
+}
+
 /* RESPONSIVE */
 @media (max-width: 992px) {
-    .sidebar { transform: translateX(-100%); }
-    .sidebar.show { transform: translateX(0); }
-    .main-content-area { margin-left: 0; }
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.show {
+        transform: translateX(0);
+    }
+
+    .main-content-area {
+        margin-left: 0;
+    }
 }

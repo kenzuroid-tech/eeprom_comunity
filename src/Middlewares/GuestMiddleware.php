@@ -15,7 +15,7 @@ class GuestMiddleware
             $role = strtolower($_SESSION['role'] ?? '');
             
             if ($role === 'admin') {
-                header('Location: /admin');
+                header('Location: /admin/dashboard');
                 exit();
             } elseif ($role === 'anggota') {
                 header('Location: /member/dashboard');

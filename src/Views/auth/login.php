@@ -55,6 +55,7 @@
                         <span class="input-group-text bg-light border-end-0">
                             <i class="bi bi-person text-muted"></i>
                         </span>
+                        <!-- PENTING: name="username" sesuai dengan LoginController -->
                         <input type="text" class="form-control border-start-0" id="identifier" name="username"
                             placeholder="Masukkan NIM atau Email" required>
                     </div>
