@@ -18,9 +18,12 @@ Sistem ini terdiri dari tiga bagian utama, yaitu halaman utama yang dapat diakse
 
 **1. Admin Panel**
 Digunakan oleh admin untuk mengelola data anggota, konten dan pengumuman, dokumentasi kegiatan, serta pengaturan lainnya.
+
 **2. Member Area**
 Halaman khusus anggota untuk mengelola profil, melihat riwayat kehadiran setiap pertemuan, dan mendapatkan informasi terbaru seputar EEPROM.
+
 **3. Public Facing Pages**
 Halaman utama yang bisa diakses oleh publik dan berisi informasi tentang EEPROM, termasuk formulir rekrutmen bagi mahasiswa yang tertarik untuk bergabung.
+
 **4. Voting System**
 Fitur pemilihan ketua umum EEPROM di setiap periode kepengurusan melalui sistem voting, baik internal maupun eksternal, yang dilakukan secara transparan.
