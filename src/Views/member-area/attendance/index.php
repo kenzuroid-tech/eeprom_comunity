@@ -26,22 +26,49 @@ $fotoPath = !empty($userData['foto_url']) ? $userData['foto_url'] : 'https://ui-
         <?php include_once __DIR__ . '/../../layouts/sidebar-ma.php'; ?>
 
         <div id="mainContentWrapper" class="main-content-area p-4">
-            <nav class="top-navbar d-flex justify-content-between align-items-center mb-4">
+            <nav class="top-navbar d-flex justify-content-between align-items-center bg-white p-3 rounded shadow-sm mb-4">
                 <div class="d-flex align-items-center">
-                    <button class="btn btn-primary me-3 d-lg-none" id="mobile-toggle"><i class="bi bi-list"></i></button>
-                    <h4 class="m-0 fw-bold">My Attendance</h4>
+                    <button class="btn btn-light border me-3 d-lg-none" id="mobile-toggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div>
+                        <h5 class="m-0 fw-bold text-dark">Presensiku</h5>
+                    </div>
                 </div>
+
                 <div class="dropdown">
-                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-                        <img src="<?= $fotoPath ?>" width="35" height="35" class="rounded-circle me-2" style="object-fit: cover;">
-                        <span class="d-none d-sm-inline text-dark fw-bold small"><?= htmlspecialchars($userData['nama_lengkap'] ?? 'Member') ?></span>
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle p-1 rounded-pill hover-bg-light" data-bs-toggle="dropdown">
+                        <img src="<?= htmlspecialchars($fotoPath) ?>"
+                            alt="Profile"
+                            width="35"
+                            height="35"
+                            class="rounded-circle border"
+                            style="object-fit: cover;">
+                        <span class="d-none d-sm-inline text-dark fw-bold small ms-2 me-1">
+                            <?= htmlspecialchars($userData['nama_lengkap'] ?? 'Member') ?>
+                        </span>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
-                        <li><a class="dropdown-item" href="/member/profile"><i class="bi bi-person me-2"></i>Profile Saya</a></li>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-3 animate slideIn">
+                        <div class="px-3 py-2 d-sm-none border-bottom mb-2">
+                            <p class="m-0 fw-bold small text-truncate" style="max-width: 150px;">
+                                <?= htmlspecialchars($userData['nama_lengkap'] ?? 'Member') ?>
+                            </p>
+                        </div>
+
+                        <li>
+                            <a class="dropdown-item py-2" href="/member/settings">
+                                <i class="bi bi-gear me-2 text-secondary"></i>Pengaturan
+                            </a>
+                        </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item text-danger" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                        <li>
+                            <a class="dropdown-item text-danger py-2" href="/logout">
+                                <i class="bi bi-box-arrow-right me-2"></i>Logout
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </nav>

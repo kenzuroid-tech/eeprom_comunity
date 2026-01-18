@@ -32,7 +32,7 @@ class AuthService
 
     public function validateCredentials($identifier, $password)
     {
-        error_log("🔐 AuthService: Validating credentials");
+        error_log("🔍 AuthService: Validating credentials");
         error_log("   Searching for user: " . $identifier);
         
         $user = $this->userModel->findByIdentifier($identifier);
@@ -51,7 +51,7 @@ class AuthService
         error_log("      - Password Hash (first 20 chars): " . substr($user['password'], 0, 20) . "...");
         
         // Verifikasi password
-        error_log("   🔑 Verifying password...");
+        error_log("   🔒 Verifying password...");
         $isPasswordValid = password_verify($password, $user['password']);
         
         error_log("      - Password verify result: " . ($isPasswordValid ? '✅ VALID' : '❌ INVALID'));
@@ -74,7 +74,8 @@ class AuthService
 
     public function login($userData)
     {
-        if (session_status() === PHP_SESSION_NONE) session_start();
+        // Session sudah di-start di LoginController __construct()
+        // Jadi TIDAK PERLU session_start() lagi di sini
         
         error_log("📦 AuthService: Creating session data");
         
@@ -102,8 +103,8 @@ class AuthService
         error_log("🚀 AuthService: Getting redirect URL for role: " . $role);
         
         if ($role === 'admin') {
-            error_log("   Redirect URL: /admin");
-            return '/admin';
+            error_log("   Redirect URL: /admin/dashboard");
+            return '/admin/dashboard';
         } elseif ($role === 'anggota') {
             error_log("   Redirect URL: /member/dashboard");
             return '/member/dashboard';

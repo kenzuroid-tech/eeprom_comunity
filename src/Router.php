@@ -5,14 +5,20 @@ namespace App;
 class Router
 {
     protected $routes = [];
-    protected $middleware = [];
+    protected $lastRoute = null; // Track last route yang di-register
 
     public function get($path, $controller, $method)
     {
         $this->routes['GET'][$path] = [
             'controller' => $controller,
-            'method' => $method
+            'method' => $method,
+            'middleware' => []
         ];
+        
+        // Set reference ke route ini
+        $this->lastRoute = &$this->routes['GET'][$path];
+        
+        error_log("📝 Route registered: GET $path -> $controller::$method");
         return $this;
     }
 
@@ -20,17 +26,24 @@ class Router
     {
         $this->routes['POST'][$path] = [
             'controller' => $controller,
-            'method' => $method
+            'method' => $method,
+            'middleware' => []
         ];
+        
+        // Set reference ke route ini
+        $this->lastRoute = &$this->routes['POST'][$path];
+        
         error_log("📝 Route registered: POST $path -> $controller::$method");
         return $this;
     }
 
     public function middleware($middlewareClass)
     {
-        $lastMethod = array_key_last($this->routes);
-        $lastPath = array_key_last($this->routes[$lastMethod]);
-        $this->routes[$lastMethod][$lastPath]['middleware'][] = $middlewareClass;
+        if ($this->lastRoute !== null) {
+            $this->lastRoute['middleware'][] = $middlewareClass;
+            error_log("   🔒 Middleware added: $middlewareClass");
+        }
+        
         return $this;
     }
 
@@ -39,48 +52,59 @@ class Router
         $method = $_SERVER['REQUEST_METHOD'];
         $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-        error_log("🔍 Router: $method $path");
+        error_log("========================================");
+        error_log("🔍 Router Dispatch");
+        error_log("   Method: $method");
+        error_log("   Path: $path");
+        error_log("   POST Data: " . print_r($_POST, true));
 
         // Skip file statis
         if (file_exists($_SERVER['DOCUMENT_ROOT'] . $path) && is_file($_SERVER['DOCUMENT_ROOT'] . $path)) {
+            error_log("⏭️  Static file detected");
             return false;
         }
 
+        // Normalize path
         if ($path !== '/') {
             $path = rtrim($path, '/');
         }
 
-        error_log("🗺️  Looking for route: $method $path");
-        error_log("📋 Available routes: " . print_r(array_keys($this->routes[$method] ?? []), true));
+        error_log("🗺️  Normalized path: $path");
 
         if (isset($this->routes[$method][$path])) {
             $route = $this->routes[$method][$path];
             
-            error_log("✅ Route found! Controller: " . $route['controller'] . ", Method: " . $route['method']);
+            error_log("✅ Route MATCHED!");
+            error_log("   Controller: " . $route['controller']);
+            error_log("   Method: " . $route['method']);
+            error_log("   Middleware count: " . count($route['middleware']));
 
             // Eksekusi Middleware
-            if (isset($route['middleware'])) {
-                error_log("🔒 Running middleware...");
+            if (!empty($route['middleware'])) {
+                error_log("🔒 Running middleware:");
                 foreach ($route['middleware'] as $mw) {
                     error_log("   - " . $mw);
                     (new $mw())->handle();
                 }
+            } else {
+                error_log("ℹ️  No middleware");
             }
 
             // Panggil Controller
             error_log("🎯 Executing controller...");
             $controller = new $route['controller']();
             $methodName = $route['method'];
-            return $controller->$methodName();
+            $controller->$methodName();
+            
+            error_log("✅ Done");
+            error_log("========================================");
+            return;
         }
 
-        // Route tidak ditemukan
-        error_log("❌ Route NOT FOUND: $method $path");
+        error_log("❌ Route NOT FOUND");
+        error_log("========================================");
+        
         http_response_code(404);
-        echo "404 - Halaman Tidak Ditemukan<br>";
-        echo "Requested: $method $path<br>";
-        echo "<pre>Available routes:\n";
-        print_r($this->routes);
-        echo "</pre>";
+        echo "404 - Not Found: $method $path";
     }
 }

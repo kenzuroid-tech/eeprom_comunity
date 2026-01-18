@@ -8,6 +8,8 @@ $stats = $stats ?? ['total' => 0, 'pending' => 0, 'accepted' => 0, 'rejected' =>
 $activePeriod = $activePeriod ?? null;
 $recentApplicants = $recentApplicants ?? [];
 $allPeriods = $allPeriods ?? [];
+$adminFotoNavbar = !empty($adminData['foto_url']) ? $adminData['foto_url'] : 'https://ui-avatars.com/api/?name=' . urlencode($adminData['nama_lengkap'] ?? 'Admin');
+
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -34,9 +36,36 @@ $allPeriods = $allPeriods ?? [];
                     <button class="btn btn-primary me-3 d-lg-none" id="mobile-toggle"><i class="bi bi-list"></i></button>
                     <h4 class="m-0 fw-bold text-primary">Recruitment Management</h4>
                 </div>
-                <div class="d-flex align-items-center">
-                    <span class="me-3 fw-bold small"><?= htmlspecialchars($adminData['nama_lengkap'] ?? 'Admin') ?></span>
-                    <img src="<?= $adminData['foto_url'] ?? 'https://ui-avatars.com/api/?name=Admin' ?>" width="35" height="35" class="rounded-circle border">
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
+                        id="adminDropdown"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <img src="<?= htmlspecialchars($adminFotoNavbar) ?>"
+                            alt="Profile"
+                            width="35"
+                            height="35"
+                            class="rounded-circle me-2"
+                            style="object-fit: cover; border: 1px solid #ddd;">
+                        <span class="d-none d-sm-inline text-dark fw-bold">
+                            <?= htmlspecialchars($adminData['nama_lengkap'] ?? 'Super Admin') ?>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="adminDropdown">
+                        <li>
+                            <a class="dropdown-item py-2" href="/member/profile">
+                                <i class="bi bi-person me-2 text-primary"></i>Profile
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-danger py-2" href="/logout">
+                                <i class="bi bi-box-arrow-right me-2"></i>Logout
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </nav>
 

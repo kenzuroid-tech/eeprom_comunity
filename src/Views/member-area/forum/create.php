@@ -32,7 +32,7 @@ $userFoto = !empty($userData['foto_url']) ? $userData['foto_url'] : 'https://ui-
                     <h4 class="m-0 fw-bold">Buat Topik Baru</h4>
                 </div>
                 
-                <div class="d-flex align-items-center gap-3">
+                <!-- <div class="d-flex align-items-center gap-3">
                     <div class="dropdown">
                         <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
                             <img src="<?= $userFoto ?>" alt="Profile" width="35" height="35" class="rounded-circle me-2" style="object-fit: cover;">
@@ -44,7 +44,7 @@ $userFoto = !empty($userData['foto_url']) ? $userData['foto_url'] : 'https://ui-
                             <li><a class="dropdown-item text-danger" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
                         </ul>
                     </div>
-                </div>
+                </div> -->
             </nav>
 
             <div class="widget-card-forum bg-white p-4 rounded shadow-sm">

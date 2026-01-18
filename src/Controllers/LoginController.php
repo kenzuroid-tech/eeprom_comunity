@@ -67,7 +67,7 @@ class LoginController
         error_log("   - Role: " . ($user['role'] ?? 'N/A'));
         error_log("   - Nama: " . ($user['nama_lengkap'] ?? 'N/A'));
 
-        error_log("🔐 Creating session...");
+        error_log("📦 Creating session...");
         $this->authService->login($user);
 
         error_log("📦 Session Data After Login:");

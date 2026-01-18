@@ -11,6 +11,7 @@ $fotoPath = !empty($userData['foto_url']) ? $userData['foto_url'] : 'https://ui-
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,25 +26,57 @@ $fotoPath = !empty($userData['foto_url']) ? $userData['foto_url'] : 'https://ui-
 <body>
     <div class="dashboard-wrapper">
         <?php include_once __DIR__ . '/../../layouts/sidebar-ma.php'; ?>
-        
+
         <div id="mainContentWrapper" class="main-content-area p-4">
 
-            <nav class="top-navbar d-flex justify-content-between align-items-center mb-4">
+            <nav class="top-navbar d-flex justify-content-between align-items-center bg-white p-3 rounded shadow-sm mb-4">
                 <div class="d-flex align-items-center">
-                    <button class="btn btn-primary me-3 d-lg-none" id="mobile-toggle"><i class="bi bi-list"></i></button>
-                    <h4 class="m-0 fw-bold">Pemilihan Ketua Umum</h4>
+                    <button class="btn btn-light border me-3 d-lg-none" id="mobile-toggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div>
+                        <h5 class="m-0 fw-bold text-dark">Pemilihan Ketua Umum</h5>
+                    </div>
                 </div>
-                <div class="d-flex align-items-center gap-3">
-                    <span class="timer-box d-none d-md-block" id="topTimer">Voting Aktif</span>
+
+                <div class="d-flex align-items-center gap-2 gap-md-3">
+                    <span class="timer-box d-none d-md-inline-block bg-primary-subtle text-primary fw-bold small px-3 py-2 rounded-pill border border-primary-subtle" id="topTimer">
+                        <i class="bi bi-clock-history me-1"></i> Voting Aktif
+                    </span>
+
+                    <div class="vr d-none d-sm-block mx-1" style="height: 30px;"></div>
+
                     <div class="dropdown">
-                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-                            <img src="<?= $fotoPath ?>" width="35" height="35" class="rounded-circle me-2" style="object-fit: cover;">
-                            <span class="d-none d-sm-inline text-dark fw-bold small"><?= htmlspecialchars($userData['nama_lengkap'] ?? 'Member') ?></span>
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle p-1 rounded-pill hover-bg-light" data-bs-toggle="dropdown">
+                            <img src="<?= htmlspecialchars($fotoPath) ?>"
+                                alt="Profile"
+                                width="35"
+                                height="35"
+                                class="rounded-circle border"
+                                style="object-fit: cover;">
+                            <span class="d-none d-sm-inline text-dark fw-bold small ms-2 me-1">
+                                <?= htmlspecialchars($userData['nama_lengkap'] ?? 'Member') ?>
+                            </span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
-                            <li><a class="dropdown-item" href="/member/profile"><i class="bi bi-person me-2"></i>Profile Saya</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-3 animate slideIn">
+                            <li>
+                                <a class="dropdown-item py-2" href="/member/profile">
+                                    <i class="bi bi-person me-2 text-primary"></i>Profile Saya
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2" href="/member/dashboard">
+                                    <i class="bi bi-speedometer2 me-2 text-secondary"></i>Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item text-danger py-2" href="/logout">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -71,38 +104,38 @@ $fotoPath = !empty($userData['foto_url']) ? $userData['foto_url'] : 'https://ui-
                     <form action="/member/voting/submit" method="POST" id="formVote">
                         <div class="row g-4 mb-5">
                             <?php foreach ($candidates as $cand): ?>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="candidate-card bg-white p-3 rounded-4 shadow-sm h-100 border">
-                                    <img src="<?= $cand['photo_url'] ?>" class="w-100 rounded-4 mb-3" style="height: 250px; object-fit: cover;" alt="<?= $cand['name'] ?>">
-                                    <div class="candidate-body">
-                                        <span class="badge bg-primary mb-2">No. Urut <?= sprintf("%02d", $cand['number_order']) ?></span>
-                                        <h5 class="fw-bold text-dark"><?= htmlspecialchars($cand['name']) ?></h5>
-                                        <div class="candidate-info mb-3 small text-muted">
-                                            <p class="mb-1"><i class="bi bi-card-text me-2"></i><?= $cand['nim'] ?></p>
-                                            <p class="mb-0"><i class="bi bi-layers me-2"></i>Gen <?= $cand['generasi'] ?> (<?= $cand['divisi'] ?>)</p>
-                                        </div>
-                                        
-                                        <div class="accordion mb-4" id="visimisi<?= $cand['id'] ?>">
-                                            <div class="accordion-item border-0 bg-light rounded">
-                                                <h2 class="accordion-header">
-                                                    <button class="accordion-button collapsed small fw-bold bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#desc<?= $cand['id'] ?>">
-                                                        Lihat Visi Misi
-                                                    </button>
-                                                </h2>
-                                                <div id="desc<?= $cand['id'] ?>" class="accordion-collapse collapse">
-                                                    <div class="accordion-body small">
-                                                        <strong>Visi:</strong><br><?= nl2br(htmlspecialchars($cand['visi'])) ?><br><br>
-                                                        <strong>Misi:</strong><br><?= nl2br(htmlspecialchars($cand['misi'])) ?>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="candidate-card bg-white p-3 rounded-4 shadow-sm h-100 border">
+                                        <img src="<?= $cand['photo_url'] ?>" class="w-100 rounded-4 mb-3" style="height: 250px; object-fit: cover;" alt="<?= $cand['name'] ?>">
+                                        <div class="candidate-body">
+                                            <span class="badge bg-primary mb-2">No. Urut <?= sprintf("%02d", $cand['number_order']) ?></span>
+                                            <h5 class="fw-bold text-dark"><?= htmlspecialchars($cand['name']) ?></h5>
+                                            <div class="candidate-info mb-3 small text-muted">
+                                                <p class="mb-1"><i class="bi bi-card-text me-2"></i><?= $cand['nim'] ?></p>
+                                                <p class="mb-0"><i class="bi bi-layers me-2"></i>Gen <?= $cand['generasi'] ?> (<?= $cand['divisi'] ?>)</p>
+                                            </div>
+
+                                            <div class="accordion mb-4" id="visimisi<?= $cand['id'] ?>">
+                                                <div class="accordion-item border-0 bg-light rounded">
+                                                    <h2 class="accordion-header">
+                                                        <button class="accordion-button collapsed small fw-bold bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#desc<?= $cand['id'] ?>">
+                                                            Lihat Visi Misi
+                                                        </button>
+                                                    </h2>
+                                                    <div id="desc<?= $cand['id'] ?>" class="accordion-collapse collapse">
+                                                        <div class="accordion-body small">
+                                                            <strong>Visi:</strong><br><?= nl2br(htmlspecialchars($cand['visi'])) ?><br><br>
+                                                            <strong>Misi:</strong><br><?= nl2br(htmlspecialchars($cand['misi'])) ?>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <input type="radio" name="candidate_id" id="vote<?= $cand['id'] ?>" value="<?= $cand['id'] ?>" class="btn-check" required>
-                                        <label for="vote<?= $cand['id'] ?>" class="btn btn-outline-primary w-100 fw-bold rounded-pill">Pilih Kandidat Ini</label>
+                                            <input type="radio" name="candidate_id" id="vote<?= $cand['id'] ?>" value="<?= $cand['id'] ?>" class="btn-check" required>
+                                            <label for="vote<?= $cand['id'] ?>" class="btn btn-outline-primary w-100 fw-bold rounded-pill">Pilih Kandidat Ini</label>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             <?php endforeach; ?>
                         </div>
 
@@ -150,4 +183,5 @@ $fotoPath = !empty($userData['foto_url']) ? $userData['foto_url'] : 'https://ui-
         }
     </script>
 </body>
+
 </html>

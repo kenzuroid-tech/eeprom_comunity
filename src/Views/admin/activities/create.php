@@ -7,13 +7,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="icon" href="/public/assets/imgages/eeprom logo.png" type="image/png">
-    <link rel="stylesheet" href="/public/assets/css/admin/activities/create.css">
+    <link rel="icon" href="/assets/imgages/eeprom logo.png" type="image/png">
+    <link rel="stylesheet" href="/assets/css/admin/activities/create.css">
 </head>
 
 <body>
     <div class="dashboard-wrapper">
-        <?php include '../includes/sidebar.php'; ?>
+        <?php include_once __DIR__ . '/../includes/sidebar.php'; ?>
         
         <div class="main-content-area">
             <nav class="top-navbar d-flex justify-content-between align-items-center">
@@ -107,7 +107,8 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/public/assets/js/admin/activities/create.js"></script>
+    <script src="/assets/js/admin/dashboard.js"></script>
 </body>
 </html>

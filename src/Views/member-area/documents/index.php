@@ -23,26 +23,50 @@ $userFoto = !empty($userData['foto_url']) ? $userData['foto_url'] : 'https://ui-
 
         <div id="mainContentWrapper" class="main-content-area">
 
-            <nav class="top-navbar d-flex justify-content-between align-items-center">
+            <nav class="top-navbar d-flex justify-content-between align-items-center bg-white p-3 rounded shadow-sm mb-4">
                 <div class="d-flex align-items-center">
-                    <button class="btn btn-primary me-3 d-lg-none" id="mobile-toggle">
+                    <button class="btn btn-light border me-3 d-lg-none" id="mobile-toggle">
                         <i class="bi bi-list"></i>
                     </button>
-                    <h4 class="m-0 fw-bold">Documents & Archives</h4>
+                    <div>
+                        <h5 class="m-0 fw-bold text-dark">Dokumen dan Arsip</h5>
+                    </div>
                 </div>
 
-                <div class="d-flex align-items-center">
-                    <div class="dropdown">
-                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-                            <img src="<?= $userFoto ?>" alt="Profile" width="35" height="35" class="rounded-circle me-2" style="object-fit: cover;">
-                            <span class="d-none d-sm-inline text-dark fw-bold small"><?= htmlspecialchars($userData['nama_lengkap'] ?? 'Nisho') ?></span>
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle p-1 rounded-pill" data-bs-toggle="dropdown">
+                            <img src="<?= htmlspecialchars($userData['foto_url']) ?>"
+                                alt="Profile"
+                                width="35"
+                                height="35"
+                                class="rounded-circle border"
+                                style="object-fit: cover;">
+                            <span class="d-none d-sm-inline text-dark fw-bold small ms-2">
+                                <?= htmlspecialchars($userData['nama_lengkap']) ?>
+                            </span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
-                            <li><a class="dropdown-item" href="/member/profile"><i class="bi bi-person me-2"></i>Profile</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
-                        </ul>
-                    </div>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-3 animate slideIn">
+                        <div class="px-3 py-2 d-sm-none border-bottom mb-2">
+                            <p class="m-0 fw-bold small text-truncate" style="max-width: 150px;">
+                                <?= htmlspecialchars($userData['nama_lengkap']) ?>
+                            </p>
+                        </div>
+
+                        <li>
+                            <a class="dropdown-item py-2" href="/member/settings">
+                                <i class="bi bi-gear me-2 text-secondary"></i>Pengaturan
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-danger py-2" href="/logout">
+                                <i class="bi bi-box-arrow-right me-2"></i>Logout
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </nav>
 
@@ -87,13 +111,13 @@ $userFoto = !empty($userData['foto_url']) ? $userData['foto_url'] : 'https://ui-
                                     <td colspan="5" class="text-center py-4 text-muted">No documents found.</td>
                                 </tr>
                             <?php else: ?>
-                                <?php foreach ($documents as $doc): 
+                                <?php foreach ($documents as $doc):
                                     // Logika Ikon berdasarkan ekstensi file
                                     $iconClass = 'bi-file-earmark-text-fill text-secondary';
                                     if (strpos($doc['title'], '.pdf') !== false) $iconClass = 'bi-file-earmark-pdf-fill text-danger';
                                     if (strpos($doc['title'], '.doc') !== false) $iconClass = 'bi-file-earmark-word-fill text-primary';
                                     if (strpos($doc['title'], '.xls') !== false) $iconClass = 'bi-file-earmark-excel-fill text-success';
-                                    
+
                                     // Logika Warna Badge Kategori
                                     $badgeColor = 'bg-secondary';
                                     if ($doc['category'] == 'SOP') $badgeColor = 'bg-info text-dark';

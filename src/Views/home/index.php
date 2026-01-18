@@ -9,17 +9,17 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="icon" href="/public/assets/images/eeprom logo.png" type="image/png">
-    <link rel="stylesheet" href="/public/assets/css/public/home/index.css">
+    <link rel="icon" href="/assets/images/eeprom_logo.png" type="image/png">
+    <link rel="stylesheet" href="/assets/css/home/index.css">
 </head>
 
 <body>
-    <?php include __DIR__ . '/../../../Views/layouts/navbar-public.php'; ?>
+    <?php include __DIR__ . '/../../Views/layouts/navbar-public.php'; ?>
 
     <header class="hero-section" id="hero">
         <div class="container py-5 text-center">
             <div class="hero-content">
-                <img src="/public/assets/images/eeprom logo.png" alt="Logo EEPROM Besar" class="hero-logo">
+                <img src="/assets/images/eeprom_logo.png" alt="Logo EEPROM Besar" class="hero-logo">
                 <h1>Electronic Education Programming Robotic Of Malang Politeknik Negeri Malang</h1>
                 <p class="lead">EEPROM POLINEMA, atau Electronic Education Programming Robotic of Malang, adalah
                     komunitas yang didirikan pada tanggal 1 Juni 2011 oleh mahasiswa Jurusan Teknik Elektro Politeknik
@@ -31,23 +31,6 @@
             </div>
         </div>
     </header>
-
-    <!-- <section class="about-eeprom-section py-90" id="about">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6 mb-4 mb-lg-0">
-                    <img src="/public/assets/images/robot eeprom.png" alt="Foto Aktivitas EEPROM" class="img-fluid rounded-3">
-                </div>
-                <div class="col-lg-6">
-                    <h2 class="section-heading text-start">Apa Itu EEPROM?</h2>
-                    <h3 class="mb-4 text-primary">Komunitas Robotika Inovatif di POLINEMA</h3>
-                    <p>Didirikan pada tanggal 1 Juni 2011, **EEPROM (Electronic Education Programming Robotic Of Malang)** adalah komunitas resmi di bawah naungan Jurusan Teknik Elektro Politeknik Negeri Malang. Kami adalah rumah bagi mahasiswa yang bersemangat dalam dunia robotika, pemrograman, dan elektronika.</p>
-                    <p>Sejak awal berdirinya, EEPROM telah berkomitmen untuk menjadi wadah bagi anggotanya untuk tidak hanya belajar teori tetapi juga mempraktekkan dan mengimplementasikan ide-ide kreatif mereka. Kami percaya bahwa inovasi lahir dari kolaborasi dan lingkungan yang suportif.</p>
-                    <a href="#visi-misi" class="btn-secondary-eeprom">Sejarah Singkat</a>
-                </div>
-            </div>
-        </div>
-    </section> -->
 
     <section class="visi-misi-section py-90 bg-white" id="visi-misi">
         <div class="container">
@@ -92,7 +75,7 @@
                 <div class="col">
                     <div class="divisi-card">
                         <div class="divisi-icon-wrapper">
-                            <img src="/public/assets/images/elektrik.png" alt="Icon Divisi Elektrik">
+                            <img src="/assets/images/elektrik.png" alt="Icon Divisi Elektrik">
                         </div>
                         <h5>Elektrik</h5>
                         <p>Perancangan sirkuit, pemilihan komponen, dan manajemen daya sistem robot secara keseluruhan.
@@ -103,7 +86,7 @@
                 <div class="col">
                     <div class="divisi-card">
                         <div class="divisi-icon-wrapper">
-                            <img src="/public/assets/images/software (2).png" alt="Icon Divisi Software">
+                            <img src="/assets/images/software.png" alt="Icon Divisi Software">
                         </div>
                         <h5>Software</h5>
                         <p>Pengembangan algoritma kontrol, pemrograman mikrokontroler (firmware), dan implementasi
@@ -114,7 +97,7 @@
                 <div class="col">
                     <div class="divisi-card">
                         <div class="divisi-icon-wrapper">
-                            <img src="/public/assets/images/mekanik.png" alt="Icon Divisi Mekanik">
+                            <img src="/assets/images/mekanik.png" alt="Icon Divisi Mekanik">
                         </div>
                         <h5>Mekanik</h5>
                         <p>Perancangan fisik, pembuatan struktur, simulasi, dan optimasi kinematika/dinamika robot.</p>
@@ -124,7 +107,7 @@
                 <div class="col">
                     <div class="divisi-card">
                         <div class="divisi-icon-wrapper">
-                            <img src="/public/assets/images/humas.png" alt="Icon Divisi Humas">
+                            <img src="/assets/images/humas.png" alt="Icon Divisi Humas">
                         </div>
                         <h5>Humas</h5>
                         <p>Komunikasi publik, branding komunitas, pengelolaan media sosial, dan eksternal relation.</p>

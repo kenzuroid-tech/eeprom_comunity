@@ -8,80 +8,110 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="icon" href="/public/assets/images/eeprom logo.png" type="image/png">
-    <link rel="stylesheet" href="/public/assets/css/admin/activities/index.css">
+    <link rel="icon" href="/assets/images/eeprom_logo.png" type="image/png">
+    <link rel="stylesheet" href="/assets/css/admin/dashboard.css">
 </head>
 
 <body>
     <div class="dashboard-wrapper">
-        <?php include '../includes/sidebar.php'; ?>
+        <?php include_once __DIR__ . '/../includes/sidebar.php'; ?>
 
-        <div id="mainContentWrapper" class="main-content-area">
-            <nav class="top-navbar d-flex justify-content-between align-items-center">
+        <div id="mainContentWrapper" class="main-content-area p-4">
+            <nav class="top-navbar d-flex justify-content-between align-items-center p-3">
                 <div class="d-flex align-items-center">
-                    <button class="btn btn-primary me-3 d-lg-none" id="mobile-toggle">
-                        <i class="bi bi-list"></i>
-                    </button>
-                    <h4 class="m-0 fw-bold">Activities Management</h4>
+                    <button class="btn btn-primary me-3 d-lg-none" id="mobile-toggle"><i class="bi bi-list"></i></button>
+                    <h4 class="m-0 fw-bold">Management Aktivitas</h4>
+                </div>
+
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                        <img src="<?= $adminData['foto_url'] ?? 'https://ui-avatars.com/api/?name=Admin' ?>" alt="Profile" width="35" class="rounded-circle me-2">
+                        <span class="d-none d-sm-inline text-dark fw-bold"><?= $adminData['nama_lengkap'] ?? 'Admin' ?></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                    </ul>
                 </div>
             </nav>
 
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="h3 mb-0 text-primary-blue fw-bold">Daftar Aktivitas Komunitas</h2>
-                <a href="/admin/activities-create.html" class="btn btn-primary-custom">
+                <!-- <h2 class="h4 mb-0 text-primary fw-bold">Daftar Aktivitas Komunitas</h2> -->
+                <a href="/admin/activities/create" class="btn btn-primary rounded-pill px-4">
                     <i class="bi bi-plus-circle-fill me-2"></i> Tambah Activity
                 </a>
             </div>
 
-            <div class="widget-card-admin mb-4">
-                <h5 class="fw-bold text-primary-blue mb-3">Filter Data</h5>
-                <div class="row g-3">
+            <div class="bg-white p-4 rounded shadow-sm mb-4">
+                <form action="/admin/activities" method="GET" class="row g-3">
                     <div class="col-md-5">
-                        <input type="text" class="form-control" placeholder="Cari berdasarkan Judul...">
+                        <input type="text" name="search" class="form-control" placeholder="Cari berdasarkan Judul..." value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
                     </div>
                     <div class="col-md-3">
-                        <select class="form-select">
-                            <option selected>Filter Kategori</option>
-                            <option>Pelatihan</option>
-                            <option>Workshop</option>
-                            <option>Lomba</option>
+                        <select name="category" class="form-select">
+                            <option value="">Semua Kategori</option>
+                            <option value="Pelatihan">Pelatihan</option>
+                            <option value="Workshop">Workshop</option>
+                            <option value="Lomba">Lomba</option>
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <select class="form-select">
-                            <option selected>2025</option>
-                            <option>2024</option>
-                        </select>
+                        <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel-fill me-1"></i> Filter</button>
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-outline-secondary w-100"><i class="bi bi-funnel-fill"></i> Apply</button>
+                        <a href="/admin/activities" class="btn btn-outline-secondary w-100">Reset</a>
                     </div>
-                </div>
+                </form>
             </div>
 
-            <div class="widget-card-admin">
+            <div class="bg-white p-4 rounded shadow-sm">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
                         <thead>
-                            <tr class="table-light">
-                                <th>Featured Image</th>
-                                <th>Judul Aktivitas</th>
-                                <th>Kategori</th>
-                                <th>Tanggal</th>
-                                <th>Actions</th>
+                            <tr class="text-muted small">
+                                <th>GAMBAR</th>
+                                <th>JUDUL AKTIVITAS</th>
+                                <th>KATEGORI</th>
+                                <th>TANGGAL</th>
+                                <th class="text-center">AKSI</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><img src="/img/activity_thumb_1.jpg" class="featured-image-thumb" alt="Thumbnail"></td>
-                                <td>Workshop Robot Line Follower</td>
-                                <td><span class="badge bg-info text-dark">Pelatihan</span></td>
-                                <td>2025-01-15</td>
-                                <td>
-                                    <button class="btn btn-sm btn-light text-primary"><i class="bi bi-pencil"></i></button>
-                                    <button class="btn btn-sm btn-light text-danger"><i class="bi bi-trash"></i></button>
-                                </td>
-                            </tr>
+                            <?php if (!empty($activities)): ?>
+                                <?php foreach ($activities as $act): ?>
+                                    <tr>
+                                        <td>
+                                            <img src="<?= htmlspecialchars($act['image_url'] ?? '/assets/images/default-activity.jpg') ?>"
+                                                class="rounded" style="width: 80px; height: 50px; object-fit: cover;" alt="Thumb">
+                                        </td>
+                                        <td class="fw-bold"><?= htmlspecialchars($act['title']) ?></td>
+                                        <td>
+                                            <span class="badge bg-info-subtle text-info px-3"><?= htmlspecialchars($act['type'] ?? 'Umum') ?></span>
+                                        </td>
+                                        <td class="small text-muted">
+                                            <?= date('d M Y', strtotime($act['created_at'])) ?>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <a href="/admin/activities/edit?id=<?= $act['id'] ?>" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                                    onclick="confirmDelete(<?= $act['id'] ?>)">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="5" class="text-center py-5 text-muted">Belum ada data aktivitas.</td>
+                                </tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
@@ -89,8 +119,17 @@
         </div>
     </div>
 
+    <script>
+        function confirmDelete(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus aktivitas ini?')) {
+                window.location.href = '/admin/activities/delete?id=' + id;
+            }
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/public/assets/js/admin/activities/index.js"></script>
+    <script src="/assets/js/admin/dashboard.js"></script>
 </body>
 
 </html>

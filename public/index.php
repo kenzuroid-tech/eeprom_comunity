@@ -2,155 +2,188 @@
 
 session_start();
 
-// 1. Skip routing untuk file statis
-$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-if (file_exists(__DIR__ . $path) && is_file(__DIR__ . $path)) {
-    return false;
+$requestUri = $_SERVER['REQUEST_URI'];
+$path = parse_url($requestUri, PHP_URL_PATH);
+
+// List ekstensi file static
+$staticExtensions = ['css', 'js', 'png', 'jpg', 'jpeg', 'gif', 'svg', 'ico', 'woff', 'woff2', 'ttf', 'eot', 'map', 'html'];
+
+// Cek apakah ini request untuk static file
+$extension = pathinfo($path, PATHINFO_EXTENSION);
+if ($extension && in_array(strtolower($extension), $staticExtensions)) {
+    if (file_exists(__DIR__ . $path) && is_file(__DIR__ . $path)) {
+        return false; 
+    }
 }
 
-// 2. Load Autoloader
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Router;
 use App\Controllers\HomeController;
 use App\Controllers\LoginController;
 
-// Member Controllers//
-use App\Controllers\Member\DashboardController as MemberDashboardController;
-use App\Controllers\Member\ProfileController as MemberProfileController;
-use App\Controllers\Member\GalleryController as MemberGalleryController;
-use App\Controllers\Member\AttendanceController as MemberAttendanceController;
-use App\Controllers\Member\AnnouncementController as MemberAnnouncementsController;
-use App\Controllers\Member\VotingController as MemberVotingController;
-use App\Controllers\Member\DocumentController as MemberDocumentController;
-use App\Controllers\Member\ForumController as MemberForumController;
+// Member Controllers
+use App\Controllers\Member\DashboardController as MemberDashboard;
+use App\Controllers\Member\ProfileController as MemberProfile;
+use App\Controllers\Member\GalleryController as MemberGallery;
+use App\Controllers\Member\AttendanceController as MemberAttendance;
+use App\Controllers\Member\AnnouncementController as MemberAnnouncement;
+use App\Controllers\Member\VotingController as MemberVoting;
+use App\Controllers\Member\DocumentController as MemberDocument;
+use App\Controllers\Member\ForumController as MemberForum;
+use App\Controllers\Member\SettingController as MemberSetting;
 
-//Admin Controllers//
-use App\Controllers\Admin\DashboardController as DashboardController;
-use App\Controllers\Admin\MemberController as MemberController;
-use App\Controllers\Admin\DivisionController as DivisionController;
-use App\Controllers\Admin\RecruitmentController as RecruitmentController;
+// Admin Controllers
+use App\Controllers\Admin\DashboardController as AdminDashboard;
+use App\Controllers\Admin\MemberController as AdminMember;
+use App\Controllers\Admin\DivisionController as AdminDivision;
+use App\Controllers\Admin\RecruitmentController as AdminRecruitment;
+use App\Controllers\Admin\MeetingController as AdminMeeting;
+use App\Controllers\Admin\AnnouncementController as AdminAnnouncement;
+use App\Controllers\Admin\ActivitiesController as AdminActivities;
+use App\Controllers\Admin\VotingController as AdminVoting;
+use App\Controllers\Admin\DocumentController as AdminDocument;
+use App\Controllers\Admin\GalleryController as AdminGallery;
+use App\Controllers\Admin\ForumController as AdminForum;
+use App\Controllers\Admin\ContactController as AdminContact;
+use App\Controllers\Admin\AboutController as AdminAbout;
+use App\Controllers\Admin\AchievementsController as AdminAchievement;
+use App\Controllers\Admin\SettingsController as AdminSettings;
 
+// Middlewares
 use App\Middlewares\GuestMiddleware;
 use App\Middlewares\MemberMiddleware;
+use App\Middlewares\AdminMiddleware;
 
 $router = new Router();
 
-// ===== PUBLIC ROUTES =====
+// ==========================================
+// 1. PUBLIC & AUTH ROUTES
+// ==========================================
 $router->get("/", HomeController::class, "index");
 $router->get("/home", HomeController::class, "index");
 
-// ===== AUTH ROUTES =====
-$router->get("/login", LoginController::class, "index")
-    ->middleware(GuestMiddleware::class);
-
+$router->get("/login", LoginController::class, "index")->middleware(GuestMiddleware::class);
 $router->post("/login", LoginController::class, "authenticate");
+$router->get("/logout", LoginController::class, "logout");
 
 $router->get("/register", LoginController::class, "showRegister");
 $router->get("/forgot-password", LoginController::class, "showForgot");
 
-// Tambahkan logout
-$router->get("/logout", LoginController::class, "logout");
 
-// ===== MEMBER ROUTES =====
-$router->get("/member/dashboard", MemberDashboardController::class, "index")
-    ->middleware(MemberMiddleware::class);
+// ==========================================
+// 2. MEMBER ROUTES (Protected)
+// ==========================================
+$router->get("/member/dashboard", MemberDashboard::class, "index")->middleware(MemberMiddleware::class);
 
-$router->get("/member/profile", MemberProfileController::class, "index")
-    ->middleware(MemberMiddleware::class);
+// Profile & Settings
+$router->get("/member/profile", MemberProfile::class, "index")->middleware(MemberMiddleware::class);
+$router->get("/member/profile/edit", MemberProfile::class, "edit")->middleware(MemberMiddleware::class);
+$router->post("/member/profile/update", MemberProfile::class, "update")->middleware(MemberMiddleware::class);
+$router->get('/member/setting', MemberSetting::class, 'index')->middleware(MemberMiddleware::class);
+$router->post('/member/setting/update', MemberSetting::class, 'update')->middleware(MemberMiddleware::class);
 
-$router->get("/member/profile/edit", MemberProfileController::class, "edit");
-    // ->middleware(MemberMiddleware::class);
+// Features
+$router->get('/member/gallery', MemberGallery::class, 'index')->middleware(MemberMiddleware::class);
+$router->get('/member/attendance', MemberAttendance::class, 'index')->middleware(MemberMiddleware::class);
+$router->get('/member/documents', MemberDocument::class, 'index')->middleware(MemberMiddleware::class);
 
-$router->post("/member/profile/update", MemberProfileController::class, "update");
-    // ->middleware(MemberMiddleware::class);
+// Announcements
+$router->get('/member/announcements', MemberAnnouncement::class, 'index')->middleware(MemberMiddleware::class);
+$router->get('/member/announcements/detail', MemberAnnouncement::class, 'detail')->middleware(MemberMiddleware::class);
 
-// Tambahkan ini di bagian rute GET
-$router->get('/member/gallery', App\Controllers\Member\GalleryController::class, 'index');
-    // ->middleware(MemberMiddleware::class);
+// Voting
+$router->get('/member/voting', MemberVoting::class, 'index')->middleware(MemberMiddleware::class);
+$router->post('/member/voting/submit', MemberVoting::class, 'submit')->middleware(MemberMiddleware::class);
 
-$router->get('/member/attendance', App\Controllers\Member\AttendanceController::class, 'index');
-    // ->middleware(MemberMiddleware::class);
+// Forum
+$router->get('/member/forum', MemberForum::class, 'index')->middleware(MemberMiddleware::class);
+$router->get('/member/forum/create', MemberForum::class, 'create')->middleware(MemberMiddleware::class);
+$router->get('/member/forum/detail', MemberForum::class, 'detail')->middleware(MemberMiddleware::class);
+$router->post('/member/forum/store', MemberForum::class, 'store')->middleware(MemberMiddleware::class);
+$router->post('/member/forum/comment', MemberForum::class, 'storeComment')->middleware(MemberMiddleware::class);
 
-$router->get('/member/announcements', App\Controllers\Member\AnnouncementController::class, 'index');
-    // ->middleware(MemberMiddleware::class);
 
-$router->get('/member/announcements/detail', \App\Controllers\Member\AnnouncementController::class, 'detail');
-    // ->middleware(MemberMiddleware::class);
+// ==========================================
+// 3. ADMIN ROUTES (Protected)
+// ==========================================
+$router->get("/admin/dashboard", AdminDashboard::class, "index")->middleware(AdminMiddleware::class);
 
-$router->get('/member/voting', App\Controllers\Member\VotingController::class, 'index');
-    // ->middleware(MemberMiddleware::class);
-$router->post('/member/voting/submit', \App\Controllers\Member\VotingController::class, 'submit');
-    // ->middleware(MemberMiddleware::class);
+// Member & Division Management
+$router->get("/admin/members", AdminMember::class, "index")->middleware(AdminMiddleware::class);
+$router->get('/admin/members/create', AdminMember::class, 'create')->middleware(AdminMiddleware::class);
+$router->get('/admin/members/edit', AdminMember::class, 'edit')->middleware(AdminMiddleware::class);
+$router->post('/admin/members/store', AdminMember::class, 'store')->middleware(AdminMiddleware::class);
+$router->post('/admin/members/update', AdminMember::class, 'update')->middleware(AdminMiddleware::class);
 
-$router->get('/member/documents', \App\Controllers\Member\DocumentController::class, 'index');
-    // ->middleware(MemberMiddleware::class);
+$router->get('/admin/divisions', AdminDivision::class, 'index')->middleware(AdminMiddleware::class);
+$router->get('/admin/divisions/edit', AdminDivision::class, 'edit')->middleware(AdminMiddleware::class);
+$router->post('/admin/divisions/update', AdminDivision::class, 'update')->middleware(AdminMiddleware::class);
 
-$router->get('/member/forum', \App\Controllers\Member\ForumController::class, 'index');
-    // ->middleware(MemberMiddleware::class);
+// Recruitment
+$router->get('/admin/recruitment', AdminRecruitment::class, 'index')->middleware(AdminMiddleware::class);
+$router->get('/admin/recruitment/applicants', AdminRecruitment::class, 'applicants')->middleware(AdminMiddleware::class);
+$router->get('/admin/recruitment/applicant/detail', AdminRecruitment::class, 'applicantDetail')->middleware(AdminMiddleware::class);
+$router->get('/admin/recruitment/create', AdminRecruitment::class, 'create')->middleware(AdminMiddleware::class);
+$router->get('/admin/recruitment/edit', AdminRecruitment::class, 'edit')->middleware(AdminMiddleware::class);
+$router->post('/admin/recruitment/store', AdminRecruitment::class, 'store')->middleware(AdminMiddleware::class);
+$router->post('/admin/recruitment/update', AdminRecruitment::class, 'update')->middleware(AdminMiddleware::class);
+$router->get('/admin/recruitment/delete', AdminRecruitment::class, 'delete')->middleware(AdminMiddleware::class);
 
-$router->post('/member/forum/store', MemberForumController::class, 'store');
-    // ->middleware(MemberMiddleware::class);
+// Meetings & Attendance
+$router->get('/admin/meetings', AdminMeeting::class, 'index')->middleware(AdminMiddleware::class);
+$router->get('/admin/meetings/create', AdminMeeting::class, 'create')->middleware(AdminMiddleware::class);
+$router->get('/admin/meetings/notulensi', AdminMeeting::class, 'notulensi')->middleware(AdminMiddleware::class);
+$router->post('/admin/meetings/store', AdminMeeting::class, 'store')->middleware(AdminMiddleware::class);
 
-$router->get('/member/forum/create', MemberForumController::class, 'create');
-    // ->middleware(MemberMiddleware::class);
+$router->get('/admin/attendance', AdminMeeting::class, 'index')->middleware(AdminMiddleware::class);
+$router->get('/admin/attendance/input', AdminMeeting::class, 'attendanceInput')->middleware(AdminMiddleware::class);
+$router->get('/admin/attendance/scan', AdminMeeting::class, 'attendanceInput')->middleware(AdminMiddleware::class);
+$router->post('/admin/attendance/update', AdminMeeting::class, 'attendanceUpdate')->middleware(AdminMiddleware::class);
 
-$router->get('/member/forum/detail', MemberForumController::class, 'detail');
-    // ->middleware(MemberMiddleware::class);
+// Content & Communication
+$router->get('/admin/announcements', AdminAnnouncement::class, 'index')->middleware(AdminMiddleware::class);
+$router->get('/admin/announcements/create', AdminAnnouncement::class, 'create')->middleware(AdminMiddleware::class);
+$router->get('/admin/announcements/edit', AdminAnnouncement::class, 'edit')->middleware(AdminMiddleware::class);
+$router->post('/admin/announcements/store', AdminAnnouncement::class, 'store')->middleware(AdminMiddleware::class);
+$router->post('/admin/announcements/update', AdminAnnouncement::class, 'update')->middleware(AdminMiddleware::class);
+$router->get('/admin/announcements/delete', AdminAnnouncement::class, 'delete')->middleware(AdminMiddleware::class);
 
-// Tambahkan di bawah rute /member/forum/store
-$router->post('/member/forum/comment', \App\Controllers\Member\ForumController::class, 'storeComment');
-    // ->middleware(MemberMiddleware::class);
+$router->get('/admin/activities', AdminActivities::class, 'index')->middleware(AdminMiddleware::class);
+$router->get('/admin/activities/create', AdminActivities::class, 'create')->middleware(AdminMiddleware::class);
+$router->post('/admin/activities/store', AdminActivities::class, 'store')->middleware(AdminMiddleware::class);
 
-// ===== ADMIN ROUTES =====
-$router->get("/admin/dashboard", DashboardController::class, "index")
-    ->middleware(MemberMiddleware::class);
+// Voting (Election)
+$router->get('/admin/voting', AdminVoting::class, 'index')->middleware(AdminMiddleware::class);
+$router->get('/admin/voting/create', AdminVoting::class, 'create')->middleware(AdminMiddleware::class);
+$router->get('/admin/voting/candidates', AdminVoting::class, 'candidates')->middleware(AdminMiddleware::class);
+$router->get('/admin/voting/results', AdminVoting::class, 'results')->middleware(AdminMiddleware::class);
+$router->get('/admin/voting/candidates/delete', AdminVoting::class, 'deleteCandidate')->middleware(AdminMiddleware::class);
+$router->post('/admin/voting/reset', AdminVoting::class, 'resetVotes')->middleware(AdminMiddleware::class);
+$router->post('/admin/voting/candidates/store', AdminVoting::class, 'storeCandidate')->middleware(AdminMiddleware::class);
+$router->post('/admin/voting/store-election', AdminVoting::class, 'storeElection')->middleware(AdminMiddleware::class);
 
-$router->get("/admin/members", MemberController::class, "index")
-    ->middleware(MemberMiddleware::class);
+// Static Content & Misc
+$router->get('/admin/about', AdminAbout::class, 'index')->middleware(AdminMiddleware::class);
+$router->post('/admin/about/update', AdminAbout::class, 'update')->middleware(AdminMiddleware::class);
 
-$router->get('/admin/members/edit', \App\Controllers\Admin\MemberController::class, 'edit');
-    // ->middleware(MemberMiddleware::class);
+$router->get('/admin/achievement', AdminAchievement::class, 'index')->middleware(AdminMiddleware::class);
+$router->post('/admin/achievement/store', AdminAchievement::class, 'store')->middleware(AdminMiddleware::class);
+$router->get('/admin/achievement/delete', AdminAchievement::class, 'delete')->middleware(AdminMiddleware::class);
 
-$router->post('/admin/members/update', \App\Controllers\Admin\MemberController::class, 'update');
-    // ->middleware(MemberMiddleware::class);
+$router->get('/admin/documents', AdminDocument::class, 'index')->middleware(AdminMiddleware::class);
+$router->get('/admin/gallery', AdminGallery::class, 'index')->middleware(AdminMiddleware::class);
+$router->get('/admin/forum', AdminForum::class, 'index')->middleware(AdminMiddleware::class);
 
-$router->get('/admin/members/create', \App\Controllers\Admin\MemberController::class, 'create');
-    // ->middleware(MemberMiddleware::class);
+// Contacts
+$router->get('/admin/contacts', AdminContact::class, 'index')->middleware(AdminMiddleware::class);
+$router->post('/admin/contacts/update-main', AdminContact::class, 'updateMain')->middleware(AdminMiddleware::class);
+$router->post('/admin/contacts/save-cp', AdminContact::class, 'saveCP')->middleware(AdminMiddleware::class);
+$router->get('/admin/contacts/delete-cp', AdminContact::class, 'deleteCP')->middleware(AdminMiddleware::class);
 
-$router->get('/admin/divisions', \App\Controllers\Admin\DivisionController::class, 'index');
-    // ->middleware(MemberMiddleware::class);
+// Settings
+$router->get('/admin/settings', AdminSettings::class, 'index')->middleware(AdminMiddleware::class);
+$router->post('/admin/settings/update', AdminSettings::class, 'update')->middleware(AdminMiddleware::class);
 
-$router->get('/admin/divisions/edit', \App\Controllers\Admin\DivisionController::class, 'edit');
-    // ->middleware(MemberMiddleware::class);
-
-$router->post('/admin/divisions/update', \App\Controllers\Admin\DivisionController::class, 'update');
-    // ->middleware(MemberMiddleware::class);
-
-$router->get('/admin/recruitment', \App\Controllers\Admin\RecruitmentController::class, 'index');
-    // ->middleware(MemberMiddleware::class);
-
-$router->get('/admin/recruitment/applicants', \App\Controllers\Admin\RecruitmentController::class, 'applicants');
-    // ->middleware(MemberMiddleware::class);
-
-$router->get('/admin/recruitment/applicant/detail', \App\Controllers\Admin\RecruitmentController::class, 'applicantDetail');
-    // ->middleware(MemberMiddleware::class);
-
-$router->get('/admin/recruitment/create', \App\Controllers\Admin\RecruitmentController::class, 'create');
-    // ->middleware(MemberMiddleware::class);
-
-$router->post('/admin/recruitment/store', \App\Controllers\Admin\RecruitmentController::class, 'store');
-    // ->middleware(MemberMiddleware::class);
-
-// Tambahkan di bagian GET routes
-$router->get('/admin/recruitment/edit', \App\Controllers\Admin\RecruitmentController::class, 'edit');
-    // ->middleware(MemberMiddleware::class);
-
-// Tambahkan di bagian POST routes
-$router->post('/admin/recruitment/update', \App\Controllers\Admin\RecruitmentController::class, 'update');
-    // ->middleware(MemberMiddleware::class);
-
-$router->get('/admin/recruitment/delete', \App\Controllers\Admin\RecruitmentController::class, 'delete');
-    // ->middleware(MemberMiddleware::class);
-// 3. Jalankan Router
+// Dispatch
 $router->dispatch();
