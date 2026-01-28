@@ -1,0 +1,157 @@
+:root {
+    --primary-blue: #1A237E;
+    --secondary-blue: #3F51B5;
+    --accent-orange: #FF5722;
+    --bg-gray: #F1F5F9;
+    --sidebar-width: 280px;
+}
+
+body {
+    background-color: var(--bg-gray);
+    font-family: 'Poppins', sans-serif;
+    color: #334155;
+    margin: 0;
+}
+
+/* --- Layout Structure --- */
+.dashboard-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+.main-content-area {
+    /* Memberikan ruang agar tidak tertutup sidebar melayang */
+    margin-left: calc(var(--sidebar-width) + 40px);
+    width: 100%;
+    padding: 30px 30px 30px 0 !important;
+    transition: 0.3s;
+}
+
+/* --- Top Navbar Admin --- */
+.navbar {
+    border-radius: 20px;
+    padding: 15px 25px !important;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.navbar h4 {
+    color: var(--primary-blue);
+    letter-spacing: -0.5px;
+}
+
+.dropdown-toggle img {
+    border: 2px solid var(--primary-blue);
+    padding: 2px;
+}
+
+/* --- Form Card --- */
+.card {
+    border-radius: 25px !important;
+    border: 1px solid rgba(0,0,0,0.03) !important;
+}
+
+.card h5 {
+    color: var(--primary-blue);
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.card h5::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: var(--accent-orange);
+    border-radius: 10px;
+}
+
+/* --- Input Styling --- */
+.form-control {
+    border-radius: 12px;
+    padding: 12px 15px;
+    border: 1px solid #E2E8F0;
+    background-color: #F8FAFC;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 4px rgba(26, 35, 126, 0.1);
+    border-color: var(--primary-blue);
+    background-color: #fff;
+}
+
+.btn-primary {
+    background: var(--primary-blue);
+    border: none;
+    border-radius: 12px;
+    padding: 12px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    background: var(--secondary-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(26, 35, 126, 0.2);
+}
+
+/* --- Table Styling --- */
+.table-responsive {
+    border-radius: 20px;
+}
+
+.table thead th {
+    background-color: #F8FAFC;
+    color: #64748B;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    padding: 18px 15px;
+    border-top: none;
+}
+
+.table tbody td {
+    padding: 18px 15px;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(26, 35, 126, 0.02);
+}
+
+.badge.bg-success {
+    background-color: #DCFCE7 !important;
+    color: #166534 !important;
+    padding: 8px 15px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.btn-light.text-danger {
+    background-color: #FEE2E2;
+    border: none;
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.btn-light.text-danger:hover {
+    background-color: #EF4444;
+    color: white !important;
+}
+
+/* --- Responsive --- */
+@media (max-width: 991.98px) {
+    .main-content-area {
+        margin-left: 0;
+        padding: 20px !important;
+    }
+}

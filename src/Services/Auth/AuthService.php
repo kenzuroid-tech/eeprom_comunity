@@ -11,113 +11,81 @@ class AuthService
 
     public function __construct()
     {
-        error_log("🔌 AuthService: Initializing database connection...");
-        
         $config = require dirname(__DIR__, 3) . '/config/database.php';
         $dsn = "pgsql:host={$config['host']};port={$config['port']};dbname={$config['database']}";
-        
-        error_log("   DSN: " . $dsn);
-        
+
         try {
             $this->pdo = new \PDO($dsn, $config['username'], $config['password']);
             $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-            error_log("   ✅ Database connected successfully!");
         } catch (\PDOException $e) {
-            error_log("   ❌ Database connection failed: " . $e->getMessage());
+            error_log("❌ Database connection failed: " . $e->getMessage());
             throw $e;
         }
-        
+
         $this->userModel = new \App\Models\User($this->pdo);
     }
 
     public function validateCredentials($identifier, $password)
     {
-        error_log("🔍 AuthService: Validating credentials");
-        error_log("   Searching for user: " . $identifier);
-        
         $user = $this->userModel->findByIdentifier($identifier);
-        
-        if (!$user) {
-            error_log("   ❌ User NOT FOUND in database");
-            return null;
-        }
-        
-        error_log("   ✅ User FOUND in database:");
-        error_log("      - ID: " . $user['id']);
-        error_log("      - Username: " . $user['username']);
-        error_log("      - Email: " . $user['email']);
-        error_log("      - Role: " . $user['role']);
-        error_log("      - Is Active: " . ($user['is_active'] ? 'YES' : 'NO'));
-        error_log("      - Password Hash (first 20 chars): " . substr($user['password'], 0, 20) . "...");
-        
-        // Verifikasi password
-        error_log("   🔒 Verifying password...");
-        $isPasswordValid = password_verify($password, $user['password']);
-        
-        error_log("      - Password verify result: " . ($isPasswordValid ? '✅ VALID' : '❌ INVALID'));
-        
-        if ($isPasswordValid) {
-            error_log("   ✅ Credentials validated successfully!");
+
+        if (!$user) return null;
+
+        // Verifikasi password (Bcrypt)
+        if (password_verify($password, $user['password'])) {
             return $user;
         }
-        
-        // Fallback untuk testing (HAPUS DI PRODUCTION!)
-        error_log("   ⚠️ Trying plain text comparison (FOR TESTING ONLY)...");
+
+        // Fallback untuk testing (Hapus jika semua user sudah pakai password_hash)
         if ($password === $user['password']) {
-            error_log("   ⚠️ Plain text password matched! (INSECURE - Use hashed passwords!)");
             return $user;
         }
-        
-        error_log("   ❌ Password verification FAILED");
+
         return null;
     }
 
     public function login($userData)
     {
-        // Session sudah di-start di LoginController __construct()
-        // Jadi TIDAK PERLU session_start() lagi di sini
-        
-        error_log("📦 AuthService: Creating session data");
-        
+        // Lowercase role untuk konsistensi pengecekan
+        $role = strtolower($userData['role'] ?? 'anggota');
+
         $_SESSION['user_id']  = $userData['id'];
-        $_SESSION['role']     = strtolower($userData['role']); // Pastikan lowercase
+        $_SESSION['role']     = $role;
         $_SESSION['nama']     = $userData['nama_lengkap'] ?? $userData['username'];
         $_SESSION['nim']      = $userData['nim'] ?? '';
-        
-        error_log("   Session created:");
-        error_log("      - user_id: " . $_SESSION['user_id']);
-        error_log("      - role: " . $_SESSION['role']);
-        error_log("      - nama: " . $_SESSION['nama']);
-        error_log("      - nim: " . $_SESSION['nim']);
-        
+
         $this->userModel->updateLastLogin($userData['id']);
-        error_log("   ✅ Last login timestamp updated");
-        
         return true;
     }
 
+    /**
+     * Memperbaiki logika redirect agar mengenali Superadmin dan Alumni
+     */
     public function getRedirectUrlByRole($role)
     {
         $role = strtolower($role);
-        
-        error_log("🚀 AuthService: Getting redirect URL for role: " . $role);
-        
-        if ($role === 'admin') {
-            error_log("   Redirect URL: /admin/dashboard");
-            return '/admin/dashboard';
-        } elseif ($role === 'anggota') {
-            error_log("   Redirect URL: /member/dashboard");
-            return '/member/dashboard';
+
+        error_log("🚀 AuthService: Redirecting for role -> " . $role);
+
+        switch ($role) {
+            case 'superadmin':
+            case 'admin':
+                return '/admin';
+
+            case 'alumni':
+            case 'anggota':
+                return '/member/dashboard';
+
+            default:
+                error_log("⚠️ Role tidak dikenal: " . $role);
+                return '/login';
         }
-        
-        error_log("   ⚠️ Unknown role, redirect to: /login");
-        return '/login';
     }
 
     public function logout()
     {
         if (session_status() === PHP_SESSION_NONE) session_start();
-        error_log("👋 AuthService: Destroying session");
+        session_unset();
         session_destroy();
     }
 }

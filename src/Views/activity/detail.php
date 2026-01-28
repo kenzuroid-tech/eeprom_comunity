@@ -37,9 +37,17 @@
         /* ========================================
            Navigation & Breadcrumb
         ======================================== */
-        .navbar { box-shadow: 0 4px 15px var(--shadow-light); }
-        .navbar-brand h1 { font-size: 20px; font-weight: 800; color: var(--primary-blue); margin: 0; }
-        
+        .navbar {
+            box-shadow: 0 4px 15px var(--shadow-light);
+        }
+
+        .navbar-brand h1 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin: 0;
+        }
+
         .back-link {
             display: inline-flex;
             align-items: center;
@@ -49,7 +57,11 @@
             margin-bottom: 25px;
             transition: 0.3s;
         }
-        .back-link:hover { color: var(--accent-orange); transform: translateX(-5px); }
+
+        .back-link:hover {
+            color: var(--accent-orange);
+            transform: translateX(-5px);
+        }
 
         /* ========================================
            Article Header
@@ -81,7 +93,11 @@
             margin-bottom: 30px;
             flex-wrap: wrap;
         }
-        .meta-info i { color: var(--accent-orange); margin-right: 8px; }
+
+        .meta-info i {
+            color: var(--accent-orange);
+            margin-right: 8px;
+        }
 
         .featured-image-container {
             border-radius: 20px;
@@ -89,6 +105,7 @@
             box-shadow: 0 15px 40px var(--shadow-light);
             margin-bottom: 40px;
         }
+
         .featured-image {
             width: 100%;
             max-height: 500px;
@@ -98,7 +115,10 @@
         /* ========================================
            Content Section
         ======================================== */
-        .content-body p { margin-bottom: 25px; font-size: 17px; }
+        .content-body p {
+            margin-bottom: 25px;
+            font-size: 17px;
+        }
 
         /* Gallery */
         .gallery-grid img {
@@ -109,7 +129,11 @@
             width: 100%;
             object-fit: cover;
         }
-        .gallery-grid img:hover { transform: scale(1.03); filter: brightness(0.8); }
+
+        .gallery-grid img:hover {
+            transform: scale(1.03);
+            filter: brightness(0.8);
+        }
 
         /* Share Buttons */
         .share-container {
@@ -118,6 +142,7 @@
             border-bottom: 2px solid var(--medium-gray);
             margin: 50px 0;
         }
+
         .btn-share {
             width: 45px;
             height: 45px;
@@ -130,11 +155,28 @@
             text-decoration: none;
             transition: 0.3s;
         }
-        .btn-facebook { background: #3b5998; }
-        .btn-twitter { background: #1da1f2; }
-        .btn-whatsapp { background: #25d366; }
-        .btn-copy { background: var(--primary-blue); }
-        .btn-share:hover { transform: translateY(-5px); color: white; opacity: 0.9; }
+
+        .btn-facebook {
+            background: #3b5998;
+        }
+
+        .btn-twitter {
+            background: #1da1f2;
+        }
+
+        .btn-whatsapp {
+            background: #25d366;
+        }
+
+        .btn-copy {
+            background: var(--primary-blue);
+        }
+
+        .btn-share:hover {
+            transform: translateY(-5px);
+            color: white;
+            opacity: 0.9;
+        }
 
         /* ========================================
            Related Activities Card
@@ -148,13 +190,26 @@
             transition: 0.3s;
             height: 100%;
         }
-        .related-card:hover { transform: translateY(-10px); box-shadow: 0 10px 25px var(--shadow-md); }
-        .related-img { height: 180px; object-fit: cover; width: 100%; }
-        .related-body { padding: 20px; }
-        .related-title { 
-            font-size: 16px; 
-            font-weight: 700; 
-            color: var(--primary-blue); 
+
+        .related-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px var(--shadow-md);
+        }
+
+        .related-img {
+            height: 180px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .related-body {
+            padding: 20px;
+        }
+
+        .related-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-blue);
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -164,13 +219,29 @@
         /* ========================================
            Footer
         ======================================== */
-        .footer { background-color: var(--primary-blue); color: white; padding: 60px 0 30px; }
-        .social-icons a {
-            color: white; border: 1px solid white; width: 35px; height: 35px;
-            display: inline-flex; justify-content: center; align-items: center;
-            border-radius: 50%; margin-right: 10px; transition: 0.3s;
+        .footer {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 60px 0 30px;
         }
-        .social-icons a:hover { border-color: var(--accent-orange); color: var(--accent-orange); }
+
+        .social-icons a {
+            color: white;
+            border: 1px solid white;
+            width: 35px;
+            height: 35px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            margin-right: 10px;
+            transition: 0.3s;
+        }
+
+        .social-icons a:hover {
+            border-color: var(--accent-orange);
+            color: var(--accent-orange);
+        }
     </style>
 </head>
 
@@ -193,81 +264,45 @@
     <main class="container py-5">
         <div class="row justify-content-center">
             <div class="col-lg-9">
-                <a href="activity.html" class="back-link">
+                <a href="/activity" class="back-link">
                     <i class="bi bi-arrow-left me-2"></i> Kembali ke Daftar Aktivitas
                 </a>
 
                 <header>
-                    <span class="category-badge">Competition</span>
-                    <h1 class="article-title">Persiapan Intensif Tim EEPROM Menuju RoboCup 2024 Tokyo</h1>
+                    <span class="category-badge"><?= htmlspecialchars($activity['category']) ?></span>
+                    <h1 class="article-title"><?= htmlspecialchars($activity['title']) ?></h1>
                     <div class="meta-info">
-                        <span><i class="bi bi-calendar3"></i> 20 Desember 2024</span>
-                        <span><i class="bi bi-geo-alt"></i> Gedung Sipil, Lab Robotika Polinema</span>
-                        <span><i class="bi bi-person"></i> Oleh Humas EEPROM</span>
+                        <span><i class="bi bi-calendar3"></i> <?= date('d F Y', strtotime($activity['date'])) ?></span>
+                        <span><i class="bi bi-geo-alt"></i> <?= htmlspecialchars($activity['location']) ?></span>
                     </div>
                 </header>
 
                 <div class="featured-image-container">
-                    <!-- <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80" class="featured-image" alt="RoboCup Preparation"> -->
+                    <img src="<?= $activity['image_url'] ?: '/assets/images/default_activity.jpg' ?>" class="featured-image" alt="<?= htmlspecialchars($activity['title']) ?>">
                 </div>
 
-                <article class="content-body">
-                    <p class="lead fw-bold">Tim robotika EEPROM POLINEMA tengah memasuki tahap akhir persiapan untuk ajang internasional RoboCup 2024 yang akan digelar di Tokyo, Jepang.</p>
-                    <p>Setelah melalui proses seleksi internal yang ketat, tim yang terdiri dari divisi elektrik, mekanik, dan software ini bekerja siang dan malam untuk menyempurnakan algoritma navigasi robot kategori rescue. Fokus utama tahun ini adalah meningkatkan presisi sensor LiDAR dalam memetakan medan yang kompleks.</p>
-                    <p>Ketua komunitas menyampaikan bahwa dukungan dari pihak kampus dan sponsor sangat membantu dalam pengadaan komponen-komponen high-end yang dibutuhkan. "Kami optimis tahun ini bisa membawa pulang piala ke Malang," ujarnya.</p>
-
-                    <h3 class="fw-bold mt-5 mb-4 text-dark">Galeri Dokumentasi</h3>
-                    <div class="row g-3 gallery-grid">
-                        <div class="col-6 col-md-4">
-                            <!-- <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80" alt="Gallery 1" onclick="console.log('Open Lightbox')"> -->
-                        </div>
-                        <div class="col-6 col-md-4">
-                            <!-- <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&q=80" alt="Gallery 2"> -->
-                        </div>
-                        <div class="col-6 col-md-4">
-                            <!-- <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80" alt="Gallery 3"> -->
-                        </div>
-                    </div>
+                <article class="content-body text-dark">
+                    <?= nl2br(htmlspecialchars($activity['description'])) ?>
 
                     <div class="share-container d-flex align-items-center">
                         <span class="fw-bold me-3">Bagikan :</span>
-                        <a href="#" class="btn-share btn-facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="btn-share btn-twitter"><i class="fab fa-x-twitter"></i></a>
-                        <a href="#" class="btn-share btn-whatsapp"><i class="fab fa-whatsapp"></i></a>
-                        <a href="#" class="btn-share btn-copy" id="copyLink"><i class="bi bi-link-45deg fs-4"></i></a>
                     </div>
                 </article>
 
                 <section class="related-section mt-5">
                     <h3 class="fw-bold mb-4 text-dark">Aktivitas Terkait</h3>
                     <div class="row g-4">
-                        <div class="col-md-4">
-                            <div class="related-card">
-                                <!-- <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&q=80" class="related-img" alt="Rel 1"> -->
-                                <div class="related-body">
-                                    <h4 class="related-title">Workshop IoT dan Robotika Masa Depan</h4>
-                                    <a href="#" class="text-decoration-none small fw-bold text-accent-orange">Baca Selengkapnya</a>
+                        <?php foreach ($relatedActivities as $rel): ?>
+                            <div class="col-md-4">
+                                <div class="related-card border rounded shadow-sm h-100">
+                                    <img src="<?= $rel['image_url'] ?: '/assets/images/default_activity.jpg' ?>" class="related-img w-100" style="height:150px; object-fit:cover;">
+                                    <div class="related-body p-3">
+                                        <h4 class="related-title h6 fw-bold"><?= htmlspecialchars($rel['title']) ?></h4>
+                                        <a href="/activity/detail?id=<?= $rel['id'] ?>" class="text-decoration-none small fw-bold text-accent-orange">Baca Selengkapnya</a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="related-card">
-                                <!-- <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&q=80" class="related-img" alt="Rel 2"> -->
-                                <div class="related-body">
-                                    <h4 class="related-title">Kunjungan Industri ke PT. PINDAD</h4>
-                                    <a href="#" class="text-decoration-none small fw-bold text-accent-orange">Baca Selengkapnya</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="related-card">
-                                <!-- <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80" class="related-img" alt="Rel 3"> -->
-                                <div class="related-body">
-                                    <h4 class="related-title">Internal Gathering EEPROM Gen 14</h4>
-                                    <a href="#" class="text-decoration-none small fw-bold text-accent-orange">Baca Selengkapnya</a>
-                                </div>
-                            </div>
-                        </div>
+                        <?php endforeach; ?>
                     </div>
                 </section>
             </div>
@@ -306,4 +341,5 @@
         });
     </script>
 </body>
+
 </html>

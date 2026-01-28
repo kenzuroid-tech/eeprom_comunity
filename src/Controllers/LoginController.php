@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Services\Auth\AuthService;
+use App\Helpers\DatabaseHelper;
 
 class LoginController
 {
@@ -25,58 +26,104 @@ class LoginController
         }
 
         $error = $_GET['error'] ?? null;
-        require_once __DIR__ . '/../Views/public/auth/login.php';
+        $success = $_GET['success'] ?? null;
+        require_once __DIR__ . '/../Views/auth/login.php';
+    }
+
+    /**
+     * AJAX: Mengecek apakah NIM ada di daftar pendaftar yang diterima (Accepted)
+     */
+    public function checkNim()
+    {
+        $nim = $_GET['nim'] ?? '';
+        $db = DatabaseHelper::getConnection();
+
+        // Cari di tabel members: NIM harus ada, tapi user_id harus NULL (artinya belum punya akun)
+        $stmt = $db->prepare("SELECT email, nama_lengkap FROM members WHERE nim = ? AND user_id IS NULL LIMIT 1");
+        $stmt->execute([$nim]);
+        $member = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        header('Content-Type: application/json');
+        if ($member) {
+            echo json_encode([
+                'success' => true,
+                'email' => $member['email'],
+                'nama' => $member['nama_lengkap']
+            ]);
+        } else {
+            // Cek apakah sudah punya akun
+            $stmtCheck = $db->prepare("SELECT id FROM users WHERE username = ?");
+            $stmtCheck->execute([$nim]);
+            if ($stmtCheck->fetch()) {
+                echo json_encode(['success' => false, 'message' => 'Akun sudah aktif, silakan login.']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'NIM tidak terdaftar di database anggota.']);
+            }
+        }
+        exit;
+    }
+
+    /**
+     * Memproses pendaftaran akun baru
+     */
+    public function register()
+    {
+        $nim = $_POST['nim'];
+        $password = $_POST['password'];
+        $db = \App\Helpers\DatabaseHelper::getConnection();
+
+        try {
+            $db->beginTransaction();
+
+            // 1. Ambil data email dari tabel members berdasarkan NIM
+            $stmtMember = $db->prepare("SELECT email FROM members WHERE nim = ? AND user_id IS NULL");
+            $stmtMember->execute([$nim]);
+            $member = $stmtMember->fetch();
+
+            if (!$member) {
+                throw new \Exception("NIM tidak valid atau akun sudah aktif.");
+            }
+
+            $email = $member['email']; // Ambil email yang sudah ada di tabel members
+
+            // 2. Masukkan ke tabel users (Sinkronisasi Email terjadi di sini)
+            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+            $stmtUser = $db->prepare("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, 'anggota') RETURNING id");
+            $stmtUser->execute([$nim, $email, $hashedPassword]);
+            $userId = $stmtUser->fetchColumn();
+
+            // 3. Hubungkan user_id ke tabel members
+            $stmtUpdate = $db->prepare("UPDATE members SET user_id = ? WHERE nim = ?");
+            $stmtUpdate->execute([$userId, $nim]);
+
+            $db->commit();
+            header('Location: /login?success=Akun berhasil diaktifkan dengan email: ' . $email);
+        } catch (\Exception $e) {
+            $db->rollBack();
+            header('Location: /register?error=' . urlencode($e->getMessage()));
+        }
+        exit;
     }
 
     public function authenticate()
     {
-        error_log("========================================");
-        error_log("🔐 LOGIN ATTEMPT STARTED");
-        error_log("Time: " . date('Y-m-d H:i:s'));
-        error_log("========================================");
-        
         $identifier = $_POST['username'] ?? '';
         $password = $_POST['password'] ?? '';
-        
-        error_log("📝 POST Data Received:");
-        error_log("   - Username/Email: " . $identifier);
-        error_log("   - Password Length: " . strlen($password));
-        error_log("   - Password (first 3 chars): " . substr($password, 0, 3) . "***");
 
         if (empty($identifier) || empty($password)) {
-            error_log("❌ Empty fields detected!");
             header('Location: /login?error=empty_fields');
             exit();
         }
 
-        error_log("🔍 Validating credentials...");
         $user = $this->authService->validateCredentials($identifier, $password);
 
         if (!$user) {
-            error_log("❌ AUTHENTICATION FAILED!");
-            error_log("   Reason: Invalid credentials");
             header('Location: /login?error=invalid_credentials');
             exit();
         }
 
-        error_log("✅ AUTHENTICATION SUCCESS!");
-        error_log("👤 User Data Retrieved:");
-        error_log("   - ID: " . ($user['id'] ?? 'N/A'));
-        error_log("   - Username: " . ($user['username'] ?? 'N/A'));
-        error_log("   - Email: " . ($user['email'] ?? 'N/A'));
-        error_log("   - Role: " . ($user['role'] ?? 'N/A'));
-        error_log("   - Nama: " . ($user['nama_lengkap'] ?? 'N/A'));
-
-        error_log("📦 Creating session...");
         $this->authService->login($user);
-
-        error_log("📦 Session Data After Login:");
-        error_log(print_r($_SESSION, true));
-
         $redirectUrl = $this->authService->getRedirectUrlByRole($user['role']);
-        
-        error_log("🚀 Redirecting to: " . $redirectUrl);
-        error_log("========================================");
 
         header('Location: ' . $redirectUrl);
         exit();
@@ -84,7 +131,6 @@ class LoginController
 
     public function logout()
     {
-        error_log("👋 User logged out: " . ($_SESSION['nama'] ?? 'Unknown'));
         $this->authService->logout();
         header('Location: /login');
         exit();
@@ -92,11 +138,11 @@ class LoginController
 
     public function showRegister()
     {
-        require_once __DIR__ . '/../Views/public/auth/register.php';
+        require_once __DIR__ . '/../Views/auth/register.php';
     }
 
     public function showForgot()
     {
-        require_once __DIR__ . '/../Views/public/auth/forgot-password.php';
+        require_once __DIR__ . '/../Views/auth/forgot-password.php';
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: src/Views/admin/announcements/edit.php
  */
@@ -42,13 +43,13 @@ $announcement = $announcement ?? [];
                         <div class="widget-card-admin bg-white p-4 rounded shadow-sm">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Judul Pengumuman</label>
-                                <input type="text" name="title" class="form-control" id="titleInput" 
-                                       value="<?= htmlspecialchars($announcement['title']) ?>" required>
+                                <input type="text" name="title" class="form-control" id="titleInput"
+                                    value="<?= htmlspecialchars($announcement['title']) ?>" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold text-muted">Slug</label>
-                                <input type="text" name="slug" class="form-control bg-light" id="slugInput" 
-                                       value="<?= htmlspecialchars($announcement['slug'] ?? '') ?>" readonly>
+                                <input type="text" name="slug" class="form-control bg-light" id="slugInput"
+                                    value="<?= htmlspecialchars($announcement['slug'] ?? '') ?>" readonly>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Konten Pengumuman</label>
@@ -71,13 +72,13 @@ $announcement = $announcement ?? [];
                             <div class="mb-4">
                                 <label class="form-label d-block fw-bold">Status Saat Ini</label>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="status" id="statusDraft" value="Draft" 
-                                           <?= ($announcement['status'] ?? '') == 'Draft' ? 'checked' : '' ?>>
+                                    <input class="form-check-input" type="radio" name="status" id="statusDraft" value="Draft"
+                                        <?= ($announcement['status'] ?? '') == 'Draft' ? 'checked' : '' ?>>
                                     <label class="form-check-label" for="statusDraft">Draft</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="status" id="statusPub" value="Published" 
-                                           <?= ($announcement['status'] ?? 'Published') == 'Published' ? 'checked' : '' ?>>
+                                    <input class="form-check-input" type="radio" name="status" id="statusPub" value="Published"
+                                        <?= ($announcement['status'] ?? 'Published') == 'Published' ? 'checked' : '' ?>>
                                     <label class="form-check-label text-success fw-bold" for="statusPub">Published</label>
                                 </div>
                             </div>
@@ -110,10 +111,12 @@ $announcement = $announcement ?? [];
 
         titleInput.addEventListener('keyup', function() {
             let slug = this.value.toLowerCase()
-                            .replace(/[^\w ]+/g, '')
-                            .replace(/ +/g, '-');
+                .replace(/[^\w ]+/g, '')
+                .replace(/ +/g, '-');
             slugInput.value = slug;
         });
     </script>
+    <script src="/assets/js/admin/dashboard.js"></script>
 </body>
+
 </html>

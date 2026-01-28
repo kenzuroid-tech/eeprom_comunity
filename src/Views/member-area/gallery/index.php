@@ -189,6 +189,8 @@ $userFoto = !empty($userData['foto_url']) ? $userData['foto_url'] : 'https://ui-
             document.querySelector('.dashboard-wrapper').classList.toggle('sidebar-open');
         });
     </script>
+    <script src="/assets/js/member-area/dashboard.js"></script>
+
 </body>
 
 </html>

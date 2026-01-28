@@ -2,170 +2,181 @@
     --primary-blue: #1A237E;
     --secondary-blue: #3F51B5;
     --accent-orange: #FF5722;
-    --light-gray: #F8F9FA;
-    --medium-gray: #E8EAF6;
-    --dark-text: #212529;
-    --soft-text: #495057;
-    --shadow-light: rgba(0, 0, 0, 0.08);
+    --bg-gray: #F1F5F9;
     --sidebar-width: 280px;
+    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
-* { 
-    box-sizing: border-box; 
-    font-family: 'Poppins', sans-serif; 
+* {
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
 
 body {
-    background-color: var(--medium-gray);
-    color: var(--soft-text);
+    background-color: var(--bg-gray);
+    color: #334155;
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* --- Layout Structure --- */
+.dashboard-wrapper {
+    display: flex;
     min-height: 100vh;
 }
 
-/* Layout */
-.dashboard-wrapper { 
-    display: flex; 
-    min-height: 100vh; 
-}
-
 .main-content-area {
+    /* Pastikan margin kiri cukup agar tidak tertutup sidebar melayang */
+    margin-left: calc(var(--sidebar-width) + 40px);
     flex-grow: 1;
-    padding: 30px;
-    margin-left: var(--sidebar-width);
-    transition: margin-left 0.3s ease;
+    padding: 30px 30px 30px 0 !important;
+    transition: all 0.3s ease;
 }
 
-/* Sidebar Styling */
-.sidebar {
-    width: var(--sidebar-width);
-    background-color: var(--primary-blue);
-    color: white;
-    position: fixed;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    z-index: 1030;
-    transition: transform 0.3s ease;
-    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
+/* --- Top Navbar --- */
+.navbar {
+    border-radius: 20px;
+    padding: 15px 25px !important;
+    border: 1px solid rgba(0, 0, 0, 0.03);
 }
 
-.sidebar-header {
-    padding: 25px;
-    text-align: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+.navbar h4 {
+    color: var(--primary-blue);
+    letter-spacing: -0.5px;
 }
 
-.sidebar-header h3 {
-    color: var(--accent-orange);
-    font-size: 1.3rem;
-    font-weight: 800;
-    margin: 0;
-    text-transform: uppercase;
+.dropdown-toggle img {
+    border: 2px solid var(--primary-blue);
+    padding: 2px;
 }
 
-.sidebar-nav {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 15px 0;
-}
-
-.sidebar-nav::-webkit-scrollbar { width: 4px; }
-.sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
-
-.sidebar-nav .nav-link {
-    color: rgba(255, 255, 255, 0.85);
-    padding: 12px 25px;
-    display: flex;
-    align-items: center;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-    border-left: 5px solid transparent;
-    text-decoration: none;
-}
-
-.sidebar-nav .nav-link i { margin-right: 15px; font-size: 1.1rem; }
-
-.sidebar-nav .nav-link:hover, .sidebar-nav .nav-link.active {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
-    border-left-color: var(--accent-orange);
-}
-
-.nav-dropdown-items {
-    background: rgba(0, 0, 0, 0.1);
-    list-style: none;
-    padding: 0;
-    display: none;
-}
-
-.nav-dropdown-items.show { display: block; }
-.nav-dropdown-items .nav-link { padding-left: 55px; font-size: 0.85rem; }
-
-.sidebar-footer {
-    padding: 15px;
-    text-align: center;
-    font-size: 0.75rem;
-    background: rgba(0,0,0,0.2);
-    color: rgba(255,255,255,0.6);
-}
-
-/* Top Navbar */
-.top-navbar {
-    background: white;
-    padding: 15px 30px;
-    border-radius: 12px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-
-/* Widgets & Tabs */
+/* --- Widget & Tab Card --- */
 .widget-card-admin {
-    background: white; padding: 25px; border-radius: 15px;
-    box-shadow: 0 4px 15px var(--shadow-light); margin-bottom: 30px;
+    background: white;
+    padding: 30px;
+    border-radius: 25px;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+.nav-tabs-custom {
+    border-bottom: 2px solid #F1F5F9;
+    gap: 10px;
 }
 
 .nav-tabs-custom .nav-link {
-    border: none;
-    color: var(--soft-text);
+    border: none !important;
+    color: #64748B !important;
+    /* Warna abu-abu gelap agar kontras */
     font-weight: 600;
-    padding: 12px 20px;
-    transition: all 0.3s;
+    padding: 12px 25px;
+    background: transparent !important;
+    transition: 0.3s;
+    border-radius: 12px 12px 0 0;
 }
 
+/* Teks saat Tab Aktif */
 .nav-tabs-custom .nav-link.active {
-    color: var(--primary-blue);
-    background: none;
-    border-bottom: 3px solid var(--accent-orange);
+    color: #1A237E !important;
+    /* Warna Biru EEPROM saat dipilih */
+    background-color: rgba(255, 87, 34, 0.05) !important;
+    /* Background oranye sangat transparan */
+    position: relative;
 }
 
-/* Meeting Cards */
+/* Garis Oranye di Bawah Tab Aktif */
+.nav-tabs-custom .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #FF5722;
+    /* Warna Oranye EEPROM */
+    border-radius: 10px;
+}
+
+/* Efek Hover */
+.nav-tabs-custom .nav-link:hover {
+    color: #FF5722 !important;
+    background-color: #F8FAFC !important;
+}
+
+/* --- Meeting Cards --- */
 .meeting-card {
-    border: none;
-    border-radius: 15px;
+    border: 1px solid #F1F5F9 !important;
+    border-radius: 20px;
     background: white;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    transition: transform 0.3s;
+    transition: all 0.3s ease;
     height: 100%;
 }
-.meeting-card:hover { transform: translateY(-5px); }
+
+.meeting-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(26, 35, 126, 0.08) !important;
+    border-color: var(--secondary-blue) !important;
+}
+
+.meeting-card .badge {
+    padding: 8px 15px;
+    font-weight: 600;
+}
+
+.meeting-card ul li i {
+    color: var(--accent-orange);
+}
+
+/* --- Buttons --- */
+.btn-primary {
+    background-color: var(--primary-blue);
+    border: none;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-blue);
+    box-shadow: 0 5px 15px rgba(26, 35, 126, 0.2);
+}
 
 .btn-orange {
     background-color: var(--accent-orange);
     color: white;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-weight: 600;
+}
+
+.btn-orange:hover {
+    background-color: #E64A19;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 87, 34, 0.3);
+}
+
+/* --- Table Styling (Past Meetings) --- */
+.table thead th {
+    background-color: #F8FAFC;
+    color: #64748B;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    padding: 15px;
     border: none;
 }
-.btn-orange:hover { background-color: #e64a19; color: white; }
 
-.stat-circle {
-    width: 80px; height: 80px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 1.2rem;
-    border: 4px solid var(--medium-gray);
-    margin: 0 auto 10px;
+.table tbody td {
+    padding: 15px;
+    border-bottom: 1px solid #F1F5F9;
 }
 
-@media (max-width: 992px) {
-    .sidebar { transform: translateX(-100%); }
-    .sidebar.show { transform: translateX(0); }
-    .main-content-area { margin-left: 0; }
+/* --- Responsive Layout --- */
+@media (max-width: 991.98px) {
+    .main-content-area {
+        margin-left: 0;
+        padding: 20px !important;
+    }
 }

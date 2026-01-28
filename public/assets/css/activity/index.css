@@ -1,0 +1,213 @@
+:root {
+    --primary-blue: #1A237E;
+    --secondary-blue: #3F51B5;
+    --accent-orange: #FF5722;
+    --light-gray: #F8F9FA;
+    --medium-gray: #E8EAF6;
+    --dark-text: #212529;
+    --soft-text: #495057;
+    --shadow-light: rgba(0, 0, 0, 0.08);
+    --shadow-md: rgba(0, 0, 0, 0.15);
+}
+
+* {
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Pastikan body memiliki ruang ekstra di atas */
+body {
+    background-color: var(--light-gray);
+    color: var(--soft-text);
+    line-height: 1.6;
+    padding-top: 0px;
+    /* Ditambah agar konten tidak mepet */
+}
+
+/* ========================================
+   Page Header (FIX JARAK)
+   ======================================== */
+.page-header {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%), 
+        url('/assets/images/outbond.jpg') no-repeat center center;
+    padding: 160px 0 120px;
+    color: white;
+    text-align: center;
+    border-radius: 0 0 50px 50px;
+    position: relative;
+}
+
+/* Judul Kegiatan */
+.page-header h1 {
+    font-size: 3rem;
+    /* Memperbesar ukuran agar lebih tegas */
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.header-divider {
+    width: 80px;
+    /* Sedikit diperlebar */
+    height: 5px;
+    background-color: var(--accent-orange);
+    margin: 15px auto 20px;
+    /* Memberi jarak ke teks deskripsi di bawahnya */
+    border-radius: 10px;
+}
+
+/* Filter Section (Overlapping Header) */
+.filter-container {
+    background: white;
+    padding: 30px;
+    border-radius: 25px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+    /* margin-top disesuaikan agar tetap overlap cantik */
+    margin-top: -70px;
+    position: relative;
+    z-index: 10;
+}
+
+.form-control, .form-select {
+    border: 1px solid #ddd;
+    padding: 10px 15px;
+    border-radius: 8px;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--secondary-blue);
+    box-shadow: 0 0 0 0.25rem rgba(63, 81, 181, 0.25);
+}
+
+
+/* ========================================
+           Activity Cards
+        ======================================== */
+.activity-card {
+    background: white;
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px var(--shadow-light);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.activity-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 30px var(--shadow-md);
+}
+
+.card-img-container {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.card-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.category-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: var(--accent-orange);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.card-body-custom {
+    padding: 25px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.activity-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+    margin-bottom: 10px;
+}
+
+.activity-meta {
+    font-size: 0.9rem;
+    color: #777;
+    margin-bottom: 15px;
+}
+
+.activity-meta i {
+    color: var(--accent-orange);
+    margin-right: 5px;
+}
+
+.btn-read-more {
+    background-color: var(--primary-blue);
+    color: white;
+    border-radius: 8px;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    transition: 0.3s;
+    margin-top: auto;
+    text-align: center;
+}
+
+.btn-read-more:hover {
+    background-color: var(--secondary-blue);
+    color: white;
+}
+
+/* ========================================
+           Pagination
+        ======================================== */
+.pagination .page-link {
+    color: var(--primary-blue);
+    border: none;
+    margin: 0 5px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+}
+
+/* ========================================
+           Footer (Sesuai Index.html)
+        ======================================== */
+.footer {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 60px 0 20px;
+    margin-top: 80px;
+}
+
+.social-icons a {
+    color: white;
+    width: 35px;
+    height: 35px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid white;
+    border-radius: 50%;
+    margin-right: 10px;
+    transition: 0.3s;
+    text-decoration: none;
+}
+
+.social-icons a:hover {
+    color: var(--accent-orange);
+    border-color: var(--accent-orange);
+}

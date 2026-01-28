@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="icon" href="/assets/images/eeprom_logo.png" type="image/png">
-    <link rel="stylesheet" href="/assets/css/public/auth/forgot-password.css">
+    <link rel="stylesheet" href="/assets/css/auth/forgot-password.css">
 </head>
 
 <body>
@@ -53,7 +53,7 @@
             </form>
 
             <div class="text-center">
-                <a href="/src/Views/public/auth/login.php" class="back-to-login">
+                <a href="/login" class="back-to-login">
                     <i class="bi bi-arrow-left"></i>
                     Kembali ke Login
                 </a>
@@ -61,12 +61,12 @@
         </div>
 
         <div class="footer-text">
-            © 2025 EEPROM POLINEMA
+            © <?= date("Y"); ?> EEPROM POLINEMA - Developed by Nisho
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/public/assets/js/public/auth/forgot-password.js"></script>
+    <script src="/public/assets/js/auth/forgot-password.js"></script>
 </body>
 
 </html>

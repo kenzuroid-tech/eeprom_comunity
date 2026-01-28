@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Data yang dikirim dari VotingController::results()
  * @var array $electionInfo  Detail sesi pemilihan (id, title, end_date, status)
@@ -109,7 +110,7 @@ $winner = $results[0] ?? null;
                             <div class="text-center py-5">
                                 <p class="text-muted">Data perolehan suara belum tersedia.</p>
                             </div>
-                        <?php else: 
+                            <?php else:
                             foreach ($results as $index => $res):
                                 $percent = ($totalVotes > 0) ? round(($res['total_votes'] / $totalVotes) * 100, 1) : 0;
                                 $colorClass = $colors[$index % count($colors)];
@@ -123,7 +124,7 @@ $winner = $results[0] ?? null;
                                         <div class="progress-bar <?= $colorClass ?> progress-bar-striped progress-bar-animated" role="progressbar" style="width: <?= $percent ?>%"></div>
                                     </div>
                                 </div>
-                            <?php endforeach; 
+                        <?php endforeach;
                         endif; ?>
                     </div>
                 </div>
@@ -133,8 +134,8 @@ $winner = $results[0] ?? null;
                         <?php if ($winner && $totalVotes > 0): ?>
                             <i class="bi bi-trophy-fill text-warning fs-1 mb-2"></i>
                             <div class="position-relative d-inline-block mx-auto mb-3">
-                                <img src="<?= !empty($winner['photo_url']) ? $winner['photo_url'] : 'https://ui-avatars.com/api/?name=' . urlencode($winner['name']) . '&size=128' ?>" 
-                                     class="rounded-circle border border-4 border-success shadow-sm" width="120" height="120" style="object-fit:cover;">
+                                <img src="<?= !empty($winner['photo_url']) ? $winner['photo_url'] : 'https://ui-avatars.com/api/?name=' . urlencode($winner['name']) . '&size=128' ?>"
+                                    class="rounded-circle border border-4 border-success shadow-sm" width="120" height="120" style="object-fit:cover;">
                             </div>
                             <h4 class="fw-bold mb-1"><?= htmlspecialchars($winner['name']) ?></h4>
                             <p class="text-muted m-0"><?= $winner['total_votes'] ?> Suara (<?= round(($winner['total_votes'] / $totalVotes) * 100, 1) ?>%)</p>
@@ -167,7 +168,7 @@ $winner = $results[0] ?? null;
                                 <tr>
                                     <td colspan="5" class="text-center py-4 text-muted">Belum ada pemilih yang memberikan suara.</td>
                                 </tr>
-                            <?php else: 
+                                <?php else:
                                 foreach ($voteLogs as $log): ?>
                                     <tr>
                                         <td class="fw-bold"><?= htmlspecialchars($log['nama_lengkap']) ?></td>
@@ -176,7 +177,7 @@ $winner = $results[0] ?? null;
                                         <td><span class="badge bg-light text-dark border">Kandidat #<?= $log['number_order'] ?></span></td>
                                         <td><?= date('d M Y, H:i', strtotime($log['voted_at'])) ?></td>
                                     </tr>
-                                <?php endforeach; 
+                            <?php endforeach;
                             endif; ?>
                         </tbody>
                     </table>
@@ -186,6 +187,8 @@ $winner = $results[0] ?? null;
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/admin/dashboard.js"></script>
+
 </body>
 
 </html>

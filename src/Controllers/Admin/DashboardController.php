@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\Admin; // Harus sama dengan folder: Controllers/Admin
+namespace App\Controllers\Admin;
 
 use App\Helpers\DatabaseHelper;
 
@@ -12,7 +12,7 @@ class DashboardController
             session_start();
         }
 
-        $userId = 3; // ID Admin (Nisho Admin)
+        $userId = $_SESSION['user_id'] ?? 3; // Mengambil ID dari session jika ada
 
         try {
             $db = DatabaseHelper::getConnection();
@@ -37,8 +37,20 @@ class DashboardController
             ");
             $chartData = array_reverse($stmtChart->fetchAll(\PDO::FETCH_ASSOC));
 
+            // --- TAMBAHAN BARU: SISTEM LOG AKTIVITAS NYATA ---
+            // Mengambil 5 aktivitas terbaru dari pendaftar, forum, dan pengumuman
+            $stmtLogs = $db->query("
+                (SELECT 'Pendaftar Baru: ' || nama_lengkap as msg, created_at, 'success' as color FROM applicants)
+                UNION ALL
+                (SELECT 'Forum Baru: ' || title as msg, created_at, 'primary' as color FROM forum_posts)
+                UNION ALL
+                (SELECT 'Pengumuman: ' || title as msg, created_at, 'warning' as color FROM announcements)
+                ORDER BY created_at DESC LIMIT 5
+            ");
+            $logs = $stmtLogs->fetchAll(\PDO::FETCH_ASSOC);
+
             // Pastikan path view ini benar
-            require_once __DIR__ . '/../../Views/admin/dashboard.php';
+            require_once __DIR__ . '/../../Views/admin/index.php';
         } catch (\PDOException $e) {
             die("Error Database: " . $e->getMessage());
         }

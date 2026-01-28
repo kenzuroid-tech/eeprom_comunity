@@ -2,12 +2,7 @@
 
 // Daftar NIM yang ingin di-generate passwordnya
 $nimList = [
-    '243101030058',
-    '244101020014',
-    '2341170003',
-    '2341170040',
-    '2331110114',
-    '2341170108'
+    '0000000001'
 ];
 
 echo "=== GENERATE PASSWORD HASH DARI NIM ===\n\n";

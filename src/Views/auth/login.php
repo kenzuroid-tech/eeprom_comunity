@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="icon" href="/assets/images/eeprom_logo.png" type="image/png">
-    <link rel="stylesheet" href="/assets/css/public/auth/login.css">
+    <link rel="stylesheet" href="/assets/css/auth/login.css">
 </head>
 
 <body>
@@ -67,8 +67,11 @@
                         <span class="input-group-text bg-light border-end-0">
                             <i class="bi bi-lock text-muted"></i>
                         </span>
-                        <input type="password" class="form-control border-start-0" id="password" name="password"
+                        <input type="password" class="form-control border-start-0 border-end-0" id="password" name="password"
                             placeholder="Masukkan Password" required>
+                        <button class="btn btn-outline-light border-start-0 text-muted" type="button" id="togglePassword" style="border: 1px solid #dee2e6;">
+                            <i class="bi bi-eye" id="eyeIcon"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -93,13 +96,26 @@
         </div>
 
         <div class="footer-text">
-            &copy; 2025 EEPROM POLINEMA
+            © <?= date("Y"); ?> EEPROM POLINEMA - Developed by Nisho
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- JAVASCRIPT login.js DINONAKTIFKAN SEMENTARA UNTUK DEBUG -->
-    <!-- <script src="/assets/js/auth/login.js"></script> -->
+    <script>
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+        const eyeIcon = document.querySelector('#eyeIcon');
+
+        togglePassword.addEventListener('click', function(e) {
+            // Toggle tipe input
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+
+            // Toggle ikon mata
+            eyeIcon.classList.toggle('bi-eye');
+            eyeIcon.classList.toggle('bi-eye-slash');
+        });
+    </script>
 </body>
 
 </html>

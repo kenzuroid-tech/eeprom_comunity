@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Data dari DocumentController
  * @var array $documents  Daftar dokumen dari tabel documents
@@ -7,8 +8,8 @@
 $documents = $documents ?? [];
 
 // Logika Foto Profil Admin untuk Navbar
-$adminFotoNavbar = !empty($adminData['foto_url']) 
-    ? $adminData['foto_url'] 
+$adminFotoNavbar = !empty($adminData['foto_url'])
+    ? $adminData['foto_url']
     : '/assets/images/default-avatar.png';
 ?>
 
@@ -23,21 +24,116 @@ $adminFotoNavbar = !empty($adminData['foto_url'])
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="icon" href="/assets/images/eeprom_logo.png" type="image/png">
-    <link rel="stylesheet" href="/assets/css/admin/dashboard.css">
-    
     <style>
         :root {
             --primary-blue: #1A237E;
+            --secondary-blue: #3F51B5;
             --accent-orange: #FF5722;
+            --bg-gray: #F1F5F9;
+            --sidebar-width: 280px;
         }
-        .main-content-area { padding: 30px; transition: 0.3s; }
-        .btn-upload { background-color: var(--accent-orange); color: white; font-weight: 600; border-radius: 8px; }
-        .btn-upload:hover { background-color: #e64a19; color: white; }
-        .doc-icon { font-size: 1.5rem; }
-        .icon-pdf { color: #f44336; }
-        .icon-doc { color: #2196f3; }
-        .icon-xls { color: #4caf50; }
-        .widget-card-admin { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 30px; }
+
+        body {
+            background-color: var(--bg-gray);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+        }
+
+        /* --- Layout Adjustment agar tidak tertutup Sidebar --- */
+        .main-content-area {
+            margin-left: calc(var(--sidebar-width) + 20px);
+            /* Memberi ruang untuk sidebar melayang */
+            padding: 30px;
+            transition: 0.3s;
+            min-height: 100vh;
+        }
+
+        /* --- Navbar & Card Styling --- */
+        .navbar {
+            border-radius: 15px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .widget-card-admin {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        /* --- Button Upload Custom --- */
+        .btn-upload {
+            background-color: var(--accent-orange);
+            color: white;
+            font-weight: 700;
+            border-radius: 12px;
+            border: none;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 87, 34, 0.2);
+        }
+
+        .btn-upload:hover {
+            background-color: #E64A19;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* --- Table Icons & Typography --- */
+        .doc-icon {
+            font-size: 1.8rem;
+        }
+
+        .icon-pdf {
+            color: #E91E63;
+        }
+
+        /* Warna merah PDF lebih modern */
+        .icon-doc {
+            color: #1976D2;
+        }
+
+        /* Warna biru Word */
+        .icon-xls {
+            color: #2E7D32;
+        }
+
+        /* Warna hijau Excel */
+
+        .table thead th {
+            background-color: #F8FAFC;
+            color: #64748B;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            padding: 15px;
+            border: none;
+        }
+
+        .table tbody td {
+            padding: 18px 15px;
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        /* --- Form Controls --- */
+        .form-control,
+        .form-select {
+            border-radius: 10px;
+            padding: 10px 15px;
+        }
+
+        .input-group-text {
+            border-radius: 10px 0 0 10px;
+        }
+
+        /* --- Responsive Layout --- */
+        @media (max-width: 991.98px) {
+            .main-content-area {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 
@@ -73,7 +169,9 @@ $adminFotoNavbar = !empty($adminData['foto_url'])
                                 <i class="bi bi-person me-2 text-primary"></i>Profile
                             </a>
                         </li>
-                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
                         <li>
                             <a class="dropdown-item text-danger py-2" href="/logout">
                                 <i class="bi bi-box-arrow-right me-2"></i>Logout
@@ -133,13 +231,20 @@ $adminFotoNavbar = !empty($adminData['foto_url'])
                                     <td colspan="6" class="text-center py-5 text-muted">Belum ada dokumen yang ditemukan.</td>
                                 </tr>
                             <?php else: ?>
-                                <?php foreach ($documents as $doc): 
+                                <?php foreach ($documents as $doc):
                                     $ext = pathinfo($doc['file_path'], PATHINFO_EXTENSION);
                                     $iconClass = 'bi-file-earmark-fill';
                                     $colorClass = 'text-secondary';
-                                    if ($ext == 'pdf') { $iconClass = 'bi-file-earmark-pdf-fill'; $colorClass = 'icon-pdf'; }
-                                    elseif (in_array($ext, ['doc', 'docx'])) { $iconClass = 'bi-file-earmark-word-fill'; $colorClass = 'icon-doc'; }
-                                    elseif (in_array($ext, ['xls', 'xlsx'])) { $iconClass = 'bi-file-earmark-excel-fill'; $colorClass = 'icon-xls'; }
+                                    if ($ext == 'pdf') {
+                                        $iconClass = 'bi-file-earmark-pdf-fill';
+                                        $colorClass = 'icon-pdf';
+                                    } elseif (in_array($ext, ['doc', 'docx'])) {
+                                        $iconClass = 'bi-file-earmark-word-fill';
+                                        $colorClass = 'icon-doc';
+                                    } elseif (in_array($ext, ['xls', 'xlsx'])) {
+                                        $iconClass = 'bi-file-earmark-excel-fill';
+                                        $colorClass = 'icon-xls';
+                                    }
                                 ?>
                                     <tr>
                                         <td class="ps-4 text-center"><i class="bi <?= $iconClass ?> doc-icon <?= $colorClass ?>"></i></td>
@@ -211,4 +316,5 @@ $adminFotoNavbar = !empty($adminData['foto_url'])
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/assets/js/admin/dashboard.js"></script>
 </body>
+
 </html>

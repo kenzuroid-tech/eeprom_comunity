@@ -1,7 +1,7 @@
 <?php
 // Data dari Controller
 $adminData = $adminData ?? [];
-$divisions = $divisions ?? []; // Pastikan variabel ini dikirim dari controller
+$divisions = $divisions ?? [];
 $totalDivisions = $totalDivisions ?? 0;
 $totalMembers = $totalMembers ?? 0;
 $largestDivision = $largestDivision ?? '-';
@@ -43,9 +43,17 @@ $adminFotoNavbar = !empty($adminData['foto_url']) ? $adminData['foto_url'] : 'ht
         }
 
         .division-icon-img {
-            width: 40px;
-            height: 40px;
+            width: 100%;
+            height: 100%;
             object-fit: contain;
+        }
+
+        .icon-box-preview {
+            width: 50px;
+            height: 50px;
+            overflow: hidden;
+            border: 1px solid #eee;
+            background-color: #f8f9fa;
         }
     </style>
 </head>
@@ -55,86 +63,39 @@ $adminFotoNavbar = !empty($adminData['foto_url']) ? $adminData['foto_url'] : 'ht
         <?php include_once __DIR__ . '/../includes/sidebar.php'; ?>
 
         <div id="mainContentWrapper" class="main-content-area p-4">
-            <nav class="navbar navbar-expand-lg navbar-light bg-white rounded shadow-sm mb-4 px-3 d-flex justify-content-between">
-                <div class="d-flex align-items-center">
-                    <button class="btn btn-primary me-3 d-lg-none" id="mobile-toggle"><i class="bi bi-list"></i></button>
-                    <h4 class="m-0 fw-bold text-primary">Divisions Management</h4>
-                </div>
-                <div class="dropdown">
-                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
-                        id="adminDropdown"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        <img src="<?= htmlspecialchars($adminFotoNavbar) ?>"
-                            alt="Profile"
-                            width="35"
-                            height="35"
-                            class="rounded-circle me-2"
-                            style="object-fit: cover; border: 1px solid #ddd;">
-                        <span class="d-none d-sm-inline text-dark fw-bold">
-                            <?= htmlspecialchars($adminData['nama_lengkap'] ?? 'Super Admin') ?>
-                        </span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="adminDropdown">
-                        <li>
-                            <a class="dropdown-item py-2" href="/member/profile">
-                                <i class="bi bi-person me-2 text-primary"></i>Profile
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <a class="dropdown-item text-danger py-2" href="/logout">
-                                <i class="bi bi-box-arrow-right me-2"></i>Logout
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+            <?php include_once __DIR__ . '/../includes/header.php'; ?>
 
             <div class="row g-4 mb-5">
                 <div class="col-md-3">
                     <div class="stat-card-admin bg-white rounded shadow-sm" style="border-left: 5px solid #0d6efd;">
-                        <div class="stat-icon-wrapper text-primary fs-2">
-                            <i class="bi bi-folder"></i>
-                        </div>
+                        <div class="stat-icon-wrapper text-primary fs-2"><i class="bi bi-folder"></i></div>
                         <div class="stat-info">
                             <h3><?= $totalDivisions ?></h3>
                             <p>Total Divisi</p>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-md-3">
                     <div class="stat-card-admin bg-white rounded shadow-sm" style="border-left: 5px solid #28a745;">
-                        <div class="stat-icon-wrapper text-success fs-2">
-                            <i class="bi bi-people"></i>
-                        </div>
+                        <div class="stat-icon-wrapper text-success fs-2"><i class="bi bi-people"></i></div>
                         <div class="stat-info">
                             <h3><?= $totalMembers ?></h3>
                             <p>Anggota</p>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-md-3">
                     <div class="stat-card-admin bg-white rounded shadow-sm" style="border-left: 5px solid #ffc107;">
-                        <div class="stat-icon-wrapper text-warning fs-2">
-                            <i class="bi bi-bullseye"></i>
-                        </div>
+                        <div class="stat-icon-wrapper text-warning fs-2"><i class="bi bi-bullseye"></i></div>
                         <div class="stat-info">
                             <h3 class="text-truncate" style="max-width: 120px;"><?= $largestDivision ?></h3>
                             <p>Terbanyak</p>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-md-3">
                     <div class="stat-card-admin bg-white rounded shadow-sm" style="border-left: 5px solid #dc3545;">
-                        <div class="stat-icon-wrapper text-danger fs-2">
-                            <i class="bi bi-graph-up"></i>
-                        </div>
+                        <div class="stat-icon-wrapper text-danger fs-2"><i class="bi bi-graph-up"></i></div>
                         <div class="stat-info">
                             <h3><?= $avgMembers ?></h3>
                             <p>Rata-rata</p>
@@ -160,28 +121,28 @@ $adminFotoNavbar = !empty($adminData['foto_url']) ? $adminData['foto_url'] : 'ht
                         <tbody>
                             <?php if (empty($divisions)): ?>
                                 <tr>
-                                    <td colspan="7" class="text-center py-4 text-muted">Belum ada data divisi.</td>
+                                    <td colspan="7" class="text-center py-4">Belum ada data.</td>
                                 </tr>
                                 <?php else: $no = 1;
                                 foreach ($divisions as $d): ?>
+                                    <?php
+                                    $icon = $d['icon'];
+                                    // Deteksi apakah path gambar atau emoji
+                                    $isImagePath = (!empty($icon) && (strpos($icon, '/') !== false || strpos($icon, '.') !== false));
+                                    // Bersihkan path jika ada prefix 'public/' yang tersimpan di DB
+                                    $displayPath = str_replace('public/', '/', $icon);
+                                    ?>
                                     <tr>
-                                        <td><i class="bi bi-list text-muted drag-handle"></i></td>
+                                        <td><i class="bi bi-list text-muted"></i></td>
                                         <td><?= $no++ ?></td>
-                                        <td class="text-center">
-                                            <div class="d-flex align-items-center justify-content-center bg-light rounded" style="width: 50px; height: 50px; overflow: hidden;">
-                                                <?php
-                                                $icon = $d['icon'];
-                                                // Cek apakah icon berisi path (mengandung '/' atau '.')
-                                                if (strpos($icon, '/') !== false || strpos($icon, '.') !== false):
-                                                    // Tambahkan /public jika gambar tidak muncul, atau hapus jika path sudah lengkap
-                                                    $finalPath = $icon;
-                                                ?>
-                                                    <img src="<?= htmlspecialchars($finalPath) ?>"
+                                        <td>
+                                            <div class="d-flex align-items-center justify-content-center rounded icon-box-preview">
+                                                <?php if ($isImagePath): ?>
+                                                    <img src="<?= htmlspecialchars($displayPath) ?>"
                                                         class="division-icon-img"
-                                                        style="width: 100%; height: 100%; object-fit: contain;"
-                                                        onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=<?= urlencode($d['name']) ?>&background=random';">
+                                                        onerror="this.src='https://ui-avatars.com/api/?name=<?= urlencode($d['name']) ?>&background=random';">
                                                 <?php else: ?>
-                                                    <span class="fs-4"><?= htmlspecialchars($icon) ?></span>
+                                                    <span class="fs-4"><?= htmlspecialchars($icon ?: '📁') ?></span>
                                                 <?php endif; ?>
                                             </div>
                                         </td>
@@ -191,22 +152,12 @@ $adminFotoNavbar = !empty($adminData['foto_url']) ? $adminData['foto_url'] : 'ht
                                                 <?= htmlspecialchars($d['description']) ?>
                                             </div>
                                         </td>
-                                        <td>
-                                            <span class="badge bg-primary-subtle text-primary rounded-pill px-3">
-                                                <?= $d['member_count'] ?> Anggota
-                                            </span>
-                                        </td>
+                                        <td><span class="badge bg-primary-subtle text-primary rounded-pill px-3"><?= $d['member_count'] ?> Anggota</span></td>
                                         <td class="text-center">
                                             <div class="btn-group shadow-sm">
-                                                <a href="/admin/members?search=<?= urlencode($d['name']) ?>" class="btn btn-sm btn-white border text-primary" title="Lihat Anggota">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                                <a href="/admin/divisions/edit?id=<?= $d['id'] ?>" class="btn btn-sm btn-white border text-warning" title="Edit Divisi">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <button class="btn btn-sm btn-white border text-danger" title="Hapus Divisi">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
+                                                <a href="/admin/members?search=<?= urlencode($d['name']) ?>" class="btn btn-sm btn-white border text-primary" title="Lihat Anggota"><i class="bi bi-eye"></i></a>
+                                                <a href="/admin/divisions/edit?id=<?= $d['id'] ?>" class="btn btn-sm btn-white border text-warning" title="Edit Divisi"><i class="bi bi-pencil"></i></a>
+                                                <button class="btn btn-sm btn-white border text-danger" title="Hapus Divisi"><i class="bi bi-trash"></i></button>
                                             </div>
                                         </td>
                                     </tr>
@@ -220,8 +171,7 @@ $adminFotoNavbar = !empty($adminData['foto_url']) ? $adminData['foto_url'] : 'ht
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/assets/js/admin/divisions/index.js"></script>
-
+    <script src="/assets/js/admin/dashboard.js"></script>
 </body>
 
 </html>

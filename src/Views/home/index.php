@@ -1,3 +1,46 @@
+<?php
+// Menggunakan dirname untuk mendapatkan root directory project secara konsisten
+$configPath = dirname(__DIR__, 2) . '/../config/connection.php';
+
+if (file_exists($configPath)) {
+    $conn = require_once $configPath;
+} else {
+    die("Error: File connection.php tidak ditemukan di: " . $configPath);
+}
+
+// Validasi koneksi
+if (!$conn) {
+    die("Error: Gagal membuat koneksi database");
+}
+
+/** 1. Ambil Info Organisasi (Visi, Misi, Motto) **/
+$org_result = pg_query($conn, "SELECT * FROM organization_info LIMIT 1");
+$org = pg_fetch_assoc($org_result);
+
+/** 2. Ambil Daftar Divisi **/
+$div_result = pg_query($conn, "SELECT * FROM divisions ORDER BY sort_order ASC");
+
+/** 3. Ambil Prestasi Terbaru **/
+$ach_result = pg_query($conn, "SELECT * FROM achievements ORDER BY year DESC LIMIT 5");
+
+/** 4. Hitung Statistik Dinamis dari Tabel members **/
+// Total Anggota Aktif
+$res_active = pg_query($conn, "SELECT COUNT(*) FROM members WHERE status_keanggotaan = 'Active'");
+$total_active_members = pg_fetch_result($res_active, 0, 0);
+
+// Generasi Terbaru (Nilai MAX)
+$res_gen = pg_query($conn, "SELECT MAX(generasi) FROM members");
+$max_generation = pg_fetch_result($res_gen, 0, 0) ?: 0;
+
+// Total Kejuaraan dari Tabel achievements
+$res_ach = pg_query($conn, "SELECT COUNT(*) FROM achievements");
+$total_achievements = pg_fetch_result($res_ach, 0, 0);
+
+/** 5. Cek Rekrutmen Aktif dari Tabel recruitment_periods **/
+$rec_result = pg_query($conn, "SELECT * FROM recruitment_periods WHERE status = 'Active' ORDER BY tanggal_selesai DESC LIMIT 1");
+$recruitment = pg_fetch_assoc($rec_result);
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -27,7 +70,7 @@
                     minat di bidang robotika, khususnya robot hobbyist. Komunitas ini bertujuan sebagai wadah untuk
                     mengembangkan ilmu pengetahuan dan teknologi dalam bidang robotika, sekaligus sebagai media bagi
                     mahasiswa untuk belajar dan berinovasi.</p>
-                <a href="#about" class="btn-primary-eeprom mt-3">Pelajari Lebih Lanjut</a>
+                <a href="#visi-misi" class="btn-primary-eeprom mt-3">Pelajari Lebih Lanjut</a>
             </div>
         </div>
     </header>
@@ -35,85 +78,90 @@
     <section class="visi-misi-section py-90 bg-white" id="visi-misi">
         <div class="container">
             <h2 class="section-heading">Visi & Misi Kami</h2>
+
             <div class="row justify-content-center mt-5">
-                <div class="col-md-4 mb-4">
-                    <div class="visi-misi-card text-center">
-                        <h4 class="text-primary mb-3">Visi</h4>
-                        <p class="fs-5">Menjadikan komunitas robotika sebagai pusat perkembangan teknologi dan
-                            peningkatan kualitas sumber daya manusia di bidang robotika.</p>
+                <div class="col-md-6 mb-4">
+                    <div class="visi-misi-card h-100">
+                        <div class="vm-icon-wrapper"><i class="bi bi-eye-fill"></i></div>
+                        <div class="vm-content text-center">
+                            <h4>Visi</h4>
+                            <p><?php echo isset($org['vision']) ? htmlspecialchars($org['vision']) : 'Data visi belum tersedia.'; ?></p>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <div class="visi-misi-card">
-                        <h4 class="text-primary text-center mb-3">Misi</h4>
-                        <ul class="misi-list">
-                            <li>Meningkatkan rasa kerja sama di dalam komunitas.</li>
-                            <li>Mengikuti perkembangan global di bidang robotika.</li>
-                            <li>Menerapkan teknologi robotika untuk menjadikan masyarakat modern.</li>
-                            <li>Berkompetisi di tingkat internasional.</li>
-                        </ul>
+
+                <div class="col-md-6 mb-4">
+                    <div class="visi-misi-card h-100">
+                        <div class="vm-icon-wrapper"><i class="bi bi-rocket-takeoff-fill"></i></div>
+                        <div class="vm-content text-center">
+                            <h4>Misi</h4>
+                            <div class="misi-text">
+                                <?php echo isset($org['mission']) ? nl2br(htmlspecialchars($org['mission'])) : 'Data misi belum tersedia.'; ?>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <div class="visi-misi-card text-center">
-                        <h4 class="text-primary mb-3">Motto</h4>
-                        <p class="fs-1 fw-bold text-accent-orange">"Menang adalah Harga Mati"</p>
-                        <p class="text-soft-text mt-3">Semangat pantang menyerah dalam setiap kompetisi dan proyek yang
-                            dilakukan.</p>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="motto-card-custom text-center">
+                        <span class="motto-label">Motto Kami</span>
+                        <h2 class="motto-display">
+                            "<?php echo isset($org['motto']) ? htmlspecialchars($org['motto']) : 'Menang adalah Harga Mati'; ?>"
+                        </h2>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="divisi-section py-90" id="divisi">
+    <section class="divisi-section py-120 bg-light-soft" id="divisi">
         <div class="container">
-            <h2 class="section-heading">Divisi Unggulan Kami</h2>
-            <p class="section-subheading">Komunitas ini memiliki empat divisi utama yang menjadi fokus bidang kegiatan:
-            </p>
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4 justify-content-center">
-                <div class="col">
-                    <div class="divisi-card">
-                        <div class="divisi-icon-wrapper">
-                            <img src="/assets/images/elektrik.png" alt="Icon Divisi Elektrik">
+            <h2 class="section-heading text-center mb-5">Divisi Unggulan Kami</h2>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 justify-content-center">
+                <?php
+                if ($div_result && pg_num_rows($div_result) > 0):
+                    while ($div = pg_fetch_assoc($div_result)):
+                        $icon = $div['icon'] ?? '📦';
+                        $isImagePath = (strpos($icon, '/') !== false || strpos($icon, '.') !== false);
+                        $isEmoji = preg_match('/[\x{1F300}-\x{1F9FF}]/u', $icon);
+
+                        if ($isImagePath) {
+                            $iconDisplay = '<img src="' . htmlspecialchars($icon) . '" alt="' . htmlspecialchars($div['name']) . '" style="width: 2.5rem; height: 2.5rem; object-fit: contain;">';
+                        } elseif (!$isEmoji) {
+                            $divisionSlug = strtolower(str_replace(' ', '_', $div['name']));
+                            $defaultPath = "/assets/images/divisions/{$divisionSlug}.png";
+                            $iconDisplay = '<img src="' . htmlspecialchars($defaultPath) . '" alt="' . htmlspecialchars($div['name']) . '" style="width: 2.5rem; height: 2.5rem; object-fit: contain;" onerror="this.outerHTML=\'<span style=\\\'font-size: 2.5rem;\\\'>📦</span>\'">';
+                        } else {
+                            $iconDisplay = '<span style="font-size: 2.5rem;">' . htmlspecialchars($icon) . '</span>';
+                        }
+                ?>
+                        <div class="col">
+                            <div class="divisi-card">
+                                <div class="divisi-icon-container">
+                                    <div class="icon-glow"></div>
+                                    <div class="divisi-icon-wrapper">
+                                        <?= $iconDisplay ?>
+                                    </div>
+                                </div>
+                                <div class="divisi-content">
+                                    <h5><?= htmlspecialchars($div['name']) ?></h5>
+                                    <p><?= htmlspecialchars($div['description']) ?></p>
+                                    <a href="/divisi/<?= strtolower($div['name']) ?>" class="btn-detail">
+                                        <span>Detail</span> <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                        <h5>Elektrik</h5>
-                        <p>Perancangan sirkuit, pemilihan komponen, dan manajemen daya sistem robot secara keseluruhan.
-                        </p>
-                        <a href="#" class="card-link">Detail <i class="fas fa-arrow-right ms-1"></i></a>
+                    <?php
+                    endwhile;
+                else:
+                    ?>
+                    <div class="col-12 text-center">
+                        <p class="text-muted">Belum ada data divisi tersedia.</p>
                     </div>
-                </div>
-                <div class="col">
-                    <div class="divisi-card">
-                        <div class="divisi-icon-wrapper">
-                            <img src="/assets/images/software.png" alt="Icon Divisi Software">
-                        </div>
-                        <h5>Software</h5>
-                        <p>Pengembangan algoritma kontrol, pemrograman mikrokontroler (firmware), dan implementasi
-                            AI/visi robot.</p>
-                        <a href="#" class="card-link">Detail <i class="fas fa-arrow-right ms-1"></i></a>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="divisi-card">
-                        <div class="divisi-icon-wrapper">
-                            <img src="/assets/images/mekanik.png" alt="Icon Divisi Mekanik">
-                        </div>
-                        <h5>Mekanik</h5>
-                        <p>Perancangan fisik, pembuatan struktur, simulasi, dan optimasi kinematika/dinamika robot.</p>
-                        <a href="#" class="card-link">Detail <i class="fas fa-arrow-right ms-1"></i></a>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="divisi-card">
-                        <div class="divisi-icon-wrapper">
-                            <img src="/assets/images/humas.png" alt="Icon Divisi Humas">
-                        </div>
-                        <h5>Humas</h5>
-                        <p>Komunikasi publik, branding komunitas, pengelolaan media sosial, dan eksternal relation.</p>
-                        <a href="#" class="card-link">Detail <i class="fas fa-arrow-right ms-1"></i></a>
-                    </div>
-                </div>
+                <?php endif; ?>
             </div>
         </div>
     </section>
@@ -121,35 +169,21 @@
     <section class="achievement-section py-90 bg-white" id="achievements">
         <div class="container">
             <h2 class="section-heading">Prestasi Terbaru Kami</h2>
-            <div id="achievementCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div id="achievementCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
                 <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#achievementCarousel" data-bs-slide-to="0" class="active"
-                        aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#achievementCarousel" data-bs-slide-to="1"
-                        aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#achievementCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#achievementCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
                 </div>
                 <div class="carousel-inner pt-4">
                     <div class="carousel-item active">
                         <div class="achievement-slider-item mx-auto" style="max-width: 900px;">
                             <h4 class="text-center">RoboCup 2024 - Juara 1 Kategori Rescate Robot</h4>
                             <div class="row align-items-center">
-                                <div class="col-lg-6">
-                                    <div class="row g-2 mb-3">
-                                        <div class="col-6"><img src="/img/achievement1_photo1.jpg" alt="RoboCup Photo 1"
-                                                class="img-fluid achievement-img"></div>
-                                        <div class="col-6"><img src="/img/achievement1_photo2.jpg" alt="RoboCup Photo 2"
-                                                class="img-fluid achievement-img"></div>
-                                        <div class="col-6"><img src="/img/achievement1_photo3.jpg" alt="RoboCup Photo 3"
-                                                class="img-fluid achievement-img"></div>
-                                        <div class="col-6"><img src="/img/achievement1_photo4.jpg" alt="RoboCup Photo 4"
-                                                class="img-fluid achievement-img"></div>
-                                    </div>
+                                <div class="col-lg-6 text-center">
+                                    <i class="bi bi-trophy text-warning display-1"></i>
                                 </div>
                                 <div class="col-lg-6">
-                                    <p class="mb-3">Tim EEPROM POLINEMA berhasil meraih Juara 1 dalam kategori Rescate
-                                        Robot pada kompetisi RoboCup 2024 yang diselenggarakan di Tokyo, Jepang.
-                                        Prestasi ini merupakan hasil kerja keras dan dedikasi seluruh anggota komunitas.
-                                    </p>
+                                    <p class="mb-3">Tim EEPROM POLINEMA berhasil meraih Juara 1 dalam kategori Rescate Robot pada kompetisi RoboCup 2024 yang diselenggarakan di Tokyo, Jepang.</p>
                                     <ul class="achievement-list">
                                         <li>Desain robot yang inovatif dan efisien.</li>
                                         <li>Strategi penyelamatan yang efektif.</li>
@@ -163,23 +197,11 @@
                         <div class="achievement-slider-item mx-auto" style="max-width: 900px;">
                             <h4 class="text-center">Kontes Robot Indonesia 2024 - Juara 2 Kategori Line Follower</h4>
                             <div class="row align-items-center">
-                                <div class="col-lg-6">
-                                    <div class="row g-2 mb-3">
-                                        <div class="col-6"><img src="/img/achievement2_photo1.jpg" alt="KRI Photo 1"
-                                                class="img-fluid achievement-img"></div>
-                                        <div class="col-6"><img src="/img/achievement2_photo2.jpg" alt="KRI Photo 2"
-                                                class="img-fluid achievement-img"></div>
-                                        <div class="col-6"><img src="/img/achievement2_photo3.jpg" alt="KRI Photo 3"
-                                                class="img-fluid achievement-img"></div>
-                                        <div class="col-6"><img src="/img/achievement2_photo4.jpg" alt="KRI Photo 4"
-                                                class="img-fluid achievement-img"></div>
-                                    </div>
+                                <div class="col-lg-6 text-center">
+                                    <i class="bi bi-award text-primary display-1"></i>
                                 </div>
                                 <div class="col-lg-6">
-                                    <p class="mb-3">Pada Kontes Robot Indonesia 2024, tim kami berhasil meraih Juara 2
-                                        dalam kategori Line Follower. Kompetisi ini menantang kemampuan teknis dan
-                                        strategi dalam mengendalikan robot mengikuti jalur tertentu dengan kecepatan
-                                        maksimal.</p>
+                                    <p class="mb-3">Pada Kontes Robot Indonesia 2024, tim kami berhasil meraih Juara 2 dalam kategori Line Follower.</p>
                                     <ul class="achievement-list">
                                         <li>Pemrograman sensor yang presisi.</li>
                                         <li>Optimasi kecepatan dan stabilitas robot.</li>
@@ -190,13 +212,11 @@
                         </div>
                     </div>
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#achievementCarousel"
-                    data-bs-slide="prev">
+                <button class="carousel-control-prev" type="button" data-bs-target="#achievementCarousel" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Previous</span>
                 </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#achievementCarousel"
-                    data-bs-slide="next">
+                <button class="carousel-control-next" type="button" data-bs-target="#achievementCarousel" data-bs-slide="next">
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Next</span>
                 </button>
@@ -206,22 +226,22 @@
 
     <section class="stats-section" id="stats">
         <div class="container">
-            <h2 class="section-heading text-white">Anggota Kami</h2>
-            <div class="row mt-5">
+            <h2 class="section-heading text-white text-center">Anggota Kami</h2>
+            <div class="row mt-5 text-center">
                 <div class="col-6 col-md-3 stat-card">
-                    <h2 class="counter" data-target="250">0</h2>
+                    <h2 class="counter" data-target="<?php echo $total_active_members; ?>">0</h2>
                     <p>Total Anggota Aktif</p>
                 </div>
                 <div class="col-6 col-md-3 stat-card">
-                    <h2 class="counter" data-target="15">0</h2>
-                    <p>Generasi (Sejak 2011)</p>
+                    <h2 class="counter" data-target="<?php echo $max_generation; ?>">0</h2>
+                    <p>Generasi (Sejak <?php echo $org['established_year'] ?? '2011'; ?>)</p>
                 </div>
                 <div class="col-6 col-md-3 stat-card">
-                    <h2 class="counter" data-target="35">0</h2>
-                    <p>Total Kejuaraan (Nasional/Internasional)</p>
+                    <h2 class="counter" data-target="<?php echo $total_achievements; ?>">0</h2>
+                    <p>Total Kejuaraan</p>
                 </div>
                 <div class="col-6 col-md-3 stat-card">
-                    <h2 class="counter" data-target="2011">0</h2>
+                    <h2 class="counter" data-target="<?php echo $org['established_year'] ?? '2011'; ?>">0</h2>
                     <p>Tahun Berdiri</p>
                 </div>
             </div>
@@ -230,84 +250,55 @@
 
     <section class="container py-5" id="recruitment">
         <div class="recruitment-banner text-center shadow-lg">
-            <div class="row align-items-center">
-                <div class="col-lg-8 p-4">
-                    <h3>Open Recruitment Anggota Baru EEPROM 2025</h3>
-                    <p class="lead">Jangan lewatkan kesempatan untuk menjadi bagian dari komunitas robotika terbaik di
-                        POLINEMA. Bergabunglah sekarang!</p>
-                    <div class="d-flex justify-content-center align-items-center flex-wrap">
-                        <p class="m-0 me-3 fs-5 fw-bold text-white">Waktu tersisa:</p>
-                        <span class="countdown-timer" id="countdown">00 Hari 00:00:00</span>
+            <?php if ($recruitment): ?>
+                <div class="row align-items-center">
+                    <div class="col-lg-8 p-4 text-start">
+                        <h3><?php echo htmlspecialchars($recruitment['nama_periode']); ?></h3>
+                        <p class="lead text-white"><?php echo htmlspecialchars($recruitment['description']); ?></p>
+                        <div class="d-flex align-items-center flex-wrap">
+                            <p class="m-0 me-3 fs-5 fw-bold text-white">Berakhir pada:</p>
+                            <span class="countdown-timer" id="countdown" data-end="<?php echo $recruitment['tanggal_selesai']; ?>">
+                                Loading...
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 p-4 text-center">
+                        <a href="/form" class="btn-secondary-eeprom">Daftar Sekarang <i class="fas fa-external-link-alt ms-1"></i></a>
                     </div>
                 </div>
-                <div class="col-lg-4 p-4">
-                    <a href="#" class="btn-secondary-eeprom">Daftar Sekarang <i
-                            class="fas fa-external-link-alt ms-1"></i></a>
+            <?php else: ?>
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-lg-10 p-5 text-center">
+                        <div class="mb-3">
+                            <i class="bi bi-clock-history text-white" style="font-size: 3.5rem;"></i>
+                        </div>
+                        <h2 class="fw-bold text-white mb-3">Open Recruitment: Coming Soon!</h2>
+                        <p class="lead text-white opacity-75">
+                            Saat ini belum ada pendaftaran anggota baru yang dibuka.<br>
+                            Pantau terus media sosial kami untuk informasi regenerasi berikutnya!
+                        </p>
+                    </div>
                 </div>
-            </div>
+            <?php endif; ?>
         </div>
     </section>
 
-    <section class="container py-5">
-        <div class="cta-section mx-auto shadow-lg">
-            <h2>Siap Bergabung dan Berinovasi?</h2>
-            <p class="lead">Kami mencari mahasiswa Jurusan Teknik Elektro yang antusias dan memiliki semangat tinggi
-                dalam dunia robotika.</p>
-            <a href="/contact.html" class="btn-primary-eeprom btn-lg mt-3">Hubungi Kami <i
-                    class="fas fa-envelope ms-2"></i></a>
-        </div>
-    </section>
+    <?php include __DIR__ . '/../../Views/layouts/footer-public.php'; ?>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="row pb-4 border-bottom border-secondary-subtle">
-                <div class="col-lg-5 mb-4 mb-lg-0 footer-about">
-                    <img src="/public/assets/images/eeprom logo.png" alt="EEPROM Logo" class="footer-logo">
-                    <h4>EEPROM POLINEMA</h4>
-                    <p>Inovasi Robotika untuk Masa Depan.</p>
-                    <p>Jl. Soekarno Hatta No.9, Jatimulyo, Kec. Lowokwaru, Kota Malang, Jawa Timur 65141</p>
-                </div>
-                <div class="col-lg-3 mb-4 mb-lg-0 footer-links">
-                    <h4>Quick Links</h4>
-                    <ul class="list-unstyled">
-                        <li><a href="#hero">Home</a></li>
-                        <li><a href="activity.html">Activity</a></li>
-                        <li><a href="/gallery.html">Gallery</a></li>
-                        <li><a href="/team.html">Team</a></li>
-                        <li><a href="/contact.html">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-4 footer-social">
-                    <h4>Follow Us</h4>
-                    <div class="social-icons">
-                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                &copy; 2024 EEPROM POLINEMA. All rights reserved. Developed with Nisho.
-            </div>
-        </div>
-    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         // Counter Animation
         const counters = document.querySelectorAll('.counter');
-        const speed = 200; // The lower the slower
+        const speed = 200;
 
         const animateCounters = () => {
             counters.forEach(counter => {
                 const updateCount = () => {
                     const target = +counter.getAttribute('data-target');
                     const count = +counter.innerText;
-
                     const inc = target / speed;
-
                     if (count < target) {
                         counter.innerText = Math.ceil(count + inc);
                         setTimeout(updateCount, 1);
@@ -315,42 +306,35 @@
                         counter.innerText = target;
                     }
                 };
-
-                // Reset counter before starting animation
                 counter.innerText = '0';
                 updateCount();
             });
         }
 
-        // Intersection Observer to trigger animation on scroll
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.5 // Trigger when 50% of the element is visible
-        };
-
         const statsSection = document.getElementById('stats');
-
-        const statsObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateCounters();
-                    observer.unobserve(entry.target); // Stop observing once triggered
-                }
-            });
-        }, observerOptions);
-
         if (statsSection) {
+            const statsObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounters();
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.5
+            });
             statsObserver.observe(statsSection);
         }
 
-        // Countdown Timer Functionality (Target 1 Juni 2026, 00:00:00 WIB)
+        // Countdown Timer Dinamis
         function startCountdown() {
             const countdownElement = document.getElementById('countdown');
             if (!countdownElement) return;
 
-            // Waktu target (Sesuaikan jika diperlukan)
-            const targetDate = new Date("June 1, 2026 00:00:00").getTime();
+            const endDateStr = countdownElement.getAttribute('data-end');
+            if (!endDateStr) return;
+
+            const targetDate = new Date(endDateStr + " 23:59:59").getTime();
 
             const interval = setInterval(() => {
                 const now = new Date().getTime();
@@ -362,77 +346,17 @@
                     return;
                 }
 
-                // Kalkulasi waktu
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                // Format waktu
-                const formattedDays = String(days).padStart(2, '0');
-                const formattedHours = String(hours).padStart(2, '0');
-                const formattedMinutes = String(minutes).padStart(2, '0');
-                const formattedSeconds = String(seconds).padStart(2, '0');
-
-                countdownElement.innerHTML = `${formattedDays} Hari ${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+                countdownElement.innerHTML =
+                    `${String(days).padStart(2, '0')} Hari ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
             }, 1000);
         }
 
         document.addEventListener('DOMContentLoaded', startCountdown);
-
-        // Active Link on Scroll
-        // Menggunakan Bootstrap Scrollspy lebih efisien, tapi untuk memenuhi permintaan JS internal:
-        const navLinks = document.querySelectorAll('.nav-link');
-        const sections = document.querySelectorAll('section');
-        const heroSection = document.getElementById('hero');
-
-        function updateActiveLink() {
-            let current = '';
-
-            // Cek Hero section secara terpisah
-            const heroRect = heroSection.getBoundingClientRect();
-            if (heroRect.top < window.innerHeight / 2 && heroRect.bottom > window.innerHeight / 2) {
-                current = 'hero';
-            } else {
-                // Cek section lainnya
-                sections.forEach(section => {
-                    const sectionTop = section.offsetTop - 100; // Offset untuk sticky navbar
-                    const sectionHeight = section.clientHeight;
-                    if (pageYOffset >= sectionTop && pageYOffset < sectionTop + sectionHeight) {
-                        current = section.getAttribute('id');
-                    }
-                });
-            }
-
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') && link.getAttribute('href').includes(current)) {
-                    link.classList.add('active');
-                } else if (current === 'hero' && link.getAttribute('href').includes('#hero')) {
-                    link.classList.add('active');
-                }
-            });
-        }
-
-        window.addEventListener('scroll', updateActiveLink);
-        document.addEventListener('DOMContentLoaded', updateActiveLink);
-
-        // Scroll ke section saat klik link
-        navLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                const targetId = this.getAttribute('href');
-                if (targetId.startsWith('#')) {
-                    e.preventDefault();
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        window.scrollTo({
-                            top: targetId === '#hero' ? 0 : targetElement.offsetTop - 80, // Offset
-                            behavior: 'smooth'
-                        });
-                    }
-                }
-            });
-        });
     </script>
 </body>
 

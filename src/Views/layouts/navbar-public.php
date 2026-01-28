@@ -1,38 +1,147 @@
-<?php 
-// Mendapatkan URL saat ini
-$current_page = $_SERVER['REQUEST_URI']; 
+<?php
+// Mendapatkan URL saat ini untuk link aktif
+$current_page = $_SERVER['REQUEST_URI'];
 ?>
-<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="/src/Views/home/index.php#hero">
-            <img src="/assets/images/eeprom_logo.png" alt="Logo EEPROM" class="me-2" style="width: 40px;">
-            <h1 class="m-0 fs-4 fw-bold text-primary">EEPROM POLINEMA</h1>
+
+<style>
+    /* --- INTEGRATED NAVBAR STYLES --- */
+    .navbar-eeprom {
+        position: fixed !important;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 1100px;
+        background: rgba(255, 255, 255, 0.85) !important;
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border-radius: 20px;
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        z-index: 1100;
+        /* Lebih tinggi dari elemen hero */
+        padding: 0.6rem 1.5rem;
+        transition: all 0.4s ease;
+    }
+
+    .brand-text {
+        font-weight: 800;
+        font-size: 1.1rem;
+        color: #1A237E;
+    }
+
+    .navbar-brand-eeprom {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none !important;
+    }
+
+    .nav-link-eeprom {
+        text-decoration: none !important;
+        color: #212529 !important;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: 0.3s;
+        position: relative;
+        padding: 8px 0;
+    }
+
+    .nav-link-eeprom:hover,
+    .nav-link-eeprom.active {
+        color: #FF5722 !important;
+    }
+
+    /* Garis bawah aktif (hanya tampil di Desktop) */
+    @media (min-width: 992px) {
+        .nav-link-eeprom.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #FF5722;
+            border-radius: 2px;
+        }
+    }
+
+    .login-icon {
+        color: #1A237E;
+        font-size: 1.5rem;
+        transition: 0.3s;
+    }
+
+    /* Custom Hamburger Menu */
+    .navbar-toggler {
+        border: none !important;
+        padding: 0;
+    }
+
+    .navbar-toggler:focus {
+        box-shadow: none !important;
+    }
+
+    /* Responsive Mobile */
+    @media (max-width: 991px) {
+        .navbar-collapse {
+            background: white;
+            margin-top: 15px;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-nav-eeprom {
+            flex-direction: column;
+            gap: 10px;
+            text-align: center;
+        }
+
+        .nav-actions {
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .brand-text {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-eeprom">
+    <div class="container-fluid px-0">
+        <a class="navbar-brand-eeprom" href="/home">
+            <img src="/assets/images/eeprom_logo.png" alt="Logo" width="35">
+            <span class="brand-text">EEPROM Polinema</span>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav ms-auto navbar-nav-eeprom align-items-center me-lg-4">
                 <li class="nav-item">
-                    <a class="nav-link <?php echo (strpos($current_page, 'home/index.php') !== false || $current_page == '/') ? 'active' : ''; ?>" 
-                       href="/src/Views/public/home/index.php">Home</a>
+                    <a class="nav-link-eeprom <?php echo (strpos($current_page, 'home') !== false || $current_page == '/' || $current_page == '') ? 'active' : ''; ?>" href="/home">Home</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link <?php echo (strpos($current_page, 'activity/index.php') !== false) ? 'active' : ''; ?>" 
-                       href="/src/Views/activity/index.php">Activity</a>
+                <li class="nav-item ms-lg-3">
+                    <a class="nav-link-eeprom <?php echo (strpos($current_page, 'activity') !== false) ? 'active' : ''; ?>" href="/activity">Activity</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link <?php echo (strpos($current_page, 'member/index.php') !== false) ? 'active' : ''; ?>" 
-                       href="/src/Views/member/index.php">Members</a>
+                <li class="nav-item ms-lg-3">
+                    <a class="nav-link-eeprom <?php echo (strpos($current_page, 'products') !== false) ? 'active' : ''; ?>" href="/products">Product</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link <?php echo (strpos($current_page, 'contact/index.php') !== false) ? 'active' : ''; ?>" 
-                       href="/src/Views/contact/index.php">Contact</a>
+                <li class="nav-item ms-lg-3">
+                    <a class="nav-link-eeprom <?php echo (strpos($current_page, 'member') !== false) ? 'active' : ''; ?>" href="/member">Members</a>
+                </li>
+                <li class="nav-item ms-lg-3">
+                    <a class="nav-link-eeprom <?php echo (strpos($current_page, 'contact') !== false) ? 'active' : ''; ?>" href="/contact">Contact</a>
                 </li>
             </ul>
-            <div class="d-flex align-items-center ms-lg-4">
-                <a href="/src/Views/public/auth/login.php" class="text-secondary text-decoration-none">
-                    <i class="bi bi-person-circle fs-3"></i>
+
+            <div class="nav-actions d-flex align-items-center">
+                <a href="/login" class="login-icon">
+                    <i class="bi bi-person-circle"></i>
                 </a>
             </div>
         </div>

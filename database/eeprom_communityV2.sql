@@ -255,3 +255,8 @@ CREATE TABLE IF NOT EXISTS site_settings (
     registration_open BOOLEAN DEFAULT TRUE,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
+
+UPDATE divisions SET icon = '/assets/images/software.png' WHERE name = 'Software';
+UPDATE divisions SET icon = '/assets/images/elektrik.png' WHERE name = 'Elektrik';
+UPDATE divisions SET icon = '/assets/images/mekanik.png' WHERE name = 'Mekanik';
+UPDATE divisions SET icon = '/assets/images/humas.png' WHERE name = 'Humas';

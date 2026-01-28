@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: src/Views/admin/attendance/summary.php
  */
@@ -22,12 +23,15 @@ $summaries = $summaries ?? [];
             transition: transform 0.2s;
             border: none;
         }
+
         .card-stat:hover {
             transform: translateY(-5px);
         }
+
         .bg-orange {
             background-color: #ff6b00;
         }
+
         .text-orange {
             color: #ff6b00;
         }
@@ -52,7 +56,9 @@ $summaries = $summaries ?? [];
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                         <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
-                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
                         <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
                     </ul>
                 </div>
@@ -81,14 +87,14 @@ $summaries = $summaries ?? [];
                                                 ID #MTG-<?= $row['id'] ?>
                                             </span>
                                             <small class="text-muted">
-                                                <i class="bi bi-calendar3 me-1"></i> 
+                                                <i class="bi bi-calendar3 me-1"></i>
                                                 <?= date('d M Y', strtotime($row['date'])) ?>
                                             </small>
                                         </div>
 
                                         <h5 class="fw-bold mb-1 text-dark"><?= htmlspecialchars($row['title']) ?></h5>
                                         <p class="small text-muted mb-4 text-truncate">
-                                            <i class="bi bi-geo-alt-fill text-danger me-1"></i> 
+                                            <i class="bi bi-geo-alt-fill text-danger me-1"></i>
                                             <?= htmlspecialchars($row['location']) ?>
                                         </p>
 
@@ -140,6 +146,8 @@ $summaries = $summaries ?? [];
             });
         }
     </script>
+    <script src="/assets/js/admin/dashboard.js"></script>
+
 </body>
 
 </html>

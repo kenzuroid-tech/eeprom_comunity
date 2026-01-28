@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,13 +10,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="icon" href="/public/assets/imgages/eeprom logo.png" type="image/png">
     <link rel="stylesheet" href="/public/assets/css/admin/activities/edit.css">
-    
+
 </head>
 
 <body>
     <div class="dashboard-wrapper">
         <?php include '../includes/sidebar.php'; ?>
-        
+
         <div class="main-content-area">
             <nav class="top-navbar d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
@@ -109,6 +110,9 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/public/assets/js/admin/activities/edit.js"></script>
+    <!-- <script src="/public/assets/js/admin/activities/edit.js"></script> -->
+    <script src="/assets/js/admin/dashboard.js"></script>
+
 </body>
+
 </html>

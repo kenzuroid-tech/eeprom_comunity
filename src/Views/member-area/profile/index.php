@@ -1,14 +1,9 @@
 <?php
-
-/**
- * File: src/Views/member-area/profile/index.php
- */
-
 $profileData = $profileData ?? [];
 $socialLinks = json_decode($profileData['social_links'] ?? '{}', true);
 
-// Gunakan foto_url sesuai skema database PostgreSQL Anda
-$userFoto = !empty($userData['foto_url']) ? $userData['foto_url'] : 'https://ui-avatars.com/api/?name=' . urlencode($userData['nama_lengkap'] ?? 'Member');
+// Pastikan variabel ini yang digunakan di seluruh tag <img>
+$displayFoto = !empty($profileData['foto_url']) ? $profileData['foto_url'] : '/assets/images/memeng.jpg';
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -128,7 +123,7 @@ $userFoto = !empty($userData['foto_url']) ? $userData['foto_url'] : 'https://ui-
                                         <p class="info-label">Program Studi</p>
                                         <p class="info-value"><?= htmlspecialchars($profileData['prodi'] ?? '-') ?></p>
                                         <p class="info-label">Angkatan</p>
-                                        <p class="info-value">20<?= htmlspecialchars($profileData['angkatan'] ?? '-') ?></p>
+                                        <p class="info-value"><?= htmlspecialchars($profileData['angkatan'] ?? '-') ?></p>
                                     </div>
                                     <div class="col-md-6">
                                         <p class="info-label">Divisi</p>
@@ -172,12 +167,17 @@ $userFoto = !empty($userData['foto_url']) ? $userData['foto_url'] : 'https://ui-
                                             <label class="form-label fw-bold">Bio</label>
                                             <textarea name="bio" class="form-control" rows="3"><?= htmlspecialchars($profileData['bio'] ?? '') ?></textarea>
                                         </div>
+                                        <div class="col-md-12">
+                                            <label class="form-label fw-bold">Email</label>
+                                            <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($profileData['email'] ?? '') ?>" required>
+                                            <small class="text-muted">Email ini digunakan untuk korespondensi dan login akun.</small>
+                                        </div>
                                         <div class="col-md-6">
                                             <label class="form-label fw-bold">Divisi Utama</label>
                                             <select name="divisi1" class="form-select">
                                                 <option value="Software" <?= (strpos($profileData['divisi'] ?? '', 'Software') !== false) ? 'selected' : '' ?>>Software</option>
                                                 <option value="Mekanik" <?= (strpos($profileData['divisi'] ?? '', 'Mekanik') !== false) ? 'selected' : '' ?>>Mekanik</option>
-                                                <option value="Elektro" <?= (strpos($profileData['divisi'] ?? '', 'Elektro') !== false) ? 'selected' : '' ?>>Elektro</option>
+                                                <option value="Elektrik" <?= (strpos($profileData['divisi'] ?? '', 'Elektrik') !== false) ? 'selected' : '' ?>>Elektrik</option>
                                                 <option value="Humas" <?= ($profileData['divisi'] ?? '' === 'Humas') ? 'selected' : '' ?>>Humas</option>
                                             </select>
                                         </div>
@@ -228,6 +228,7 @@ $userFoto = !empty($userData['foto_url']) ? $userData['foto_url'] : 'https://ui-
             }
         }
     </script>
+    <script src="/assets/js/member-area/dashboard.js"></script>
 </body>
 
 </html>

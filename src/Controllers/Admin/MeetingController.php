@@ -64,26 +64,6 @@ class MeetingController
         require_once __DIR__ . '/../../Views/admin/meetings/create.php';
     }
 
-    public function store()
-    {
-        $db = DatabaseHelper::getConnection();
-        $title = $_POST['title'] ?? '';
-        $description = $_POST['description'] ?? '';
-        $date = $_POST['date'] ?? null;
-        $start_time = $_POST['start_time'] ?? null;
-        $location = $_POST['location'] ?? '';
-
-        try {
-            $stmt = $db->prepare("INSERT INTO meetings (title, description, date, start_time, location) VALUES (?, ?, ?, ?, ?)");
-            $stmt->execute([$title, $description, $date, $start_time, $location]);
-
-            header('Location: /admin/meetings?status=success');
-            exit;
-        } catch (\Exception $e) {
-            die("Gagal menyimpan rapat: " . $e->getMessage());
-        }
-    }
-
     public function attendanceInput()
     {
         $db = DatabaseHelper::getConnection();
@@ -203,5 +183,101 @@ class MeetingController
         $meetings = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         require_once __DIR__ . '/../../Views/admin/meetings/notulensi.php';
+    }
+
+    public function scan($id = null)
+    {
+        try {
+            $db = DatabaseHelper::getConnection();
+
+            // FIX: Jika $id kosong dari Router, coba ambil dari $_GET['mtg_id']
+            if (!$id && isset($_GET['mtg_id'])) {
+                $id = $_GET['mtg_id'];
+            }
+
+            // 1. Jika ID tetap tidak ada, ambil rapat terbaru hari ini
+            if (!$id) {
+                $stmt = $db->query("SELECT id FROM meetings WHERE date = CURRENT_DATE LIMIT 1");
+                $meetingId = $stmt->fetchColumn();
+
+                if (!$meetingId) {
+                    die("Tidak ada jadwal rapat untuk hari ini. Silakan gunakan link spesifik.");
+                }
+                $id = $meetingId;
+            }
+
+            // 2. Ambil detail informasi rapat
+            $stmtMeeting = $db->prepare("SELECT * FROM meetings WHERE id = ?");
+            $stmtMeeting->execute([$id]);
+            $meeting = $stmtMeeting->fetch(\PDO::FETCH_ASSOC);
+
+            if (!$meeting) {
+                die("Data rapat tidak ditemukan.");
+            }
+
+            // 3. Ambil daftar anggota aktif untuk dropdown di view
+            $stmtMembers = $db->query("SELECT user_id, nama_lengkap, nim FROM members WHERE status_keanggotaan = 'Active' ORDER BY nama_lengkap ASC");
+            $members = $stmtMembers->fetchAll(\PDO::FETCH_ASSOC);
+
+            require_once __DIR__ . '/../../Views/admin/attendance/scan.php';
+        } catch (\PDOException $e) {
+            die("Error: " . $e->getMessage());
+        }
+    }
+
+    public function store()
+    {
+        $db = DatabaseHelper::getConnection();
+
+        // Ambil data dari $_POST (karena form HTML biasa)
+        $title = $_POST['title'] ?? '';
+        $description = $_POST['description'] ?? '';
+        $date = $_POST['date'] ?? null;
+        $start_time = $_POST['start_time'] ?? null;
+        $location = $_POST['location'] ?? '';
+
+        try {
+            $stmt = $db->prepare("INSERT INTO meetings (title, description, date, start_time, location) VALUES (?, ?, ?, ?, ?)");
+
+            // PERBAIKAN: Ganti titik (.) menjadi panah (->)
+            $stmt->execute([$title, $description, $date, $start_time, $location]);
+
+            header('Location: /admin/meetings?status=success');
+            exit;
+        } catch (\Exception $e) {
+            die("Gagal menyimpan rapat: " . $e->getMessage());
+        }
+    }
+
+    public function createNotulensi()
+    {
+        $id = $_GET['id'] ?? null;
+        $db = \App\Helpers\DatabaseHelper::getConnection();
+
+        // Ambil data rapat untuk referensi di halaman pengisian
+        $stmt = $db->prepare("SELECT * FROM meetings WHERE id = ?");
+        $stmt->execute([$id]);
+        $meeting = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$meeting) {
+            die("Rapat tidak ditemukan.");
+        }
+
+        require_once dirname(__DIR__, 2) . '/Views/admin/meetings/create_notulensi.php';
+    }
+
+    public function storeNotulensi()
+    {
+        $id = $_POST['id'];
+        $notulensi = $_POST['notulensi'];
+
+        $db = \App\Helpers\DatabaseHelper::getConnection();
+
+        // Update kolom notulensi pada tabel meetings
+        $stmt = $db->prepare("UPDATE meetings SET notulensi = ? WHERE id = ?");
+        $stmt->execute([$notulensi, $id]);
+
+        header('Location: /admin/meetings/notulensi?status=success');
+        exit;
     }
 }

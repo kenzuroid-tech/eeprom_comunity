@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +15,7 @@
 <body>
     <div class="dashboard-wrapper">
         <?php include_once __DIR__ . '/../includes/sidebar.php'; ?>
-        
+
         <div class="main-content-area p-4">
             <nav class="top-navbar d-flex justify-content-between align-items-center mb-4">
                 <div class="d-flex align-items-center">
@@ -60,16 +61,37 @@
                             <input class="form-check-input" type="checkbox" name="allow_all" id="allActiveMembers" value="1" checked>
                             <label class="form-check-label fw-bold" for="allActiveMembers">Semua Anggota Aktif (Direkomendasikan)</label>
                         </div>
-                        <hr>
-                        <label class="form-label d-block mb-3">Atau Filter Berdasarkan Generasi:</label>
-                        <div class="row g-2" id="generasiFilterGroup">
-                            <?php for($i=15; $i<=18; $i++): ?>
-                            <div class="col-6 col-md-3">
-                                <div class="form-check p-2 border rounded bg-light">
-                                    <input class="form-check-input ms-1" type="checkbox" name="generations[]" value="<?= $i ?>" id="gen<?= $i ?>">
-                                    <label class="form-check-label ms-2" for="gen<?= $i ?>">Generasi <?= $i ?></label>
+
+                        <div class="row mb-3 g-2">
+                            <div class="col-md-6">
+                                <div class="form-check p-2 border rounded shadow-sm bg-white">
+                                    <input class="form-check-input ms-1" type="checkbox" name="allow_alumni" id="allowAlumni" value="1">
+                                    <label class="form-check-label ms-2 fw-semibold text-secondary" for="allowAlumni">
+                                        <i class="bi bi-mortarboard-fill me-1 text-danger"></i> Sertakan Alumni
+                                    </label>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-check p-2 border rounded shadow-sm bg-white">
+                                    <input class="form-check-input ms-1" type="checkbox" name="allow_delegasi" id="allowDelegasi" value="1">
+                                    <label class="form-check-label ms-2 fw-semibold text-secondary" for="allowDelegasi">
+                                        <i class="bi bi-person-workspace me-1 text-primary"></i> Sertakan Delegasi Luar
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <label class="form-label d-block mb-3">Atau Filter Spesifik Berdasarkan Generasi:</label>
+                        <div class="row g-2" id="generasiFilterGroup">
+                            <?php for ($i = 15; $i <= 17; $i++): ?>
+                                <div class="col-6 col-md-3">
+                                    <div class="form-check p-2 border rounded bg-light">
+                                        <input class="form-check-input ms-1" type="checkbox" name="generations[]" value="<?= $i ?>" id="gen<?= $i ?>">
+                                        <label class="form-check-label ms-2" for="gen<?= $i ?>">Generasi <?= $i ?></label>
+                                    </div>
+                                </div>
                             <?php endfor; ?>
                         </div>
                     </div>
@@ -106,10 +128,13 @@
         // Toggle disable generasi jika "Semua Anggota" dicentang
         const allActive = document.getElementById('allActiveMembers');
         const genChecks = document.querySelectorAll('input[name="generations[]"]');
-        
+
         allActive.addEventListener('change', function() {
             genChecks.forEach(cb => cb.disabled = this.checked);
         });
     </script>
+    <script src="/assets/js/admin/dashboard.js"></script>
+
 </body>
+
 </html>

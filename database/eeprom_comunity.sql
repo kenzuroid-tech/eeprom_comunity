@@ -1,39 +1,6 @@
 CREATE TYPE user_role AS ENUM ('admin', 'anggota');
 
-CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE, -- Biasanya NIM digunakan sebagai username
-    email VARCHAR(100) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL, -- Disimpan dalam bentuk HASH (Bcrypt/Argon2)
-    role user_role DEFAULT 'anggota',
-    last_login TIMESTAMPTZ, -- Mencatat kapan terakhir kali user masuk
-    is_active BOOLEAN DEFAULT TRUE, -- Untuk menonaktifkan akun tanpa menghapus data
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-);
 
-CREATE TABLE IF NOT EXISTS members (
-    id SERIAL PRIMARY KEY,
-    user_id INT UNIQUE, 
-    nama_lengkap VARCHAR(150) NOT NULL,
-    nim VARCHAR(20) NOT NULL UNIQUE,
-    prodi VARCHAR(50),
-    angkatan INT,
-    generasi INT,
-    divisi VARCHAR(50),
-    jabatan VARCHAR(50) DEFAULT 'Anggota',
-    status_keanggotaan VARCHAR(20) DEFAULT 'active',
-    foto_url TEXT,
-    bio TEXT,
-    social_links JSONB,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    -- Bagian Constraint (Pastikan didahului koma dari baris sebelumnya)
-    CONSTRAINT fk_user_member 
-        FOREIGN KEY (user_id) 
-        REFERENCES users(id) 
-        ON DELETE CASCADE
-);
 
 ALTER TABLE members ADD COLUMN skills TEXT;
 

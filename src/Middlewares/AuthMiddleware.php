@@ -21,7 +21,14 @@ class AuthMiddleware
             session_start();
         }
         
-        if (!isset($_SESSION['role']) || $_SESSION['role'] !== $requiredRole) {
+        $userRole = $_SESSION['role'] ?? '';
+
+        // Logika: Superadmin selalu lolos, atau role harus sesuai
+        if ($userRole === 'superadmin') {
+            return; // Loloskan
+        }
+
+        if ($userRole !== $requiredRole) {
             header('Location: /login?error=unauthorized');
             exit();
         }

@@ -9,6 +9,7 @@ $participationRate = ($totalVotes > 0) ? round(($totalVotes / $totalMembers) * 1
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>Voting Management - EEPROM POLINEMA</title>
@@ -16,6 +17,7 @@ $participationRate = ($totalVotes > 0) ? round(($totalVotes / $totalMembers) * 1
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="/assets/css/admin/voting/index.css">
 </head>
+
 <body>
     <div class="dashboard-wrapper">
         <?php include_once __DIR__ . '/../includes/sidebar.php'; ?>
@@ -26,7 +28,7 @@ $participationRate = ($totalVotes > 0) ? round(($totalVotes / $totalMembers) * 1
                     <button class="btn btn-primary me-3 d-lg-none" id="mobile-toggle"><i class="bi bi-list"></i></button>
                     <h4 class="m-0 fw-bold">Voting Management</h4>
                 </div>
-                </nav>
+            </nav>
 
             <div class="active-voting-banner bg-white p-4 rounded shadow-sm mb-4">
                 <div class="row align-items-center mb-4">
@@ -70,9 +72,9 @@ $participationRate = ($totalVotes > 0) ? round(($totalVotes / $totalMembers) * 1
                     <div class="col-lg-8">
                         <h6 class="fw-bold mb-3"><i class="bi bi-bar-chart-fill me-2 text-primary"></i>Hasil Perolehan Sementara</h6>
                         <div class="p-3 bg-light rounded border">
-                            <?php 
+                            <?php
                             $colors = ['bg-primary', 'bg-info', 'bg-warning', 'bg-success', 'bg-danger'];
-                            foreach ($results as $index => $res): 
+                            foreach ($results as $index => $res):
                                 $percent = ($totalVotes > 0) ? round(($res['total_votes'] / $totalVotes) * 100, 1) : 0;
                                 $colorClass = $colors[$index % count($colors)];
                             ?>
@@ -82,8 +84,8 @@ $participationRate = ($totalVotes > 0) ? round(($totalVotes / $totalMembers) * 1
                                         <span><?= $percent ?>% (<?= $res['total_votes'] ?> Votes)</span>
                                     </div>
                                     <div class="progress" style="height: 15px;">
-                                        <div class="progress-bar <?= $colorClass ?> progress-bar-striped progress-bar-animated" 
-                                             role="progressbar" style="width: <?= $percent ?>%"></div>
+                                        <div class="progress-bar <?= $colorClass ?> progress-bar-striped progress-bar-animated"
+                                            role="progressbar" style="width: <?= $percent ?>%"></div>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
@@ -101,5 +103,8 @@ $participationRate = ($totalVotes > 0) ? round(($totalVotes / $totalMembers) * 1
             </div>
         </div>
     </div>
+    <script src="/assets/js/admin/dashboard.js"></script>
+
 </body>
+
 </html>

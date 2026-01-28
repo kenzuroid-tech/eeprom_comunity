@@ -24,34 +24,77 @@ $adminFotoNavbar = !empty($adminData['foto_url'])
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="icon" href="/assets/images/eeprom_logo.png" type="image/png">
-    <link rel="stylesheet" href="/assets/css/admin/dashboard.css">
     <style>
         :root {
             --primary-blue: #1A237E;
+            --secondary-blue: #3F51B5;
             --accent-orange: #FF5722;
+            --bg-gray: #F1F5F9;
+            --sidebar-width: 280px;
         }
 
+        body {
+            background-color: var(--bg-gray);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Memastikan konten tidak tertabrak sidebar melayang */
         .main-content-area {
+            margin-left: calc(var(--sidebar-width) + 20px);
             padding: 30px;
             transition: 0.3s;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            border-radius: 15px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .widget-card-admin {
             background: white;
             padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             margin-bottom: 30px;
+            border: 1px solid rgba(0, 0, 0, 0.02);
         }
 
         .notulen-preview {
-            max-width: 300px;
+            max-width: 350px;
             display: block;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             font-size: 0.85rem;
-            color: #6c757d;
+            color: #64748B;
+        }
+
+        /* Styling Tabel */
+        .table thead th {
+            background-color: #F8FAFC;
+            color: #64748B;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            padding: 15px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            border: none;
+            border-radius: 10px;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-blue);
+        }
+
+        @media (max-width: 991.98px) {
+            .main-content-area {
+                margin-left: 0;
+                padding: 20px;
+            }
         }
     </style>
 </head>
@@ -83,15 +126,21 @@ $adminFotoNavbar = !empty($adminData['foto_url'])
             </nav>
 
             <div class="widget-card-admin">
-                <form class="row g-3" method="GET" action="/admin/meetings/notulensi">
-                    <div class="col-md-9">
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-0"><i class="bi bi-search"></i></span>
-                            <input type="text" name="search" class="form-control bg-light border-0" placeholder="Cari judul rapat atau hasil notulensi..." value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
+                <form method="GET" action="/admin/meetings/notulensi">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-md-9">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0 px-3"><i class="bi bi-search text-muted"></i></span>
+                                <input type="text" name="search" class="form-control bg-light border-0 py-2"
+                                    placeholder="Cari berdasarkan judul rapat atau hasil pembahasan..."
+                                    value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-3">
-                        <button type="submit" class="btn btn-primary w-100 fw-bold" style="background-color: var(--primary-blue);">Cari Notulen</button>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-primary w-100 fw-bold py-2 shadow-sm">
+                                <i class="bi bi-filter me-2"></i>Filter Notulen
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -148,32 +197,58 @@ $adminFotoNavbar = !empty($adminData['foto_url'])
 
     <div class="modal fade" id="modalViewNotulen" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header bg-light">
-                    <h5 class="modal-title fw-bold">Detail Notulensi Rapat</h5>
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-muted">Detail Hasil Rapat</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body p-4">
-                    <h4 id="mTitle" class="fw-bold text-primary-blue mb-1"></h4>
-                    <p class="text-muted small mb-4" id="mMeta"></p>
-                    <hr>
-                    <div id="mContent" style="white-space: pre-wrap; line-height: 1.6;"></div>
+                <div class="modal-body p-4" id="printableArea">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-primary-subtle p-3 rounded-3 me-3">
+                            <i class="bi bi-file-earmark-text text-primary fs-3"></i>
+                        </div>
+                        <div>
+                            <h3 id="mTitle" class="fw-bold text-dark mb-0"></h3>
+                            <div id="mMeta" class="small text-muted"></div>
+                        </div>
+                    </div>
+                    <hr class="my-4">
+                    <h6 class="fw-bold text-uppercase small text-muted mb-3">Isi Notulensi / Hasil Pembahasan:</h6>
+                    <div id="mContent" class="p-3 bg-light rounded-3" style="white-space: pre-wrap; line-height: 1.8; color: #334155;"></div>
                 </div>
                 <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Tutup</button>
-                    <button type="button" class="btn btn-primary" onclick="window.print()"><i class="bi bi-printer me-2"></i>Cetak</button>
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-primary rounded-pill px-4 shadow" onclick="printNotulen()">
+                        <i class="bi bi-printer me-2"></i>Cetak Notulen
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function viewNotulen(data) {
             document.getElementById('mTitle').innerText = data.title;
-            document.getElementById('mMeta').innerHTML = `<i class="bi bi-calendar-event me-2"></i> ${data.date} | <i class="bi bi-geo-alt me-2 ms-2"></i> ${data.location}`;
+            document.getElementById('mMeta').innerHTML = `
+            <span class="me-3"><i class="bi bi-calendar-event me-1"></i> ${data.date}</span>
+            <span><i class="bi bi-geo-alt me-1"></i> ${data.location}</span>
+        `;
             document.getElementById('mContent').innerText = data.notulensi;
             new bootstrap.Modal(document.getElementById('modalViewNotulen')).show();
+        }
+
+        function printNotulen() {
+            const content = document.getElementById('printableArea').innerHTML;
+            const originalContent = document.body.innerHTML;
+
+            document.body.innerHTML = `
+            <div style="padding: 40px; font-family: 'Poppins', sans-serif;">
+                <h2 style="text-align:center; border-bottom: 2px solid #333; padding-bottom:10px;">NOTULENSI RAPAT EEPROM</h2>
+                ${content}
+            </div>`;
+
+            window.print();
+            location.reload(); // Reload untuk mengembalikan tampilan dashboard
         }
     </script>
 </body>

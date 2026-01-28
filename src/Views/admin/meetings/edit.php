@@ -99,6 +99,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/public/assets/js/admin/meetings/edit.js"></script>
+    <script src="/assets/js/admin/dashboard.js"></script>
+
 </body>
 
 </html>

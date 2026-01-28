@@ -40,4 +40,40 @@ class AboutController
 
         header('Location: /admin/about?status=success');
     }
+
+    public function updateVision()
+    {
+        $db = DatabaseHelper::getConnection();
+        $vision = $_POST['vision'] ?? '';
+
+        $stmt = $db->prepare("UPDATE organization_info SET vision = ?, updated_at = NOW() WHERE id = (SELECT id FROM organization_info LIMIT 1)");
+        $stmt->execute([$vision]);
+
+        header('Location: /admin/about?status=success');
+        exit;
+    }
+
+    public function updateMission()
+    {
+        $db = DatabaseHelper::getConnection();
+        $mission = $_POST['mission'] ?? '';
+
+        $stmt = $db->prepare("UPDATE organization_info SET mission = ?, updated_at = NOW() WHERE id = (SELECT id FROM organization_info LIMIT 1)");
+        $stmt->execute([$mission]);
+
+        header('Location: /admin/about?status=mission_updated');
+        exit;
+    }
+
+    public function updateMotto()
+    {
+        $db = DatabaseHelper::getConnection();
+        $motto = $_POST['motto'] ?? '';
+
+        $stmt = $db->prepare("UPDATE organization_info SET motto = ?, updated_at = NOW() WHERE id = (SELECT id FROM organization_info LIMIT 1)");
+        $stmt->execute([$motto]);
+
+        header('Location: /admin/about?status=motto_updated');
+        exit;
+    }
 }

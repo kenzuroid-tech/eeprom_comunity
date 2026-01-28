@@ -1,10 +1,11 @@
 <?php
+
 /**
  * File: src/Views/admin/recruitment/edit.php
  */
 $adminData = $adminData ?? [];
 $period = $period ?? [];
-$divisions = $divisions ?? []; 
+$divisions = $divisions ?? [];
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -124,23 +125,24 @@ $divisions = $divisions ?? [];
                         <div class="widget-card-admin bg-white p-4 rounded shadow-sm mb-4">
                             <h5 class="mb-4 fw-bold border-bottom pb-2 text-dark">Divisi Dibuka</h5>
                             <div class="division-grid" style="max-height: 200px; overflow-y: auto;">
-                                <?php 
+                                <?php
                                 // Mengambil data divisi yang dibuka (format string dipisah koma)
                                 $openedDivs = explode(', ', $period['opened_divisions'] ?? '');
-                                if (empty($divisions)): 
+                                if (empty($divisions)):
                                 ?>
                                     <p class="small text-muted">Belum ada data divisi.</p>
-                                <?php else: foreach ($divisions as $index => $div): ?>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="checkbox" name="divisions[]" 
-                                               value="<?= htmlspecialchars($div['name']) ?>" 
-                                               id="div_<?= $index ?>"
-                                               <?= in_array($div['name'], $openedDivs) ? 'checked' : '' ?>>
-                                        <label class="form-check-label small" for="div_<?= $index ?>">
-                                            <?= htmlspecialchars($div['name']) ?>
-                                        </label>
-                                    </div>
-                                <?php endforeach; endif; ?>
+                                    <?php else: foreach ($divisions as $index => $div): ?>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" name="divisions[]"
+                                                value="<?= htmlspecialchars($div['name']) ?>"
+                                                id="div_<?= $index ?>"
+                                                <?= in_array($div['name'], $openedDivs) ? 'checked' : '' ?>>
+                                            <label class="form-check-label small" for="div_<?= $index ?>">
+                                                <?= htmlspecialchars($div['name']) ?>
+                                            </label>
+                                        </div>
+                                <?php endforeach;
+                                endif; ?>
                             </div>
                         </div>
 
@@ -184,5 +186,8 @@ $divisions = $divisions ?? [];
             }
         });
     </script>
+    <script src="/assets/js/admin/dashboard.js"></script>
+
 </body>
+
 </html>

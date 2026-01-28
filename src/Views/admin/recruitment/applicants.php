@@ -208,6 +208,8 @@ foreach ($applicants as $a) {
             cb.addEventListener('change', updateBulkBar);
         });
     </script>
+    <script src="/assets/js/admin/dashboard.js"></script>
+
 </body>
 
 </html>
